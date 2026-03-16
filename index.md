@@ -8,8 +8,9 @@
 
 This catalog [includes] {+cat:includes .rdf:Property label} all constraints and targeting mechanisms available in SHACL.
 
-## Targeting Mechanism {+class:Targeting .Class label}
-- *Catalog** {=cat:index} includes 4 Targeting mechanisms.
+## Targeting Mechanism {+class:Targeting ?member .Class label}
+
+*Catalog** {=cat:index} includes 4 Targeting mechanisms.
 
 These are targeting predicates that determine which nodes get validated (not constraints themselves): 
 
@@ -18,7 +19,22 @@ These are targeting predicates that determine which nodes get validated (not con
 - [Target Subjects](./targeting/targetSubjectsOf.md) {+sh:targetSubjectsOf ?cat:includes .class:TargetingPredicate}
 - [Target Objects](./targeting/targetObjectsOf.md) {+sh:targetObjectsOf ?cat:includes .class:TargetingPredicate}
 
-## Constraint {+class:Constraint .Class label}
+### 📋 Constraint {=class:Constraint ?member .Class label}
+
+> A SHACL constraint is a rule that defines a validation condition for a specific shape and target node. {comment}
+
+We can broadly divide them into these type groups: 
+- Metadata Predicate {+class:MetadataPredicate !subClassOf label}
+- Targeting Predicate {+class:TargetingPredicate !subClassOf label}
+- Value Type Constraint {+class:ValueTypeConstraint !subClassOf label}
+- Cardinality Constraint {+class:CardinalityConstraint !subClassOf label}
+- String-based Constraint {+class:StringConstraint !subClassOf label}
+- Property Pair Constraint {+class:PropertyPairConstraint !subClassOf label}
+- Logical Constraint {+class:LogicalConstraint !subClassOf label}
+- Shape-based Constraint {+class:ShapeConstraint !subClassOf label}
+- Property Path {+class:PropertyPath !subClassOf label}
+- JavaScript Constraint {+class:JSConstraint !subClassOf label}
+- SPARQL Constraint {+class:SPARQLConstraint !subClassOf label}
 
 This catalog includes these constraints: 
 
@@ -78,24 +94,6 @@ Some parts are still completely uncovered and don't work even on ttl or pure qua
 
 ---
 
-## Ontology {=cat:Ontology .Container label ?member}
-
-### 📋 Constraint {=class:Constraint ?member label}
-
-> A SHACL constraint is a rule that defines a validation condition for a specific shape and target node. {comment}
-
-We can broadly divide them into these type groups: 
-- Metadata Predicate {+class:MetadataPredicate !subClassOf label}
-- Targeting Predicate {+class:TargetingPredicate !subClassOf label}
-- Value Type Constraint {+class:ValueTypeConstraint !subClassOf label}
-- Cardinality Constraint {+class:CardinalityConstraint !subClassOf label}
-- String-based Constraint {+class:StringConstraint !subClassOf label}
-- Property Pair Constraint {+class:PropertyPairConstraint !subClassOf label}
-- Logical Constraint {+class:LogicalConstraint !subClassOf label}
-- Shape-based Constraint {+class:ShapeConstraint !subClassOf label}
-- Property Path {+class:PropertyPath !subClassOf label}
-- JavaScript Constraint {+class:JSConstraint !subClassOf label}
-- SPARQL Constraint {+class:SPARQLConstraint !subClassOf label}
 
 ## Some constraints are environment dependent, are not tested to be working and are [Not covered] {=cat:notCovered .Class label} by this calalog.
 
