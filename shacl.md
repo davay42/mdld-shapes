@@ -12,8 +12,82 @@ This catalog [includes] {+cat:includes .rdf:Property label} all constraints and 
 
 ## Contents
 
+[Getting Started](#teach-getting-started)
+[Choosing Constraints](#teach-choosing-constraints)
+[Practical Workflow](#teach-practical-workflow)
 [Targeting](#targeting-index)
 [Constraints](#constraints-index)
+
+
+
+
+
+
+{=}
+
+
+
+<a id="teach-getting-started"></a>
+
+[mdld] <https://mdld.js.org/>
+[cat] <mdld:shacl/>
+
+# Getting Started with MDLD SHACL
+
+> Learn the fundamentals of SHACL validation in MDLD (Markdown Linked Data) {comment}
+
+## What is SHACL?
+
+SHACL (Shapes Constraint Language) is a W3C standard for validating RDF graphs. In MDLD, SHACL constraints are written directly in Markdown, making validation rules human-readable and machine-processable.
+
+## Core Concepts
+
+**Shapes** define validation rules for your data. Think of a shape as a template that your data must conform to.
+
+**Targets** determine which nodes in your data get validated. You can target by class, specific node, or relationship.
+
+**Constraints** define the actual validation rules (e.g., required properties, value ranges, string patterns).
+
+## Your First Shape
+
+Let's create a simple shape for validating user accounts:
+
+~~~~~~md
+[ex] <tag:my@example.org,2026:users/>
+
+**User Validation Shape** {=ex:UserShape .sh:NodeShape ?cat:hasShape label}
+Validates all [User] {+ex:User ?sh:targetClass} instances.
+
+**Username is required** {=ex:UsernameRule .sh:PropertyShape ?sh:property}
+[username] {+ex:username ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
+
+**Email is required** {=ex:EmailRule .sh:PropertyShape ?sh:property}
+[email] {+ex:email ?sh:path} must have at least [1] {sh:minCount ^^xsd:integer} value.
+~~~~~~
+
+## Key MDLD Syntax Patterns
+
+| Pattern | Meaning | Example |
+|---------|---------|---------|
+| `{=}` | Subject declaration (persists) | `{=ex:shape .sh:NodeShape}` |
+| `{+}` | Object introduction (temporary) | `{+ex:target ?sh:targetClass}` |
+| `?` | Object predicate (Subject → Object) | `?sh:targetClass`, `?sh:path` |
+| `.` | Class type declaration | `.sh:NodeShape` |
+| `^^` | Literal datatype | `^^xsd:integer` |
+
+## Basic Workflow
+
+1. **Define your shape** - Create a NodeShape with a descriptive name
+2. **Set your target** - Choose how to select data (targetClass, targetNode, etc.)
+3. **Add property rules** - Define PropertyShapes for each property to validate
+4. **Add constraints** - Apply constraint rules (minCount, datatype, pattern, etc.)
+5. **Test with data** - Create test data with valid and invalid examples
+
+## Next Steps
+
+- Learn about [Targeting Mechanisms](#targeting-index) to select your data
+- Explore [Constraints](#constraints-index) to define validation rules
+- See practical examples in the constraint documentation
 
 
 
@@ -709,86 +783,52 @@ Need to check if these are working:
 ## 📋 Quick Start Pattern
 
 ~~~~~~md
-[ex] <cat:example/class/>
+[ex] <tag:my@example.org,2026:class/>
 
-### Shape Definition
-
-**Employee manager must be a Person instance** {=ex:#managerClass .sh:PropertyShape message}
+**Manager must be a Person instance** {=ex:#managerClass .sh:PropertyShape}
 [manager] {+ex:manager ?sh:path} must be an instance of [Person] {+ex:Person ?sh:class}
 
 ---
 
-
 ### Test Data {=ex:data .Container}
 
 #### Valid Employee {=ex:ValidEmployee ?member}
-Manager: [john-manager] {+ex:john ?ex:manager .ex:Person}
+Manager: [john] {+ex:john ?ex:manager .ex:Person}
 
 #### Invalid Employee {=ex:InvalidEmployee ?member}
-Manager: [robot-ai] {+ex:ai ?ex:manager ex:Role}
-
----
-
-[Demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
+Manager: [robot] {+ex:robot ?ex:manager ex:Role}
 ~~~~~~
 
 ---
 
 ## 📝 MDLD Syntax Patterns
 
-The class constraint ensures that property values are instances of specific RDF classes.
-
 ~~~~~~md
-# Class Constraint Pattern
-**[Property] must be [Class Type] instance** {=ex:PropertyClassConstraint .sh:PropertyShape ?sh:message}
-
-[Property Name] {+ex:propertyName ?sh:path} must be an instance of [Class Type] {+ex:ClassType ?sh:class}
+[Property] {+ex:propertyName ?sh:path} must be an instance of [Class] {+ex:Class ?sh:class}
 ~~~~~~
 
-**Key components:**
-- **Property definition** - The property to validate (`{+ex:propertyName ?sh:path}`)
-- **Class reference** - The required class type (`{+ex:ClassType ?sh:class}`)
-- **Validation message** - Human-readable error message (`{sh:message}`)
-- **Type checking** - Ensures values have correct RDF type
+**Use for:** Type safety, referential integrity, data quality
 
-**Important notes:**
-- The class must be defined in the ontology or imported from another source
-- Class constraint works with IRI values, not literals
-- Multiple class constraints can be applied to the same property
-- Empty values automatically pass class constraints (use minCount for required properties)
-
----
-
-## 🎯 Use Cases
-
-- **Employee management** - Ensure manager is a Person instance
-- **Department validation** - Ensure department is a Department instance
-- **Product categorization** - Ensure category is a valid Category instance
+**Important:**
+- Works with IRI values only (use nodeKind for literals)
+- Class must be defined in ontology
+- Combine with minCount for required properties
 
 ---
 
 ## 🔧 Implementation Guidelines
 
-**When to use class:**
-- **Type safety** - Ensure property values have correct RDF types
-- **Referential integrity** - Validate relationships to proper entity types
-- **Data quality** - Prevent incorrect type assignments
-- **Schema validation** - Enforce proper RDF graph structure
+**When to use:** Ensure property values have correct RDF types
 
 **Best practices:**
-- Define classes clearly in your ontology before using them
-- Use descriptive class names that reflect their purpose
+- Define classes in ontology first
+- Use descriptive class names
 - Combine with minCount for required properties
-- Consider using nodeKind constraint for IRI vs literal validation
 
 **Common pitfalls:**
-- ❌ Using class constraint on literal values (use nodeKind instead)
-- ❌ Forgetting to define the class in the ontology
+- ❌ Using on literal values (use nodeKind instead)
+- ❌ Forgetting to define the class
 - ❌ Not combining with minCount for required properties
-- ❌ Creating circular class dependencies
-- ❌ Using `=` instead of `+` for property assignments
-- ❌ Forgetting the `.` prefix on class names
-- ❌ Using literals instead of IRIs for class instances
 
 
 
@@ -818,13 +858,8 @@ The class constraint ensures that property values are instances of specific RDF 
 ~~~~~~md
 [ex] <tag:my@example.org,2026:datatype/>
 
-### Shape Definition
-
-**Product price must be a decimal number** {=ex:#priceDecimal .sh:PropertyShape sh:message}
+**Price must be decimal** {=ex:#priceDecimal .sh:PropertyShape}
 [price] {+ex:price ?sh:path} must be a [decimal] {+xsd:decimal ?sh:datatype} value.
-
-**Product quantity must be an integer** {=ex:#quantityInteger .sh:PropertyShape sh:message}
-[quantity] {+ex:quantity ?sh:path} must be an [integer] {+xsd:integer ?sh:datatype} value.
 
 ---
 
@@ -832,72 +867,40 @@ The class constraint ensures that property values are instances of specific RDF 
 
 #### Valid Product {=ex:ValidProduct ?member}
 Price: [29.99] {ex:price ^^xsd:decimal}
-Quantity: [5] {ex:quantity ^^xsd:integer}
 
 #### Invalid Product {=ex:InvalidProduct ?member}
 Price: [29.99] {ex:price ^^xsd:string}
-Quantity: [five] {ex:quantity ^^xsd:string}
-
----
-
-[Demo] {=ex:demo} must produce exactly **2** violations.
 ~~~~~~
 
 ---
 
 ## 📝 MDLD Syntax Patterns
 
-The datatype constraint validates that literal values have the correct RDF datatype.
-
 ~~~~~~md
-**[Property] must be [Datatype]** {=ex:PropertyDatatypeConstraint .sh:PropertyShape sh:message}
-
-[Property Name] {+ex:propertyName ?sh:path} must be a [Datatype] {+xsd:datatype ?sh:datatype} value.
+[Property] {+ex:propertyName ?sh:path} must be a [Datatype] {+xsd:datatype ?sh:datatype} value.
 ~~~~~~
 
-**Key components:**
-- **Property path** - The property to validate (`{+ex:propertyName ?sh:path}`)
-- **Datatype reference** - The required datatype (`{+xsd:datatype ?sh:datatype}`)
-- **Validation message** - Human-readable error message (`{sh:message}`)
-- **Type checking** - Ensures literal values have correct datatype
+**Use for:** Type safety, data quality, calculations
 
-**Important notes:**
-- Datatype constraint only works with literal values, not IRIs
-- Common datatypes: `xsd:string`, `xsd:integer`, `xsd:decimal`, `xsd:boolean`, `xsd:date`
-- Use `nodeKind` constraint for IRI vs literal validation
-- Empty values automatically pass datatype constraints (use minCount for required properties)
-
----
-
-## 🎯 Use Cases
-
-- **Price validation** - Ensure price is decimal for calculations
-- **Quantity validation** - Ensure quantity is integer
-- **Date validation** - Ensure dates are proper date datatype
-- **Boolean validation** - Ensure boolean properties have correct type
+**Important:**
+- Works with literal values only (use nodeKind for IRIs)
+- Common datatypes: xsd:string, xsd:integer, xsd:decimal, xsd:boolean, xsd:date
+- Combine with minCount for required properties
 
 ---
 
 ## 🔧 Implementation Guidelines
 
-**When to use datatype:**
-- **Type safety** - Ensure literal values have correct datatypes
-- **Data quality** - Prevent incorrect datatype assignments
-- **Calculations** - Ensure numeric values can be used in computations
-- **Interoperability** - Ensure data conforms to expected types
+**When to use:** Ensure literal values have correct datatypes
 
 **Best practices:**
-- Use appropriate datatypes for the data (decimal for money, integer for counts)
-- Combine with minCount/maxCount for required properties
-- Use nodeKind constraint for IRI vs literal validation
-- Test with both valid and invalid datatype examples
+- Use appropriate datatypes (decimal for money, integer for counts)
+- Combine with minCount for required properties
 
 **Common pitfalls:**
-- ❌ Using datatype constraint on IRI values (use nodeKind instead)
+- ❌ Using on IRI values (use nodeKind instead)
 - ❌ Forgetting to specify the datatype prefix
 - ❌ Not combining with minCount for required properties
-- ❌ Using wrong datatype for the data (e.g., integer for decimal values)
-- ❌ Confusing datatype with class constraint (datatype for literals, class for IRIs)
 
 
 
@@ -922,92 +925,59 @@ The datatype constraint validates that literal values have the correct RDF datat
 
 ---
 
-## � Quick Start Pattern
+## 📋 Quick Start Pattern
 
 ~~~~~~md
 [ex] <tag:my@example.org,2026:nodekind/>
 
-### Shape Definition
-
-**Document content must be a literal** {=ex:#contentLiteral .sh:PropertyShape sh:message}
+**Content must be literal** {=ex:#contentLiteral .sh:PropertyShape}
 [content] {+ex:content ?sh:path} must be a [Literal] {+sh:Literal ?sh:nodeKind}.
 
-**Document reference must be an IRI** {=ex:#referenceIRI .sh:PropertyShape sh:message}
+**Reference must be IRI** {=ex:#referenceIRI .sh:PropertyShape}
 [reference] {+ex:reference ?sh:path} must be an [IRI] {+sh:IRI ?sh:nodeKind}.
 
 ---
 
 ### Test Data {=ex:data .Container}
 
-#### Valid Document {=ex:ValidDocument .ex:Document ?member}
-Content: [This is the document content] {ex:content}
-Reference: <https://example.org/reference> {?ex:reference}
+#### Valid Document {=ex:ValidDocument ?member}
+Content: [text] {ex:content}
+Reference: <https://example.org> {?ex:reference}
 
-#### Invalid Document {=ex:InvalidDocument .ex:Document ?member}
-Content: <https://example.org/invalid-content> {?ex:content}
-Reference: [Invalid Reference String] {ex:reference}
-
----
-
-[Demo] {=ex:demo} must produce exactly **2** violations.
+#### Invalid Document {=ex:InvalidDocument ?member}
+Content: <https://example.org> {?ex:content}
+Reference: [text] {ex:reference}
 ~~~~~~
 
 ---
 
 ## 📝 MDLD Syntax Patterns
 
-The node kind constraint validates that values are IRIs or literals (MDLD doesn't produce blank nodes).
-
 ~~~~~~md
-**[Property] must be [NodeKind]** {=ex:PropertyNodeKindConstraint .sh:PropertyShape sh:message}
-
-[Property Name] {+ex:propertyName ?sh:path} must be a [NodeKind] {+sh:NodeKind ?sh:nodeKind}.
+[Property] {+ex:propertyName ?sh:path} must be a [NodeKind] {+sh:NodeKind ?sh:nodeKind}.
 ~~~~~~
 
-**Key components:**
-- **Property path** - The property to validate (`{+ex:propertyName ?sh:path}`)
-- **Node kind reference** - The required node kind (`{+sh:IRI ?sh:nodeKind}` or `{+sh:Literal ?sh:nodeKind}`)
-- **Validation message** - Human-readable error message (`{sh:message}`)
-- **Type checking** - Ensures values are IRI or literal
+**Use for:** Type safety, IRI vs literal validation
 
-**Important notes:**
-- MDLD doesn't produce blank nodes, focus on IRI and Literal
+**Important:**
+- MDLD doesn't produce blank nodes (focus on IRI/Literal)
 - IRI values use `<URL> {?property}` syntax
 - Literal values use `[text] {property}` syntax
-- Use `datatype` constraint for literal type validation
-- Use `class` constraint for IRI type validation
-
----
-
-## 🎯 Use Cases
-
-- **Document management** - Content must be literal, references must be IRI
-- **API endpoints** - URLs must be IRI, response bodies must be literal
-- **User profiles** - User IDs must be IRI, names must be literal
-- **Type safety** - Ensure references are IRIs, content is literal
+- Use datatype constraint for literal types, class for IRI types
 
 ---
 
 ## 🔧 Implementation Guidelines
 
-**When to use nodeKind:**
-- **Type safety** - Ensure references are IRIs, content is literal
-- **Data integrity** - Validate node types match expected patterns
-- **Schema validation** - Enforce proper RDF node kind constraints
-- **MDLD-specific** - Since MDLD doesn't produce blank nodes, focus on IRI/Literal
+**When to use:** Ensure references are IRIs, content is literal
 
 **Best practices:**
-- Use correct syntax: IRIs with `<URL> {?property}`, literals with `[text] {property}`
-- Combine with `datatype` constraint for literal type validation
-- Combine with `class` constraint for IRI type validation
-- Test both valid and invalid node kind examples
+- Use correct syntax for IRI vs literal
+- Combine with datatype for literal types, class for IRI types
 
 **Common pitfalls:**
-- ❌ Using wrong syntax for IRI vs literal values
-- ❌ Confusing nodeKind with datatype (nodeKind for IRI/Literal, datatype for literal types)
-- ❌ Forgetting MDLD doesn't produce blank nodes
-- ❌ Not combining with other constraints for complete validation
-- ❌ Using nodeKind when datatype or class constraint would be more specific
+- ❌ Wrong syntax for IRI vs literal
+- ❌ Confusing with datatype (nodeKind for IRI/Literal, datatype for literal types)
 
 
 
@@ -1043,13 +1013,8 @@ The node kind constraint validates that values are IRIs or literals (MDLD doesn'
 ~~~~~~md
 [ex] <tag:my@example.org,2026:count/>
 
-### Shape Definition
-
-**Person must have exactly one email address** {=ex:#emailExact .sh:PropertyShape sh:message}
+**Email must be exactly one** {=ex:#emailExact .sh:PropertyShape}
 [email] {+ex:email ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
-
-**Person can have at most two phone numbers** {=ex:#phoneOptional .sh:PropertyShape sh:message}
-[phone] {+ex:phone ?sh:path} can have at most [2] {sh:maxCount ^^xsd:integer} values.
 
 ---
 
@@ -1057,81 +1022,42 @@ The node kind constraint validates that values are IRIs or literals (MDLD doesn'
 
 #### Valid Person {=ex:ValidPerson ?member}
 Email: [work@example.com] {ex:email}
-Phone: [555-1234] {ex:phone}
-Phone: [555-5678] {ex:phone}
 
-#### Invalid Person - Too Few {=ex:InvalidPersonFew ?member}
-Phone: [555-1234] {ex:phone}
-
-#### Invalid Person - Too Many {=ex:InvalidPersonMany ?member}
+#### Invalid Person {=ex:InvalidPerson ?member}
 Email: [work@example.com] {ex:email}
 Email: [personal@example.com] {ex:email}
-Phone: [555-1234] {ex:phone}
-Phone: [555-5678] {ex:phone}
-Phone: [555-9012] {ex:phone}
-
----
-
-[Demo] {=ex:demo} must produce exactly **2** violations.
 ~~~~~~
 
 ---
 
 ## 📝 MDLD Syntax Patterns
 
-Count constraints control the number of values a property can have.
-
 ~~~~~~md
-**[Property] must have [Count] values** {=ex:PropertyCountConstraint .sh:PropertyShape sh:message}
-
-[Property Name] {+ex:propertyName ?sh:path} must have at least [min] {sh:minCount ^^xsd:integer} and at most [max] {sh:maxCount ^^xsd:integer} values.
+[Property] {+ex:propertyName ?sh:path} must have at least [min] {sh:minCount ^^xsd:integer} and at most [max] {sh:maxCount ^^xsd:integer} values.
 ~~~~~~
 
-**Key components:**
-- **Property path** - The property to validate (`{+ex:propertyName ?sh:path}`)
-- **Minimum count** - Minimum number of values (`{sh:minCount ^^xsd:integer}`)
-- **Maximum count** - Maximum number of values (`{sh:maxCount ^^xsd:integer}`)
-- **Exact count** - Both minCount and maxCount with same value
-- **Validation message** - Human-readable error message (`{sh:message}`)
+**Use for:** Required properties, single-valued properties, multi-valued limits
 
-**Important notes:**
-- Use `minCount` alone for "at least X values"
-- Use `maxCount` alone for "at most X values"
+**Important:**
+- Use minCount alone for "at least X values"
+- Use maxCount alone for "at most X values"
 - Use both with same value for "exactly X values"
-- Combine with other constraints for complete validation
 - Empty properties fail minCount validation
 
 ---
 
-## 🎯 Use Cases
+## 🔧 Implementation Guidelines
 
-- **Required properties** - Ensure property has at least 1 value (minCount: 1)
-- **Single-valued properties** - Ensure property has exactly 1 value (minCount: 1, maxCount: 1)
-- **Multi-valued limits** - Limit number of values for optional properties (maxCount: N)
-- **Exact cardinality** - Enforce specific number of values
-
----
-
-## � Implementation Guidelines
-
-**When to use count constraints:**
-- **Required properties** - Ensure data completeness
-- **Data modeling** - Enforce cardinality constraints
-- **Validation rules** - Ensure proper number of values
-- **Data quality** - Prevent missing or excessive values
+**When to use:** Ensure property has correct number of values
 
 **Best practices:**
 - Use minCount: 1 for required properties
 - Use both minCount and maxCount: 1 for single-valued properties
-- Combine with datatype/class constraints for complete validation
-- Provide clear validation messages specifying exact requirements
 
 **Common pitfalls:**
 - ❌ Forgetting to specify the datatype ^^xsd:integer
 - ❌ Using negative values for counts
 - ❌ Confusing minCount with maxCount
-- ❌ Not combining with other constraints for complete validation
-- ❌ Using count constraints when other constraints would be more appropriate
 
 
 
@@ -1146,30 +1072,28 @@ Count constraints control the number of values a property can have.
 
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
-[ex] <mdld:shacl/example/range/>
-
 
 # Minimum Inclusive {=sh:minInclusive .class:Constraint label}
 
-> Specifies the minimum inclusive value for range constraints - the value must be greater than or equal to this bound. Works with numbers, dates, times, and other ordered datatypes. {comment}
+> Specifies the minimum inclusive value for range constraints {comment}
 
 <http://www.w3.org/ns/shacl#minInclusive> {?cat:fullIRI}
 
 # Maximum Inclusive {=sh:maxInclusive .class:Constraint label}
 
-> Specifies the maximum inclusive value for range constraints - the value must be less than or equal to this bound. Works with numbers, dates, times, and other ordered datatypes. {comment}
+> Specifies the maximum inclusive value for range constraints {comment}
 
 <http://www.w3.org/ns/shacl#maxInclusive> {?cat:fullIRI}
 
 # Minimum Exclusive {=sh:minExclusive .class:Constraint label}
 
-> Specifies the minimum exclusive value for range constraints - the value must be greater than this bound. Works with numbers, dates, times, and other ordered datatypes. {comment}
+> Specifies the minimum exclusive value for range constraints {comment}
 
 <http://www.w3.org/ns/shacl#minExclusive> {?cat:fullIRI}
 
 # Maximum Exclusive {=sh:maxExclusive .class:Constraint label}
 
-> Specifies the maximum exclusive value for range constraints - the value must be less than this bound. Works with numbers, dates, times, and other ordered datatypes. {comment}
+> Specifies the maximum exclusive value for range constraints {comment}
 
 <http://www.w3.org/ns/shacl#maxExclusive> {?cat:fullIRI}
 
@@ -1180,98 +1104,51 @@ Count constraints control the number of values a property can have.
 ~~~~~~md
 [ex] <tag:my@example.org,2026:range/>
 
-### Shape Definition
-
-**Event ticket prices must be between $10.00 and $1000.00 inclusive** {=ex:#priceRange .sh:PropertyShape sh:message}
-[ticketPrice] {+ex:price ?sh:path} must be at least [10.00] {sh:minInclusive ^^xsd:decimal} and at most [1000.00] {sh:maxInclusive ^^xsd:decimal}.
-
-**Event attendees must be strictly between 18 and 65 years old** {=ex:#ageRange .sh:PropertyShape sh:message}
-[attendeeAge] {+ex:age ?sh:path} must be greater than [18] {sh:minExclusive ^^xsd:integer} and less than [65] {sh:maxExclusive ^^xsd:integer}.
+**Price must be between 10 and 100 inclusive** {=ex:#priceRange .sh:PropertyShape}
+[price] {+ex:price ?sh:path} must be at least [10] {sh:minInclusive ^^xsd:decimal} and at most [100] {sh:maxInclusive ^^xsd:decimal}.
 
 ---
 
 ### Test Data {=ex:data .Container}
 
-#### Valid Event {=ex:ValidEvent ?member}
-Ticket Price: [99.99] {ex:price ^^xsd:decimal}
-Attendee Age: [25] {ex:age ^^xsd:integer}
+#### Valid Product {=ex:ValidProduct ?member}
+Price: [50] {ex:price ^^xsd:decimal}
 
-#### Invalid Event - Low Price {=ex:InvalidEventLowPrice ?member}
-Ticket Price: [5.99] {ex:price ^^xsd:decimal}
-Attendee Age: [25] {ex:age ^^xsd:integer}
-
-#### Invalid Event - Underage {=ex:InvalidEventYoungAge ?member}
-Ticket Price: [99.99] {ex:price ^^xsd:decimal}
-Attendee Age: [18] {ex:age ^^xsd:integer}
-
----
-
-[Demo] {=ex:demo} must produce exactly **2** violations.
+#### Invalid Product {=ex:InvalidProduct ?member}
+Price: [5] {ex:price ^^xsd:decimal}
 ~~~~~~
 
 ---
 
 ## 📝 MDLD Syntax Patterns
 
-Range constraints control the value range for ordered datatypes.
-
 ~~~~~~md
-**[Property] must be in [Min]-[Max] range** {=ex:PropertyRangeConstraint .sh:PropertyShape sh:message}
-
-[Property Name] {+ex:propertyName ?sh:path} must be at least [min] {sh:minInclusive ^^xsd:datatype} and at most [max] {sh:maxInclusive ^^xsd:datatype}.
+[Property] {+ex:propertyName ?sh:path} must be at least [min] {sh:minInclusive ^^xsd:datatype} and at most [max] {sh:maxInclusive ^^xsd:datatype}.
 ~~~~~~
 
-**Key components:**
-- **Property path** - The property to validate (`{+ex:propertyName ?sh:path}`)
-- **Minimum inclusive** - Minimum value inclusive (`{sh:minInclusive ^^xsd:datatype}`)
-- **Maximum inclusive** - Maximum value inclusive (`{sh:maxInclusive ^^xsd:datatype}`)
-- **Minimum exclusive** - Minimum value exclusive (`{sh:minExclusive ^^xsd:datatype}`)
-- **Maximum exclusive** - Maximum value exclusive (`{sh:maxExclusive ^^xsd:datatype}`)
-- **Validation message** - Human-readable error message (`{sh:message}`)
+**Use for:** Price validation, age restrictions, date validation, numeric ranges
 
-**Important notes:**
-- Works with ordered datatypes (numbers, dates, times, strings)
+**Important:**
+- Works with ordered datatypes (numbers, dates, times)
 - Inclusive bounds include boundary values
 - Exclusive bounds exclude boundary values
-- Use minInclusive for "at least X"
-- Use maxInclusive for "at most X"
-- Use minExclusive for "greater than X"
-- Use maxExclusive for "less than X"
-
----
-
-## 🎯 Use Cases
-
-- **Price validation** - Ensure prices are within acceptable range
-- **Age restrictions** - Enforce age limits (inclusive vs exclusive)
-- **Date validation** - Ensure dates are within valid period
-- **Quantity limits** - Validate numeric ranges
-- **Score validation** - Ensure scores are within bounds
+- Use minInclusive for "at least X", maxInclusive for "at most X"
 
 ---
 
 ## 🔧 Implementation Guidelines
 
-**When to use range:**
-- **Numeric validation** - When values must be within numeric bounds
-- **Date validation** - When dates must be within time period
-- **Age restrictions** - Enforce age limits with inclusive/exclusive
-- **Business rules** - Implement range-based business logic
-- **Data quality** - Ensure values are within expected ranges
+**When to use:** Values must be within numeric or date bounds
 
 **Best practices:**
 - Use inclusive bounds for "at least/at most"
 - Use exclusive bounds for "greater than/less than"
-- Combine min and max for complete range validation
 - Test with boundary values
-- Document why range limits are needed
 
 **Common pitfalls:**
-- ❌ Using wrong inclusive/exclusive bound for the use case
+- ❌ Using wrong inclusive/exclusive bound
 - ❌ Forgetting to specify the datatype
-- ❌ Not testing boundary values
 - ❌ Confusing inclusive with exclusive bounds
-- ❌ Using range when comparison constraint would be more appropriate
 
 
 
@@ -1286,11 +1163,10 @@ Range constraints control the value range for ordered datatypes.
 
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
-[ex] <mdld:shacl/example/comparison/>
 
 # Comparison Constraints {=sh:lessThan .class:ComparisonConstraint label}
 
-> Validates property values against reference nodes using comparison operators. Essential for ordering, version control, date validation, and business rule enforcement where values must be smaller than or equal to specific reference points. {comment}
+> Validates property values against reference nodes using comparison operators {comment}
 
 <http://www.w3.org/ns/shacl#lessThan> {?cat:fullIRI}
 <http://www.w3.org/ns/shacl#lessThanOrEquals> {?cat:fullIRI}
@@ -1303,98 +1179,52 @@ Range constraints control the value range for ordered datatypes.
 ~~~~~~md
 [ex] <tag:my@example.org,2026:comparison/>
 
-### Shape Definition
-
-**Event must follow business planning rules** {=ex:EventPlanningShape .sh:NodeShape label}
-
-**Order Date Rule** {=ex:#orderDateRule .sh:PropertyShape ?sh:property}
-[order date] {+ex:orderDate ?sh:path} must be before [shipping date] {+ex:shippingDate ?sh:lessThan}: **Order must be placed before shipping** {sh:message}.
-
-**Version Rule** {=ex:#versionRule .sh:PropertyShape ?sh:property}
-[current version] {+ex:currentVersion ?sh:path} must be ≤ [latest version] {+ex:latestVersion ?sh:lessThanOrEquals}: **Current version must be ≤ latest version** {sh:message}.
+**Order date must be before shipping date** {=ex:#orderDateRule .sh:PropertyShape}
+[order date] {+ex:orderDate ?sh:path} must be before [shipping date] {+ex:shippingDate ?sh:lessThan}.
 
 ---
 
 ### Test Data {=ex:data .Container}
 
-#### Valid Event {=ex:ValidEvent .ex:Event ?member}
+#### Valid Order {=ex:ValidOrder ?member}
 Order Date: [2024-06-15] {ex:orderDate ^^xsd:date}
 Shipping Date: [2024-06-20] {ex:shippingDate ^^xsd:date}
-Current Version: [2.1] {ex:currentVersion ^^xsd:string}
-Latest Version: [3.0] {ex:latestVersion ^^xsd:string}
 
-#### Invalid Event - Late Order {=ex:LateOrderEvent .ex:Event ?member}
+#### Invalid Order {=ex:InvalidOrder ?member}
 Order Date: [2024-06-25] {ex:orderDate ^^xsd:date}
 Shipping Date: [2024-06-20] {ex:shippingDate ^^xsd:date}
-Current Version: [2.1] {ex:currentVersion ^^xsd:string}
-Latest Version: [3.0] {ex:latestVersion ^^xsd:string}
-
----
-
-[Demo] {=ex:demo} must produce exactly **1** violation.
 ~~~~~~
 
 ---
 
 ## 📝 MDLD Syntax Patterns
 
-Comparison constraints validate property values against reference nodes using comparison operators.
-
 ~~~~~~md
-**[Property] must be [Operator] [Reference]** {=ex:PropertyComparisonConstraint .sh:PropertyShape ?sh:property sh:message}
-
-[Property Name] {+ex:propertyName ?sh:path} must be [operator] {sh:lessThan} [Reference Property] {+ex:referenceProperty ?sh:lessThan}.
+[Property] {+ex:propertyName ?sh:path} must be [operator] {sh:lessThan} [Reference] {+ex:reference ?sh:lessThan}.
 ~~~~~~
 
-**Key components:**
-- **Property path** - The property to validate (`{+ex:propertyName ?sh:path}`)
-- **Comparison operator** - The comparison constraint (`{sh:lessThan}`, `{sh:lessThanOrEquals}`, `{sh:equals}`)
-- **Reference property** - The property to compare against (`{+ex:referenceProperty ?sh:lessThan}`)
-- **Validation message** - Human-readable error message (`{sh:message}`)
-- **Comparison logic** - Validates ordering and equality relationships
+**Use for:** Date validation, version control, business rules, ordering constraints
 
-**Important notes:**
+**Important:**
 - Works with comparable values (dates, numbers, strings)
 - Compares values within the same node
-- Use `lessThan` for strict ordering
-- Use `lessThanOrEquals` for inclusive ordering
-- Use `equals` for exact value matching
-- Both properties must be present for comparison
-
----
-
-## 🎯 Use Cases
-
-- **Date validation** - Ensure start date is before end date
-- **Version control** - Ensure current version ≤ latest version
-- **Pricing validation** - Ensure price matches standard price
-- **Business rules** - Enforce ordering constraints
-- **Range validation** - Ensure values are within expected ranges
+- Use lessThan for strict ordering, lessThanOrEquals for inclusive, equals for exact matching
+- Both properties must be present
 
 ---
 
 ## 🔧 Implementation Guidelines
 
-**When to use comparison:**
-- **Temporal validation** - When dates must follow chronological order
-- **Version control** - Ensure version numbers are valid
-- **Pricing rules** - Enforce pricing policies
-- **Business logic** - Implement ordering constraints
-- **Range validation** - Ensure values are within bounds
+**When to use:** Enforce ordering constraints between properties
 
 **Best practices:**
-- Use appropriate comparison operator for the use case
-- Ensure both properties have compatible datatypes
+- Ensure compatible datatypes
 - Test with boundary values
-- Combine with other constraints for complete validation
-- Document the business rule being enforced
 
 **Common pitfalls:**
-- ❌ Comparing incompatible datatypes (e.g., string vs number)
-- ❌ Forgetting that both properties must be present
-- ❌ Using wrong comparison operator for the use case
-- ❌ Not testing boundary values
-- ❌ Confusing comparison with other constraints
+- ❌ Comparing incompatible datatypes
+- ❌ Forgetting both properties must be present
+- ❌ Using wrong comparison operator
 
 
 
@@ -1407,14 +1237,12 @@ Comparison constraints validate property values against reference nodes using co
 
 <a id="constraints-disjoint"></a>
 
-[mdld] <https://mdld.js.org/vocab/>
-[cat] <https://mdld.js.org/shacl/catalog/>
-[ex] <http://example.org/>
+[mdld] <https://mdld.js.org/>
+[cat] <mdld:shacl/>
 
+# Disjoint {=sh:disjoint .class:DisjointConstraint label}
 
-# Disjoint Constraint {=sh:disjoint .class:DisjointConstraint label}
-
-> Ensures that values of a property are disjoint with values of another property. Essential for preventing value overlap between related properties like labels, categories, or mutually exclusive attributes. {comment}
+> Ensures that values of a property are disjoint with values of another property {comment}
 
 <http://www.w3.org/ns/shacl#disjoint> {?cat:fullIRI}
 
@@ -1425,87 +1253,50 @@ Comparison constraints validate property values against reference nodes using co
 ~~~~~~md
 [ex] <tag:my@example.org,2026:disjoint/>
 
-### Shape Definition
-
-**Preferred labels must be different from alternative labels** {=ex:DisjointExampleShape .sh:NodeShape label sh:message}
+**Preferred labels must be different from alternative labels** {=ex:DisjointExampleShape .sh:NodeShape}
 [preferred labels] {+ex:prefLabel ?sh:path} must be [disjoint] {+ex:altLabel ?sh:disjoint} with [alternative labels].
 
 ---
 
 ### Test Data {=ex:data .Container}
 
-#### Valid Case - USA {=ex:USA ?member}
+#### Valid Case {=ex:USA ?member}
 Preferred Label: [USA] {ex:prefLabel}
 Alternative Label: [United States] {ex:altLabel}
 
-#### Invalid Case - Germany {=ex:Germany ?member}
+#### Invalid Case {=ex:Germany ?member}
 Preferred Label: [Germany] {ex:prefLabel}
 Alternative Label: [Germany] {ex:altLabel}
-
----
-
-[Demo] {=ex:demo} must produce exactly **1** violation.
 ~~~~~~
 
 ---
 
 ## 📝 MDLD Syntax Patterns
 
-The disjoint constraint ensures that values of a property are disjoint with values of another property.
-
 ~~~~~~md
-**[Property] must be disjoint with [Other Property]** {=ex:PropertyDisjointConstraint .sh:PropertyShape sh:message}
-
-[Property Name] {+ex:propertyName ?sh:path} must be [disjoint] {+ex:otherProperty ?sh:disjoint} with [Other Property Name].
+[Property] {+ex:propertyName ?sh:path} must be [disjoint] {+ex:otherProperty ?sh:disjoint} with [Other Property].
 ~~~~~~
 
-**Key components:**
-- **Property path** - The property to validate (`{+ex:propertyName ?sh:path}`)
-- **Disjoint reference** - The property to be disjoint with (`{+ex:otherProperty ?sh:disjoint}`)
-- **Validation message** - Human-readable error message (`{sh:message}`)
-- **Value separation** - Ensures no value overlap between properties
+**Use for:** Label validation, category separation, mutually exclusive attributes
 
-**Important notes:**
+**Important:**
 - Prevents any value from appearing in both properties
 - Works with both literal values and IRIs
-- Both properties must be present for validation
-- Useful for mutually exclusive attributes
-- Ensures data integrity and prevents redundancy
-
----
-
-## 🎯 Use Cases
-
-- **Label validation** - Ensure preferred and alternative labels are different
-- **Category separation** - Prevent category overlap
-- **Mutually exclusive attributes** - Ensure properties don't share values
-- **Data integrity** - Prevent value duplication
-- **Business rules** - Enforce separation constraints
+- Both properties must be present
 
 ---
 
 ## 🔧 Implementation Guidelines
 
-**When to use disjoint:**
-- **Mutually exclusive values** - When properties must not share values
-- **Label management** - Ensure distinct labels
-- **Category validation** - Prevent category overlap
-- **Data integrity** - Prevent value duplication
-- **Business rules** - Enforce separation constraints
+**When to use:** Properties must not share values
 
 **Best practices:**
-- Use for properties that should never share values
-- Combine with other constraints for complete validation
+- Use for mutually exclusive properties
 - Test with overlapping and non-overlapping values
-- Document why properties must be disjoint
-- Consider cardinality constraints alongside disjoint
 
 **Common pitfalls:**
 - ❌ Using disjoint when properties should be related
-- ❌ Not testing with overlapping values
-- ❌ Forgetting that both properties must be present
-- ❌ Not combining with other constraints
-- ❌ Confusing disjoint with other property pair constraints
+- ❌ Forgetting both properties must be present
 
 
 
@@ -1523,7 +1314,7 @@ The disjoint constraint ensures that values of a property are disjoint with valu
 
 # NOT Constraint {=sh:not .class:LogicalConstraint label}
 
-> Requires value nodes to NOT conform to a given shape. Essential for negation patterns and exclusion rules. {comment}
+> Requires value nodes to NOT conform to a given shape {comment}
 
 <http://www.w3.org/ns/shacl#not> {?cat:fullIRI}
 
@@ -1532,90 +1323,53 @@ The disjoint constraint ensures that values of a property are disjoint with valu
 ## 📋 Quick Start Pattern
 
 ~~~~~~md
-[ex] <mdld:shacl/example/not/>
+[ex] <tag:my@example.org,2026:not/>
 
-### Shape Definition
+**User cannot have deleted status** {=ex:UserStatusShape .sh:NodeShape}
 
-**User cannot have deleted status** {sh:message}
+User status must not conform to [Forbidden Status Shape] {+ex:ForbiddenStatusShape ?sh:not}.
 
-**User Status Shape** {=ex:UserStatusShape .sh:NodeShape ?cat:hasShape label} targets all [users] {+ex:User ?sh:targetClass}.
-
-User status must not conform to the forbidden shape using [Forbidden Status Shape] {+ex:ForbiddenStatusShape ?sh:not}.
-
-**Forbidden Status Shape** {=ex:ForbiddenStatusShape .sh:NodeShape} requires the [status] {+ex:status ?sh:path} property to be exactly [deleted] {sh:hasValue}.
+**Forbidden Status Shape** {=ex:ForbiddenStatusShape .sh:NodeShape} requires [status] {+ex:status ?sh:path} to be exactly [deleted] {sh:hasValue}.
 
 ---
 
 ### Test Data {=ex:data .Container}
 
-#### Valid User - Active {=ex:ValidActiveUser .ex:User}
-Name: [Alice] {ex:name}
+#### Valid User {=ex:ValidActiveUser ?member}
 Status: [active] {ex:status}
 
-#### Invalid User - Deleted {=ex:InvalidDeletedUser .ex:User}
-Name: [Charlie] {ex:name}
+#### Invalid User {=ex:InvalidDeletedUser ?member}
 Status: [deleted] {ex:status}
-
----
-
-[Demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
 ~~~~~~
 
 ---
 
-## �� MDLD Syntax Patterns
-
-The NOT constraint requires a shape reference that defines the forbidden pattern.
+## 📝 MDLD Syntax Patterns
 
 ~~~~~~md
-# NOT Constraint Pattern
-**[Shape Name] must not conform to forbidden pattern** {=ex:ForbiddenShape .sh:NodeShape ?sh:not}
-
-**Forbidden Pattern Shape** {=ex:ForbiddenPattern .sh:NodeShape} defines the pattern to reject:
-[Property] {+ex:property ?sh:path} must be [forbidden value] {sh:hasValue}
+[Shape] {=ex:Shape .sh:NodeShape} must not conform to [Forbidden Shape] {+ex:ForbiddenShape ?sh:not}.
 ~~~~~~
 
-**Key components:**
-- **NOT reference** - Links to the forbidden shape (`{+ex:ForbiddenShape ?sh:not}`)
-- **Forbidden shape** - Defines the pattern to reject (PropertyShape or NodeShape)
-- **Shape definition** - Can be a simple property constraint or complex shape
-- **Validation logic** - Any node conforming to the forbidden shape fails validation
+**Use for:** Forbidden values, exclusion patterns, business rule negation
 
-**Important notes:**
-- The forbidden shape must be defined before or alongside the NOT constraint
-- NOT only validates nodes that would conform to the forbidden shape
-- Nodes that don't match the forbidden shape pass validation automatically
-- Can be used with both PropertyShape and NodeShape contexts
-
----
-
-## 🎯 Use Cases
-
-- **Forbidden values** - Prevent users from having deleted status
-- **Exclusion patterns** - Prevent products from being in certain categories
-- **Business rule negation** - Ensure orders don't have invalid states
+**Important:**
+- Forbidden shape defines pattern to reject
+- Nodes not matching forbidden shape pass automatically
+- Can be used with PropertyShape and NodeShape
 
 ---
 
 ## 🔧 Implementation Guidelines
 
-**When to use NOT:**
-- **Forbidden values** - When certain values must be explicitly prohibited
-- **Exclusion patterns** - When nodes must not conform to a specific pattern
-- **Business rule negation** - When business logic requires negation
-- **Data integrity** - When certain states must be prevented
+**When to use:** Certain values must be explicitly prohibited
 
 **Best practices:**
-- Keep forbidden shapes simple and focused
+- Keep forbidden shapes simple
 - Use descriptive names for forbidden shapes
-- Test the forbidden shape independently first
-- Document why the pattern is forbidden
 
 **Common pitfalls:**
-- ❌ Creating circular dependencies between shapes
-- ❌ Making forbidden shapes too complex to understand
-- ❌ Forgetting that non-matching nodes automatically pass
-- ❌ Using NOT when a positive constraint would be clearer
+- ❌ Creating circular dependencies
+- ❌ Making forbidden shapes too complex
 
 
 
@@ -1633,106 +1387,66 @@ The NOT constraint requires a shape reference that defines the forbidden pattern
 
 # AND Constraint {=sh:and .class:LogicalConstraint label}
 
-> Requires all constraints in the list to be satisfied. Essential when multiple conditions must all pass for validation to succeed. {comment}
+> Requires all constraints in the list to be satisfied {comment}
 
 <http://www.w3.org/ns/shacl#and> {?cat:fullIRI}
 
 ---
 
-## � Quick Start Pattern
+## 📋 Quick Start Pattern
 
-~~~~~~md {cat:quick-start}
-[mdld] <https://mdld.js.org/>
-[ex] <mdld:shacl/example/logical/>
+~~~~~~md
+[ex] <tag:my@example.org,2026:and/>
 
+**Product must have price and category** {sh:message}
 
-# AND Constraint Demo
+**Constraints List** {=ex:and-l1 ?sh:and .rdf:List}: [Price Required] {+ex:priceRequired ?rdf:first}, then [followed] {=ex:and-l2 ?rdf:rest} by [Category Required] {+ex:categoryRequired ?rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
 
-### Shape Definition
+**Price Required** {=ex:priceRequired .sh:PropertyShape} ensures [price] {+ex:price ?sh:path} has at least [1] {sh:minCount ^^xsd:integer} value.
 
-**Product must have a price and at least 1 category defined** {sh:message}
-
-**Constraints List** {=ex:and-l1 ?sh:and .rdf:List}: [Min Count] {+ex:priceRequired ?rdf:first}, 
-then [followed] {=ex:and-l2 ?rdf:rest} by the second constraint [Class] {+ex:categoryRequired ?rdf:first} 
-and a [nil] {+rdf:nil ?rdf:rest} node (end of list). Reset current subject: {=}
-
-**Price Required Constraint** {=ex:priceRequired .sh:PropertyShape} ensures [price] {+ex:price ?sh:path} has at least [1] {sh:minCount ^^xsd:integer} value.
-
-**Category Required Constraint** {=ex:categoryRequired .sh:PropertyShape} ensures [category] {+ex:category ?sh:path} has at least [1] {sh:minCount ^^xsd:integer} value.
+**Category Required** {=ex:categoryRequired .sh:PropertyShape} ensures [category] {+ex:category ?sh:path} has at least [1] {sh:minCount ^^xsd:integer} value.
 
 ---
 
 ### Test Data {=ex:data .Container}
 
 #### Valid Product {=ex:ValidProduct ?member}
-Name: [Laptop] {ex:name}
 Price: [999] {ex:price ^^xsd:integer}
 Category: [Electronics] {ex:category}
 
-#### Missing Price Product {=ex:MissingPriceProduct ?member}
-Name: [Phone] {ex:name}
+#### Invalid Product {=ex:MissingPriceProduct ?member}
 Category: [Electronics] {ex:category}
-
----
-
-[Demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
 ~~~~~~
 
 ---
 
-## �📝 MDLD Syntax Patterns
-
-The AND constraint uses verbose RDF list syntax to specify multiple constraints that must all be satisfied.
+## 📝 MDLD Syntax Patterns
 
 ~~~~~~md
-# AND Constraint Pattern
-**Constraints List** {=ex:and-l1 ?sh:and .rdf:List}: [First Constraint] {+ex:firstConstraint ?rdf:first}, 
-then [followed] {=ex:and-l2 ?rdf:rest} by the second constraint [Second Constraint] {+ex:secondConstraint ?rdf:first} 
-and a [nil] {+rdf:nil ?rdf:rest} node (end of list). Reset current subject to avoid accidental further assignments: {=}
+[Constraints List] {=ex:and-l1 ?sh:and .rdf:List}: [First] {+ex:first ?rdf:first}, then [rest] {=ex:and-l2 ?rdf:rest} by [Second] {+ex:second ?rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
 ~~~~~~
 
-**Key components:**
-- **List node** - Anonymous RDF list container (`{=ex:and-l1 ?sh:and .rdf:List}`)
-- **First element** - First constraint in the list (`{+ex:firstConstraint ?rdf:first}`)
-- **Rest elements** - Subsequent list nodes (`{=ex:and-l2 ?rdf:rest}`)
-- **Termination** - List ends with `rdf:nil`
-- **Subject reset** - `{=}` prevents unintended subject continuation
+**Use for:** Multi-property validation, cross-field validation, business rule combinations
 
-**Important notes:**
-- Each list element must reference a previously defined constraint (PropertyShape or NodeShape)
-- Use unique list identifiers (e.g., `and-l1`, `and-l2`) to avoid collisions
-- Always reset subject with `{=}` after defining the list structure
-- All constraints in the list must be satisfied for the node to pass validation
-
----
-
-## 🎯 Use Cases
-
-- **Multi-property validation** - Product must have price AND category
-- **Cross-field validation** - User must have email AND phone number
-- **Business rule combinations** - Order must be paid AND shipped
+**Important:**
+- Uses RDF list syntax (rdf:first, rdf:rest, rdf:nil)
+- All constraints in list must be satisfied
+- Use unique list identifiers (and-l1, and-l2)
+- Always reset subject with {=} after list definition
 
 ---
 
 ## 🔧 Implementation Guidelines
 
-**When to use AND:**
-- **Multiple required properties** - When several properties must all be present
-- **Cross-property dependencies** - When one property's validity depends on another
-- **Complex business rules** - When business logic requires multiple conditions
-- **Data integrity** - When multiple aspects of data must be valid together
+**When to use:** Multiple conditions must all pass
 
 **Best practices:**
-- Keep the list short (2-3 constraints) for maintainability
-- Use descriptive constraint names for clarity
-- Test each constraint individually before combining
-- Consider using separate shapes if the logic becomes complex
+- Keep list short (2-3 constraints)
+- Test each constraint individually first
 
 **Common pitfalls:**
-- ❌ Forgetting the subject reset `{=}` after list definition
+- ❌ Forgetting subject reset {=} after list
 - ❌ Reusing list identifiers causing collisions
-- ❌ Creating circular dependencies between constraints
-- ❌ Making the constraint list too complex to debug
 
 
 
@@ -1747,18 +1461,16 @@ and a [nil] {+rdf:nil ?rdf:rest} node (end of list). Reset current subject to av
 
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
-[ex] <mdld:shacl/example/length/>
-
 
 # Min Length {=sh:minLength .class:Constraint label}
 
-> Specifies the minimum length of string values - useful for password requirements, username validation, or content length limits. {comment}
+> Specifies the minimum length of string values {comment}
 
 <http://www.w3.org/ns/shacl#minLength> {?cat:fullIRI}
 
 # Max Length {=sh:maxLength .class:Constraint label}
 
-> Specifies the maximum length of string values - useful for field size limits, message length restrictions, or data entry constraints. {comment}
+> Specifies the maximum length of string values {comment}
 
 <http://www.w3.org/ns/shacl#maxLength> {?cat:fullIRI}
 
@@ -1769,13 +1481,8 @@ and a [nil] {+rdf:nil ?rdf:rest} node (end of list). Reset current subject to av
 ~~~~~~md
 [ex] <tag:my@example.org,2026:length/>
 
-### Shape Definition
-
-**Username must be 3-20 characters long** {=ex:#usernameLength .sh:PropertyShape sh:message}
+**Username must be 3-20 characters** {=ex:#usernameLength .sh:PropertyShape}
 [username] {+ex:username ?sh:path} must have at least [3] {sh:minLength ^^xsd:integer} and at most [20] {sh:maxLength ^^xsd:integer} characters.
-
-**Password must be at least 8 characters long** {=ex:#passwordLength .sh:PropertyShape sh:message}
-[password] {+ex:password ?sh:path} must have at least [8] {sh:minLength ^^xsd:integer} characters.
 
 ---
 
@@ -1783,83 +1490,39 @@ and a [nil] {+rdf:nil ?rdf:rest} node (end of list). Reset current subject to av
 
 #### Valid User {=ex:ValidUser ?member}
 Username: [john_doe] {ex:username}
-Password: [securepass123] {ex:password}
 
-#### Invalid User - Short Username {=ex:InvalidUserShort ?member}
+#### Invalid User {=ex:InvalidUser ?member}
 Username: [jd] {ex:username}
-Password: [securepass123] {ex:password}
-
-#### Invalid User - Short Password {=ex:InvalidUserPassword ?member}
-Username: [john_doe] {ex:username}
-Password: [short] {ex:password}
-
----
-
-[Demo] {=ex:demo} must produce exactly **2** violations.
 ~~~~~~
 
 ---
 
 ## 📝 MDLD Syntax Patterns
 
-Length constraints control the length of string values.
-
 ~~~~~~md
-**[Property] must be [Min]-[Max] characters** {=ex:PropertyLengthConstraint .sh:PropertyShape sh:message}
-
-[Property Name] {+ex:propertyName ?sh:path} must have at least [min] {sh:minLength ^^xsd:integer} and at most [max] {sh:maxLength ^^xsd:integer} characters.
+[Property] {+ex:propertyName ?sh:path} must have at least [min] {sh:minLength ^^xsd:integer} and at most [max] {sh:maxLength ^^xsd:integer} characters.
 ~~~~~~
 
-**Key components:**
-- **Property path** - The property to validate (`{+ex:propertyName ?sh:path}`)
-- **Minimum length** - Minimum string length (`{sh:minLength ^^xsd:integer}`)
-- **Maximum length** - Maximum string length (`{sh:maxLength ^^xsd:integer}`)
-- **Validation message** - Human-readable error message (`{sh:message}`)
-- **Character counting** - Counts characters in string values
+**Use for:** Username validation, password policies, content limits, form validation
 
-**Important notes:**
-- Only works with literal string values
-- Length is measured in characters, not bytes
-- Use minLength alone for minimum length requirements
-- Use maxLength alone for maximum length requirements
-- Use both together for exact length range
+**Important:**
+- Works with literal string values only
+- Length measured in characters, not bytes
 - Empty strings have length 0
-
----
-
-## 🎯 Use Cases
-
-- **Username validation** - Enforce reasonable username lengths
-- **Password policies** - Ensure minimum password complexity
-- **Content limits** - Restrict post/comment/message sizes
-- **Form validation** - Enforce field size requirements
-- **Database constraints** - Match column length limits
-- **API validation** - Ensure request payload sizes
 
 ---
 
 ## 🔧 Implementation Guidelines
 
-**When to use length:**
-- **Input validation** - When string length must be controlled
-- **Password policies** - Ensure minimum password length
-- **Content limits** - Restrict message/comment sizes
-- **Form validation** - Enforce field size requirements
-- **Data quality** - Maintain consistent string lengths
+**When to use:** String length must be controlled
 
 **Best practices:**
-- Use reasonable length limits based on use case
-- Combine with other string constraints (pattern, datatype)
-- Test with edge cases (empty strings, boundary values)
-- Consider internationalization (character vs byte length)
-- Document why length limits are needed
+- Use reasonable length limits
+- Test with boundary values
 
 **Common pitfalls:**
-- ❌ Forgetting to specify the datatype ^^xsd:integer
+- ❌ Forgetting datatype ^^xsd:integer
 - ❌ Using negative values for lengths
-- ❌ Not considering international character lengths
-- ❌ Not testing boundary values
-- ❌ Confusing length with count constraints (length for string size, count for number of values)
 
 
 
@@ -1872,14 +1535,12 @@ Length constraints control the length of string values.
 
 <a id="constraints-pattern"></a>
 
-[mdld] <https://mdld.js.org/vocab/>
-[cat] <https://mdld.js.org/shacl/catalog/>
-[ex] <http://example.org/>
+[mdld] <https://mdld.js.org/>
+[cat] <mdld:shacl/>
 
+# Pattern {=sh:pattern .class:PatternConstraint label}
 
-# Pattern Constraint {=sh:pattern .class:PatternConstraint label}
-
-> Validates string values against regular expression patterns. Essential for email validation, phone number formatting, identifier patterns, and any text-based data format requirements. {comment}
+> Validates string values against regular expression patterns {comment}
 
 <http://www.w3.org/ns/shacl#pattern> {?cat:fullIRI}
 <http://www.w3.org/ns/shacl#flags> {?cat:fullIRI}
@@ -1891,9 +1552,7 @@ Length constraints control the length of string values.
 ~~~~~~md
 [ex] <tag:my@example.org,2026:pattern/>
 
-### Shape Definition
-
-**Email must follow standard format** {=ex:EmailPatternConstraint .sh:PropertyShape sh:message}
+**Email must end with example.com** {=ex:EmailPatternConstraint .sh:PropertyShape}
 [email] {+ex:email ?sh:path} must match [example\.com$] {sh:pattern} with [i] {sh:flags}.
 
 ---
@@ -1901,76 +1560,42 @@ Length constraints control the length of string values.
 ### Test Data {=ex:data .Container}
 
 #### Valid Email {=ex:ValidEmail ?member}
-Email: [user@example.com] {ex:email ^^xsd:string}
+Email: [user@example.com] {ex:email}
 
 #### Invalid Email {=ex:InvalidEmail ?member}
-Email: [user@example.org] {ex:email ^^xsd:string}
-
----
-
-[Demo] {=ex:demo} must produce exactly **1** violation.
+Email: [user@example.org] {ex:email}
 ~~~~~~
 
 ---
 
 ## 📝 MDLD Syntax Patterns
 
-The pattern constraint validates string values against regular expression patterns.
-
 ~~~~~~md
-**[Property] must match [Pattern]** {=ex:PropertyPatternConstraint .sh:PropertyShape sh:message}
-
-[Property Name] {+ex:propertyName ?sh:path} must match [regex pattern] {sh:pattern} with [flags] {sh:flags}.
+[Property] {+ex:propertyName ?sh:path} must match [regex pattern] {sh:pattern} with [flags] {sh:flags}.
 ~~~~~~
 
-**Key components:**
-- **Property path** - The property to validate (`{+ex:propertyName ?sh:path}`)
-- **Regex pattern** - Regular expression pattern (`{sh:pattern}`)
-- **Pattern flags** - Optional regex flags (`{sh:flags}`)
-- **Validation message** - Human-readable error message (`{sh:message}`)
-- **String matching** - Validates literal string values
+**Use for:** Email validation, phone number formatting, identifier patterns, URL validation
 
-**Important notes:**
-- Only works with literal string values
+**Important:**
+- Works with literal string values only
 - Supports standard regex syntax
-- Common flags: `i` (case-insensitive), `m` (multiline), `s` (dotall)
-- Combine with datatype constraint for string validation
-- Empty values automatically pass pattern validation
-
----
-
-## 🎯 Use Cases
-
-- **Email validation** - Ensure email addresses follow standard format
-- **Phone number formatting** - Validate phone number patterns
-- **Identifier patterns** - Ensure IDs follow required format
-- **URL validation** - Validate URL patterns
-- **Code validation** - Validate code formats (ISBN, SKU, etc.)
+- Common flags: i (case-insensitive), m (multiline), s (dotall)
+- Empty values automatically pass
 
 ---
 
 ## 🔧 Implementation Guidelines
 
-**When to use pattern:**
-- **Format validation** - When values must match specific format
-- **Email validation** - Ensure email addresses are valid
-- **Phone validation** - Validate phone number formats
-- **Identifier validation** - Ensure IDs follow required pattern
-- **Data quality** - Enforce text-based data format requirements
+**When to use:** Values must match specific format
 
 **Best practices:**
-- Use well-tested regex patterns for common formats
-- Keep patterns simple and maintainable
-- Test patterns with both valid and invalid examples
-- Document what the pattern validates
-- Combine with datatype constraint for string validation
+- Use well-tested regex patterns
+- Keep patterns simple
+- Test with valid and invalid examples
 
 **Common pitfalls:**
-- ❌ Using overly complex regex patterns
-- ❌ Forgetting that pattern only works with literal strings
-- ❌ Not testing edge cases in regex patterns
-- ❌ Not combining with datatype constraint
-- ❌ Using pattern when other constraints would be more appropriate
+- ❌ Using overly complex regex
+- ❌ Forgetting pattern only works with strings
 
 
 
@@ -1985,12 +1610,10 @@ The pattern constraint validates string values against regular expression patter
 
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
-[ex] <mdld:shacl/example/language/>
-
 
 # Language In {=sh:languageIn .class:StringConstraint label}
 
-> Constrains string literals to have language tags from a specified list using RDF lists. Essential for multilingual content validation and internationalization support. {comment}
+> Constrains string literals to have language tags from a specified list {comment}
 
 <http://www.w3.org/ns/shacl#languageIn> {?cat:fullIRI}
 
@@ -2001,97 +1624,53 @@ The pattern constraint validates string values against regular expression patter
 ~~~~~~md
 [ex] <tag:my@example.org,2026:language/>
 
-### Shape Definition
+**Title language must be en or fr** {=ex:#titleLanguage .sh:PropertyShape}
+[title] {+ex:title ?sh:path} language tags must be in allowed list.
 
-**Title language must be in allowed list** {=ex:#titleLanguage .sh:PropertyShape ?sh:property sh:message}
-[title] {+ex:title ?sh:path} language tags must be in the allowed list.
-
-**Allowed Languages List** {=ex:lang-l1 ?sh:languageIn .rdf:List}: [en] {rdf:first}, 
-then [followed] {=ex:lang-l2 ?rdf:rest} by [fr] {rdf:first} 
-and [nil] {+rdf:nil ?rdf:rest}. Reset subject: {=}
+**Allowed Languages List** {=ex:lang-l1 ?sh:languageIn .rdf:List}: [en] {rdf:first}, then [rest] {=ex:lang-l2 ?rdf:rest} by [fr] {rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
 
 ---
 
 ### Test Data {=ex:data .Container}
 
-#### English Document {=ex:EnglishDocument .ex:Document ?member}
+#### English Document {=ex:EnglishDocument ?member}
 Title: [Hello World] {ex:title @en}
 
-#### French Document {=ex:FrenchDocument .ex:Document ?member}
-Title: [Bonjour le monde] {ex:title @fr}
-
-#### German Document {=ex:GermanDocument .ex:Document ?member}
+#### Invalid Document {=ex:GermanDocument ?member}
 Title: [Hallo Welt] {ex:title @de}
-
----
-
-[Demo] {=ex:demo} must produce exactly **1** violation.
 ~~~~~~
 
 ---
 
 ## 📝 MDLD Syntax Patterns
 
-The languageIn constraint constrains string literals to have language tags from a specified list.
-
 ~~~~~~md
-**[Property] language must be in [List]** {=ex:PropertyLanguageInConstraint .sh:PropertyShape ?sh:property sh:message}
+[Property] {+ex:propertyName ?sh:path} language tags must be in allowed list.
 
-[Property Name] {+ex:propertyName ?sh:path} language tags must be in the allowed list.
-
-**Allowed Languages List** {=ex:lang-l1 ?sh:languageIn .rdf:List}: [en] {rdf:first}, 
-then [followed] {=ex:lang-l2 ?rdf:rest} by [fr] {rdf:first} 
-and [nil] {+rdf:nil ?rdf:rest}. Reset subject: {=}
+**Allowed Languages List** {=ex:lang-l1 ?sh:languageIn .rdf:List}: [en] {rdf:first}, then [rest] {=ex:lang-l2 ?rdf:rest} by [fr] {rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
 ~~~~~~
 
-**Key components:**
-- **Property path** - The property to validate (`{+ex:propertyName ?sh:path}`)
-- **List node** - RDF list container (`{=ex:lang-l1 ?sh:languageIn .rdf:List}`)
-- **List elements** - Allowed language tags in the list (`{rdf:first}`)
-- **List structure** - Linked list with `rdf:first`, `rdf:rest`, `rdf:nil`
-- **Subject reset** - `{=}` prevents unintended subject continuation
+**Use for:** Multilingual content, regional compliance, content localization
 
-**Important notes:**
-- Uses verbose RDF list syntax (similar to AND and IN constraints)
+**Important:**
+- Uses RDF list syntax (rdf:first, rdf:rest, rdf:nil)
 - Only validates language tags if they exist
-- Use `@lang` syntax for language-tagged literals
-- Use `minCount` to check for required properties
-- Language tags must be valid BCP 47 language codes
-
----
-
-## 🎯 Use Cases
-
-- **Multilingual content** - Restrict documents to specific languages
-- **Regional compliance** - Ensure content meets language requirements
-- **Content localization** - Validate language-specific versions
-- **International standards** - Enforce language tag standards
-- **Translation workflows** - Control which languages are allowed
+- Use @lang syntax for language-tagged literals
+- Use valid BCP 47 language codes (en, fr, de, etc.)
 
 ---
 
 ## 🔧 Implementation Guidelines
 
-**When to use languageIn:**
-- **Multilingual support** - When content must be in specific languages
-- **Regional compliance** - Ensure content meets regional language requirements
-- **Content localization** - Validate language-specific content
-- **Translation control** - Manage translation workflows
-- **Internationalization** - Support global applications
+**When to use:** Content must be in specific languages
 
 **Best practices:**
-- Use valid BCP 47 language codes (en, fr, de, es, etc.)
-- Keep the language list short for maintainability
-- Combine with `minCount` for required language tags
-- Test with both valid and invalid language tags
-- Use unique list identifiers to avoid collisions
+- Use valid BCP 47 language codes
+- Keep language list short
 
 **Common pitfalls:**
-- ❌ Forgetting the subject reset `{=}` after list definition
+- ❌ Forgetting subject reset {=} after list
 - ❌ Reusing list identifiers causing collisions
-- ❌ Using invalid BCP 47 language codes
-- ❌ Not combining with `minCount` for required properties
-- ❌ Confusing languageIn with other string constraints
 
 
 
@@ -2104,14 +1683,12 @@ and [nil] {+rdf:nil ?rdf:rest}. Reset subject: {=}
 
 <a id="constraints-uniquelang"></a>
 
-[mdld] <https://mdld.js.org/vocab/>
-[cat] <https://mdld.js.org/shacl/catalog/>
-[ex] <ttps://mdld.js.org/shacl/catalog/uniqueLang/example/>
+[mdld] <https://mdld.js.org/>
+[cat] <mdld:shacl/>
 
+# Unique Languages {=sh:uniqueLang .class:UniqueLanguageConstraint label}
 
-# Unique Languages Constraint {=sh:uniqueLang .class:UniqueLanguageConstraint label}
-
-> Ensures that language tags of string literals are unique within a property. Essential for multilingual content management, preventing duplicate language entries, and maintaining clean internationalization data. {comment}
+> Ensures that language tags of string literals are unique within a property {comment}
 
 <http://www.w3.org/ns/shacl#uniqueLang> {?cat:fullIRI}
 
@@ -2122,10 +1699,8 @@ and [nil] {+rdf:nil ?rdf:rest}. Reset subject: {=}
 ~~~~~~md
 [ex] <tag:my@example.org,2026:uniqueLang/>
 
-### Shape Definition
-
-**Each language tag must appear only once** {=ex:UniqueLangExampleShape .sh:NodeShape label}
-[title] {+ex:title ?sh:path} values have [unique language tags] {sh:uniqueLang ^^xsd:boolean}: **Each language tag must appear only once** {sh:message}.
+**Each language tag must appear only once** {=ex:UniqueLangExampleShape .sh:NodeShape}
+[title] {+ex:title ?sh:path} values have [true] {sh:uniqueLang ^^xsd:boolean}.
 
 ---
 
@@ -2138,71 +1713,36 @@ Title: [Bonjour Monde] {ex:title @fr}
 #### Invalid Document {=ex:InvalidNode ?member}
 Title: [Hello World] {ex:title @en}
 Title: [Hola Mundo] {ex:title @en}
-
----
-
-[Demo] {=ex:demo} must produce exactly **1** violation.
 ~~~~~~
 
 ---
 
 ## 📝 MDLD Syntax Patterns
 
-The uniqueLang constraint ensures that language tags of string literals are unique within a property.
-
 ~~~~~~md
-**[Property] must have unique language tags** {=ex:PropertyUniqueLangConstraint .sh:PropertyShape sh:message}
-
-[Property Name] {+ex:propertyName ?sh:path} values have [true] {sh:uniqueLang ^^xsd:boolean}.
+[Property] {+ex:propertyName ?sh:path} values have [true] {sh:uniqueLang ^^xsd:boolean}.
 ~~~~~~
 
-**Key components:**
-- **Property path** - The property to validate (`{+ex:propertyName ?sh:path}`)
-- **Unique language flag** - Enables unique language validation (`{sh:uniqueLang ^^xsd:boolean}`)
-- **Validation message** - Human-readable error message (`{sh:message}`)
-- **Language tag uniqueness** - Prevents duplicate language tags
+**Use for:** Multilingual content, translation management, content localization
 
-**Important notes:**
+**Important:**
 - Only applies to language-tagged string literals
-- Prevents duplicate language tags within the same property
-- Works with multilingual content management
-- Use `@lang` syntax for language-tagged literals
-- Boolean value must be `true` to enable constraint
-
----
-
-## 🎯 Use Cases
-
-- **Multilingual content** - Prevent duplicate language entries
-- **Internationalization** - Maintain clean i18n data
-- **Translation management** - Ensure unique language tags
-- **Content localization** - Prevent redundant translations
-- **Language consistency** - Ensure one entry per language
+- Prevents duplicate language tags within same property
+- Use @lang syntax for language-tagged literals
 
 ---
 
 ## 🔧 Implementation Guidelines
 
-**When to use uniqueLang:**
-- **Multilingual content** - When content has language-tagged values
-- **Translation management** - Prevent duplicate language entries
-- **Internationalization** - Maintain clean i18n data
-- **Content localization** - Ensure unique language tags
-- **Language consistency** - One entry per language
+**When to use:** Prevent duplicate language entries
 
 **Best practices:**
 - Use with language-tagged string literals
-- Combine with languageIn for complete language validation
-- Test with duplicate and unique language tags
-- Document why language tags must be unique
-- Consider cardinality constraints alongside uniqueLang
+- Combine with languageIn for complete validation
 
 **Common pitfalls:**
 - ❌ Using uniqueLang on non-language-tagged literals
-- ❌ Forgetting to use `@lang` syntax
-- ❌ Not testing with duplicate language tags
-- ❌ Not combining with languageIn for complete validation
-- ❌ Confusing uniqueLang with other string constraints
+- ❌ Forgetting to use @lang syntax
 
 
 
@@ -2217,12 +1757,10 @@ The uniqueLang constraint ensures that language tags of string literals are uniq
 
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
-[ex] <mdld:shacl/example/hasvalue/>
-
 
 # Has Value {=sh:hasValue .class:Constraint label}
 
-> Requires a property to have exactly this specific value - useful for fixed status fields, required constants, or mandatory identifiers. {comment}
+> Requires a property to have exactly this specific value {comment}
 
 <http://www.w3.org/ns/shacl#hasValue> {?cat:fullIRI}
 
@@ -2233,94 +1771,50 @@ The uniqueLang constraint ensures that language tags of string literals are uniq
 ~~~~~~md
 [ex] <tag:my@example.org,2026:hasvalue/>
 
-### Shape Definition
-
-**Main server must have active status** {=ex:#statusRequired .sh:PropertyShape sh:message}
+**Status must be active** {=ex:#statusRequired .sh:PropertyShape}
 [status] {+ex:status ?sh:path} must be exactly [active] {sh:hasValue}.
-
-**Main server must be in production environment** {=ex:#environmentRequired .sh:PropertyShape sh:message}
-[environment] {+ex:environment ?sh:path} must be exactly [production] {sh:hasValue}.
 
 ---
 
 ### Test Data {=ex:data .Container}
 
-#### Main Server {=ex:MainServer ?member}
+#### Valid Server {=ex:MainServer ?member}
 Status: [active] {ex:status}
-Environment: [production] {ex:environment}
 
-#### Backup Server {=ex:BackupServer ?member}
+#### Invalid Server {=ex:BackupServer ?member}
 Status: [standby] {ex:status}
-Environment: [production] {ex:environment}
-
-#### Development Server {=ex:DevelopmentServer ?member}
-Status: [active] {ex:status}
-Environment: [development] {ex:environment}
-
----
-
-[Demo] {=ex:demo} must produce exactly **2** violations.
 ~~~~~~
 
 ---
 
 ## 📝 MDLD Syntax Patterns
 
-The hasValue constraint requires a property to have exactly a specific value.
-
 ~~~~~~md
-**[Property] must be [Value]** {=ex:PropertyHasValueConstraint .sh:PropertyShape sh:message}
-
-[Property Name] {+ex:propertyName ?sh:path} must be exactly [Value] {sh:hasValue}.
+[Property] {+ex:propertyName ?sh:path} must be exactly [Value] {sh:hasValue}.
 ~~~~~~
 
-**Key components:**
-- **Property path** - The property to validate (`{+ex:propertyName ?sh:path}`)
-- **Required value** - The exact value required (`{sh:hasValue}`)
-- **Validation message** - Human-readable error message (`{sh:message}`)
-- **Exact match** - Property must have exactly this value
+**Use for:** Fixed status fields, required constants, environment flags, system identifiers
 
-**Important notes:**
-- HasValue requires exact match, no partial matches
+**Important:**
+- Requires exact match, no partial matches
 - Works with both literal values and IRIs
 - Property must have the value (use minCount for required properties)
 - Often used with NOT constraint to forbid specific values
-- Cannot be used with other value constraints on same property
-
----
-
-## 🎯 Use Cases
-
-- **Fixed status fields** - Ensure status is exactly "active" or "inactive"
-- **Required constants** - Enforce mandatory constant values
-- **Environment flags** - Ensure environment is "production" or "development"
-- **System identifiers** - Validate specific system identifiers
-- **Configuration validation** - Ensure configuration values are correct
 
 ---
 
 ## 🔧 Implementation Guidelines
 
-**When to use hasValue:**
-- **Fixed values** - When a property must have a specific constant value
-- **Status validation** - Ensure status fields have required values
-- **Configuration** - Validate configuration properties
-- **Business rules** - Enforce specific business rule values
-- **Data integrity** - Ensure critical properties have correct values
+**When to use:** Property must have a specific constant value
 
 **Best practices:**
-- Use hasValue for fixed, unchanging values
-- Combine with NOT constraint to forbid specific values
-- Use descriptive property names for clarity
-- Test with both valid and invalid values
-- Consider using enum patterns for multiple allowed values
+- Use for fixed, unchanging values
+- Combine with NOT to forbid specific values
 
 **Common pitfalls:**
-- ❌ Using hasValue for variable values (use other constraints instead)
-- ❌ Forgetting that hasValue requires exact match
+- ❌ Using hasValue for variable values
+- ❌ Forgetting hasValue requires exact match
 - ❌ Not combining with minCount for required properties
-- ❌ Using hasValue when datatype constraint would be more appropriate
-- ❌ Confusing hasValue with in constraint (hasValue for single value, in for multiple)
 
 
 
@@ -2335,12 +1829,10 @@ The hasValue constraint requires a property to have exactly a specific value.
 
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
-[ex] <mdld:shacl/example/node/>
 
+# Node {=sh:node .class:NodeConstraint label}
 
-# Node Constraint {=sh:node .class:NodeConstraint label}
-
-> Requires property values to conform to a specific node shape. Essential for validating complex nested objects and ensuring structural integrity of related entities. {comment}
+> Requires property values to conform to a specific node shape {comment}
 
 <http://www.w3.org/ns/shacl#node> {?cat:fullIRI}
 
@@ -2351,96 +1843,53 @@ The hasValue constraint requires a property to have exactly a specific value.
 ~~~~~~md
 [ex] <tag:my@example.org,2026:node/>
 
-### Shape Definition
+**Employee must have valid address** {=ex:#addressRule .sh:PropertyShape}
+[address] {+ex:address ?sh:path} must conform to [Address Shape] {+ex:AddressShape ?sh:node}.
 
-**Employee must have valid address** {=ex:#addressRule .sh:PropertyShape ?sh:property sh:message}
-Each [address] {+ex:address ?sh:path} must conform to [Address Shape] {+ex:AddressShape ?sh:node}.
-
-#### Address Shape {=ex:AddressShape .sh:NodeShape label}
-**Street Rule** {=ex:#streetProperty .sh:PropertyShape} validates [street] {+ex:street ?sh:path} with at least [5] {sh:minLength ^^xsd:integer} characters.
-**City Rule** {=ex:#cityProperty .sh:PropertyShape} validates [city] {+ex:city ?sh:path} with at least [2] {sh:minLength ^^xsd:integer} characters.
+**Address Shape** {=ex:AddressShape .sh:NodeShape} requires [street] {+ex:street ?sh:path} to have at least [5] {sh:minLength ^^xsd:integer} characters.
 
 ---
 
 ### Test Data {=ex:data .Container}
 
-#### Valid Employee {=ex:ValidEmployee .ex:Employee ?member}
-Name: [John Doe] {ex:name}
+#### Valid Employee {=ex:ValidEmployee ?member}
 Address: [Valid Address] {=ex:ValidAddress .ex:Address ?ex:address}
 Street: [Main Street] {ex:street}
-City: [New York] {ex:city}
 
-#### Invalid Employee {=ex:InvalidEmployee .ex:Employee ?member}
-Name: [Jane Smith] {ex:name}
+#### Invalid Employee {=ex:InvalidEmployee ?member}
 Address: [Short Address] {=ex:ShortAddress .ex:Address ?ex:address}
 Street: [St] {ex:street}
-City: [NY] {ex:city}
-
----
-
-[Demo] {=ex:demo} must produce exactly **1** violation.
 ~~~~~~
 
 ---
 
 ## 📝 MDLD Syntax Patterns
 
-The node constraint requires property values to conform to a specific node shape.
-
 ~~~~~~md
-**[Property] must conform to [Shape]** {=ex:PropertyNodeConstraint .sh:PropertyShape ?sh:property sh:message}
-
-[Property Name] {+ex:propertyName ?sh:path} must conform to [Shape Name] {+ex:ShapeName ?sh:node}.
+[Property] {+ex:propertyName ?sh:path} must conform to [Shape] {+ex:ShapeName ?sh:node}.
 ~~~~~~
 
-**Key components:**
-- **Property path** - The property to validate (`{+ex:propertyName ?sh:path}`)
-- **Node shape reference** - The shape to conform to (`{+ex:ShapeName ?sh:node}`)
-- **Shape definition** - Define the referenced shape with its constraints
-- **Validation message** - Human-readable error message (`{sh:message}`)
-- **Structural validation** - Validates nested object structure
+**Use for:** Nested object validation, complex data models, structural integrity
 
-**Important notes:**
+**Important:**
 - Only applies to node values (IRIs/blank nodes), not literal values
-- The referenced shape must be defined in the ontology
+- Referenced shape must be defined in ontology
 - Enables validation of complex nested objects
-- Use for structural integrity of related entities
-- Combine with other constraints for complete validation
-
----
-
-## 🎯 Use Cases
-
-- **Nested object validation** - Validate address, contact info structures
-- **Complex data models** - Ensure nested entities conform to shapes
-- **Structural integrity** - Validate related entity structures
-- **Composite objects** - Validate multi-part data structures
-- **Relationship validation** - Ensure related nodes conform to shapes
 
 ---
 
 ## 🔧 Implementation Guidelines
 
-**When to use node:**
-- **Nested validation** - When property values are complex objects
-- **Structural integrity** - Ensure related entities have correct structure
-- **Complex data models** - Validate nested object hierarchies
-- **Composite objects** - Validate multi-part data structures
-- **Relationship validation** - Ensure related nodes conform to shapes
+**When to use:** Property values are complex objects
 
 **Best practices:**
-- Define referenced shapes clearly with their constraints
-- Use descriptive shape names for clarity
-- Combine with other constraints for complete validation
-- Test with both valid and invalid nested structures
-- Document the structure being validated
+- Define referenced shapes clearly
+- Use descriptive shape names
 
 **Common pitfalls:**
-- ❌ Forgetting that node constraint only applies to nodes, not literals
+- ❌ Forgetting node only applies to nodes, not literals
 - ❌ Not defining the referenced shape
-- ❌ Creating circular dependencies between shapes
-- ❌ Not combining with other constraints for complete validation
-- ❌ Confusing node constraint with class constraint (node for structure, class for type)
+- ❌ Confusing node with class constraint (node for structure, class for type)
 
 
 
@@ -2455,12 +1904,10 @@ The node constraint requires property values to conform to a specific node shape
 
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
-[ex] <mdld:shacl/example/in/>
-
 
 # Value Enumeration {=sh:in .class:PresenceConstraint label}
 
-> Constrains property values to be within a specified list of allowed values using RDF lists. Essential for controlled vocabularies, status codes, and enumeration validation. {comment}
+> Constrains property values to be within a specified list of allowed values {comment}
 
 <http://www.w3.org/ns/shacl#in> {?cat:fullIRI}
 
@@ -2471,94 +1918,54 @@ The node constraint requires property values to conform to a specific node shape
 ~~~~~~md
 [ex] <tag:my@example.org,2026:in/>
 
-### Shape Definition
+**Status must be Active or Inactive** {=ex:#allowedStatus .sh:PropertyShape}
+[status] {+ex:status ?sh:path} must be in allowed list.
 
-**Status must be in allowed list** {=ex:#allowedStatus .sh:PropertyShape ?sh:property sh:message}
-[Status] {+ex:status ?sh:path} must be either Active or Inactive.
-
-**Allowed Status List** {=ex:in-l1 ?sh:in .rdf:List}: [Active] {+ex:Active ?rdf:first}, 
-then [followed] {=ex:in-l2 ?rdf:rest} by [Inactive] {+ex:Inactive ?rdf:first} 
-and [nil] {+rdf:nil ?rdf:rest}. Reset subject: {=}
+**Allowed Values List** {=ex:in-l1 ?sh:in .rdf:List}: [Active] {+ex:Active ?rdf:first}, then [rest] {=ex:in-l2 ?rdf:rest} by [Inactive] {+ex:Inactive ?rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
 
 ---
 
 ### Test Data {=ex:data .Container}
 
-#### Valid Employee {=ex:ValidEmployee .ex:Employee ?member}
+#### Valid Employee {=ex:ValidEmployee ?member}
 Status: [Active] {ex:status}
 
-#### Invalid Status Employee {=ex:InvalidStatusEmployee .ex:Employee ?member}
+#### Invalid Employee {=ex:InvalidStatusEmployee ?member}
 Status: [Pending] {ex:status}
-
----
-
-[Demo] {=ex:demo} must produce exactly **1** violation.
 ~~~~~~
 
 ---
 
 ## 📝 MDLD Syntax Patterns
 
-The in constraint constrains property values to be within a specified list of allowed values using RDF lists.
-
 ~~~~~~md
-**[Property] must be in [List]** {=ex:PropertyInConstraint .sh:PropertyShape ?sh:property sh:message}
+[Property] {+ex:propertyName ?sh:path} must be in allowed list.
 
-[Property Name] {+ex:propertyName ?sh:path} must be in the allowed list.
-
-**Allowed List** {=ex:in-l1 ?sh:in .rdf:List}: [First Value] {+ex:firstValue ?rdf:first}, 
-then [followed] {=ex:in-l2 ?rdf:rest} by [Second Value] {+ex:secondValue ?rdf:first} 
-and [nil] {+rdf:nil ?rdf:rest}. Reset subject: {=}
+**Allowed List** {=ex:in-l1 ?sh:in .rdf:List}: [First] {+ex:first ?rdf:first}, then [rest] {=ex:in-l2 ?rdf:rest} by [Second] {+ex:second ?rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
 ~~~~~~
 
-**Key components:**
-- **Property path** - The property to validate (`{+ex:propertyName ?sh:path}`)
-- **List node** - RDF list container (`{=ex:in-l1 ?sh:in .rdf:List}`)
-- **List elements** - Allowed values in the list (`{+ex:value ?rdf:first}`)
-- **List structure** - Linked list with `rdf:first`, `rdf:rest`, `rdf:nil`
-- **Subject reset** - `{=}` prevents unintended subject continuation
+**Use for:** Controlled vocabularies, status codes, enumeration validation, category validation
 
-**Important notes:**
-- Uses verbose RDF list syntax (similar to AND constraint)
-- Only validates values if the property exists
-- Use `minCount` to check for required properties
-- Each list element must be a valid value
-- Always reset subject with `{=}` after list definition
-
----
-
-## 🎯 Use Cases
-
-- **Controlled vocabularies** - Restrict values to predefined terms
-- **Status codes** - Ensure status is one of allowed values
-- **Enumeration validation** - Validate against allowed value sets
-- **Category validation** - Restrict categories to predefined list
-- **Configuration options** - Validate configuration settings
+**Important:**
+- Uses RDF list syntax (rdf:first, rdf:rest, rdf:nil)
+- Only validates values if property exists
+- Use minCount to check for required properties
+- Always reset subject with {=} after list definition
 
 ---
 
 ## 🔧 Implementation Guidelines
 
-**When to use in:**
-- **Controlled vocabularies** - When values must be from a predefined set
-- **Status validation** - Ensure status codes are valid
-- **Enumeration** - Validate against allowed value sets
-- **Data integrity** - Prevent invalid value assignments
-- **Business rules** - Enforce allowed value constraints
+**When to use:** Values must be from a predefined set
 
 **Best practices:**
-- Use descriptive value names for clarity
-- Keep the list short for maintainability
-- Combine with `minCount` for required properties
-- Test with both valid and invalid values
-- Use unique list identifiers to avoid collisions
+- Keep list short for maintainability
+- Combine with minCount for required properties
 
 **Common pitfalls:**
-- ❌ Forgetting the subject reset `{=}` after list definition
+- ❌ Forgetting subject reset {=} after list
 - ❌ Reusing list identifiers causing collisions
-- ❌ Not combining with `minCount` for required properties
-- ❌ Making the list too complex to maintain
-- ❌ Confusing in constraint with hasValue (in for multiple values, hasValue for single)
+- ❌ Not combining with minCount for required properties
 
 
 
@@ -2573,12 +1980,10 @@ and [nil] {+rdf:nil ?rdf:rest}. Reset subject: {=}
 
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
-[ex] <mdld:shacl/example/qualified/>
 
+# Qualified Count {=sh:qualifiedMinCount .class:QualifiedConstraint label}
 
-# Qualified Count Constraints {=sh:qualifiedMinCount .class:QualifiedConstraint label}
-
-> Applies count constraints only to values that meet additional shape criteria. Essential for conditional validation where only certain values should be counted. {comment}
+> Applies count constraints only to values that meet additional shape criteria {comment}
 
 <http://www.w3.org/ns/shacl#qualifiedMinCount> {?cat:fullIRI}
 <http://www.w3.org/ns/shacl#qualifiedMaxCount> {?cat:fullIRI}
@@ -2590,102 +1995,50 @@ and [nil] {+rdf:nil ?rdf:rest}. Reset subject: {=}
 ~~~~~~md
 [ex] <tag:my@example.org,2026:qualified/>
 
-### Shape Definition
+**Employee must have exactly one work email** {=ex:#workEmailRule .sh:PropertyShape}
+[email] {+ex:email ?sh:path} must have exactly [1] {sh:qualifiedMinCount sh:qualifiedMaxCount ^^xsd:integer} work email matching **Work Email Shape** {=ex:WorkEmailShape .sh:NodeShape ?sh:qualifiedValueShape}.
 
-**Employee must have exactly one work email** {=ex:#workEmailRule .sh:PropertyShape ?sh:property sh:message}
-[email] {+ex:email ?sh:path} must have exactly [1] {sh:qualifiedMinCount sh:qualifiedMaxCount ^^xsd:integer} work email that matches **Work Email Shape** {=ex:WorkEmailShape .sh:NodeShape ?sh:qualifiedValueShape}.
-
-#### Work Email Shape {=ex:WorkEmailShape .sh:NodeShape label}
-Must be a [literal] {+sh:Literal ?sh:nodeKind} with [string] {+xsd:string ?sh:datatype} type and pattern [company.org] {sh:pattern}.
+**Work Email Shape** {=ex:WorkEmailShape .sh:NodeShape} must be a [literal] {+sh:Literal ?sh:nodeKind} with pattern [company.org] {sh:pattern}.
 
 ---
 
 ### Test Data {=ex:data .Container}
 
-#### Valid Employee {=ex:ValidEmployee .ex:Employee ?member}
-Name: [John Doe] {ex:name}
+#### Valid Employee {=ex:ValidEmployee ?member}
 Email: [john@company.org] {ex:email}
 
-#### Invalid Employee - Multiple Work Emails {=ex:MultipleWorkEmployee .ex:Employee ?member}
-Name: [Jane Smith] {ex:name}
-Email: [jane@company.org] {ex:email}
-Email: [jane.smith@company.org] {ex:email}
-
-#### Invalid Employee - No Work Email {=ex:NoWorkEmployee .ex:Employee ?member}
-Name: [Bob Wilson] {ex:name}
+#### Invalid Employee {=ex:NoWorkEmployee ?member}
 Email: [bob@gmail.com] {ex:email}
-
-#### Valid Employee - Mixed Emails {=ex:MixedEmailEmployee .ex:Employee ?member}
-Name: [Alice Brown] {ex:name}
-Email: [alice@company.org] {ex:email}
-Email: [alice.personal@gmail.com] {ex:email}
-
----
-
-[Demo] {=ex:demo} must produce exactly **2** violations.
 ~~~~~~
 
 ---
 
 ## 📝 MDLD Syntax Patterns
 
-Qualified count constraints apply count constraints only to values that meet additional shape criteria.
-
 ~~~~~~md
-**[Property] must have [Count] values matching [Shape]** {=ex:PropertyQualifiedCountConstraint .sh:PropertyShape ?sh:property sh:message}
-
-[Property Name] {+ex:propertyName ?sh:path} must have exactly [count] {sh:qualifiedMinCount sh:qualifiedMaxCount ^^xsd:integer} values that conform to [Shape] {=ex:ShapeName ?sh:qualifiedValueShape}.
+[Property] {+ex:propertyName ?sh:path} must have exactly [count] {sh:qualifiedMinCount sh:qualifiedMaxCount ^^xsd:integer} values that conform to [Shape] {=ex:ShapeName ?sh:qualifiedValueShape}.
 ~~~~~~
 
-**Key components:**
-- **Property path** - The property to validate (`{+ex:propertyName ?sh:path}`)
-- **Qualified min count** - Minimum count of matching values (`{sh:qualifiedMinCount ^^xsd:integer}`)
-- **Qualified max count** - Maximum count of matching values (`{sh:qualifiedMaxCount ^^xsd:integer}`)
-- **Qualified shape** - Shape that values must conform to (`{=ex:ShapeName ?sh:qualifiedValueShape}`)
-- **Validation message** - Human-readable error message (`{sh:message}`)
-- **Conditional counting** - Only counts values matching the shape
+**Use for:** Work email validation, primary contact validation, conditional counting
 
-**Important notes:**
+**Important:**
 - Only counts values that conform to the qualified shape
 - Other values are ignored for the count
 - Use for conditional validation scenarios
-- The qualified shape must be defined separately
-- Combine with other constraints for complete validation
-
----
-
-## 🎯 Use Cases
-
-- **Work email validation** - Ensure exactly one work email (ignore personal emails)
-- **Primary contact validation** - Ensure exactly one primary contact
-- **Conditional counting** - Count only values meeting specific criteria
-- **Business rules** - Enforce conditional count requirements
-- **Data quality** - Ensure specific value counts
 
 ---
 
 ## 🔧 Implementation Guidelines
 
-**When to use qualified count:**
-- **Conditional validation** - When only certain values should be counted
-- **Business rules** - Enforce conditional count requirements
-- **Mixed data** - When property has mixed value types
-- **Specific validation** - Count only values meeting criteria
-- **Data quality** - Ensure specific value counts
+**When to use:** Only certain values should be counted
 
 **Best practices:**
 - Define the qualified shape clearly
 - Test with mixed value scenarios
-- Combine with other constraints for complete validation
-- Document what values are counted
-- Use descriptive shape names for clarity
 
 **Common pitfalls:**
 - ❌ Forgetting to define the qualified shape
 - ❌ Confusing qualified count with regular count
-- ❌ Not testing with mixed value scenarios
-- ❌ Not combining with other constraints
-- ❌ Making the qualified shape too complex
 
 
 
@@ -2816,14 +2169,12 @@ The closed constraint enables closed world validation where only explicitly decl
 
 <a id="constraints-deactivated"></a>
 
-[mdld] <https://mdld.js.org/vocab/>
-[cat] <https://mdld.js.org/shacl/catalog/>
-[ex] <http://example.org/>
+[mdld] <https://mdld.js.org/>
+[cat] <mdld:shacl/>
 
+# Deactivated {=sh:deactivated .class:DeactivatedConstraint label}
 
-# Deactivated Constraint {=sh:deactivated .class:DeactivatedConstraint label}
-
-> Temporarily disables specific constraints during validation. Essential for phased validation, conditional rule enforcement, and managing constraint lifecycle in evolving schemas. {comment}
+> Temporarily disables specific constraints during validation {comment}
 
 <http://www.w3.org/ns/shacl#deactivated> {?cat:fullIRI}
 
@@ -2834,15 +2185,10 @@ The closed constraint enables closed world validation where only explicitly decl
 ~~~~~~md
 [ex] <tag:my@example.org,2026:deactivated/>
 
-### Shape Definition
-
-**Deactivated Example Shape** {=ex:DeactivatedExampleShape .sh:NodeShape label} targets [Valid Node] {+ex:ValidNode ?sh:targetNode} and [Invalid Node] {+ex:InvalidNode ?sh:targetNode}.
-
-**User status must be active** {=ex:ActiveProperty .sh:PropertyShape sh:message}
+**User status must be active** {=ex:ActiveProperty .sh:PropertyShape}
 [status] {+ex:status ?sh:path} must be [active] {sh:hasValue}.
 
-**Must have premium category** {=ex:DeactivatedProperty .sh:PropertyShape sh:message}
-[category] {+ex:category ?sh:path} is always [premium] {sh:hasValue}. Was temporarily [deactivated] {sh:deactivated}.
+**Category rule** {=ex:DeactivatedProperty .sh:PropertyShape} is [deactivated] {sh:deactivated}.
 
 ---
 
@@ -2850,77 +2196,39 @@ The closed constraint enables closed world validation where only explicitly decl
 
 #### Valid Account {=ex:ValidNode ?member}
 Status: [active] {ex:status}
-Category: [basic] {ex:category}
 
 #### Invalid Account {=ex:InvalidNode ?member}
 Status: [inactive] {ex:status}
-Category: [basic] {ex:category}
-
----
-
-[Demo] {=ex:demo} must produce exactly **1** violation.
 ~~~~~~
 
 ---
 
 ## 📝 MDLD Syntax Patterns
 
-The deactivated constraint temporarily disables specific constraints during validation.
-
 ~~~~~~md
-**[Constraint description]** {=ex:PropertyConstraint .sh:PropertyShape sh:message}
-
-[Property Name] {+ex:propertyName ?sh:path} [constraint description]. Was temporarily [deactivated] {sh:deactivated}.
+[Constraint] {=ex:PropertyConstraint .sh:PropertyShape} is [deactivated] {sh:deactivated}.
 ~~~~~~
 
-**Key components:**
-- **Validation message** - Human-readable error message (`{sh:message}`)
-- **Deactivated flag** - Disables the constraint (`{sh:deactivated}`)
-- **Constraint description** - The constraint being temporarily disabled
-- **Lifecycle management** - Manage constraint lifecycle in evolving schemas
-- **Phased validation** - Enable/disable constraints as needed
+**Use for:** Phased validation, conditional rules, schema evolution, testing
 
-**Important notes:**
+**Important:**
 - Deactivated constraints are skipped during validation
-- Useful for phased validation and conditional rule enforcement
-- Helps manage constraint lifecycle in evolving schemas
-- Can be reactivated by removing the deactivated flag
-- Combine with message for documentation
-
----
-
-## 🎯 Use Cases
-
-- **Phased validation** - Enable constraints in phases during migration
-- **Conditional rules** - Temporarily disable rules for specific scenarios
-- **Schema evolution** - Manage constraints during schema changes
-- **Testing** - Disable constraints for testing purposes
-- **Lifecycle management** - Manage constraint lifecycle
+- Useful for temporary constraint disabling
+- Can be reactivated by removing the flag
 
 ---
 
 ## 🔧 Implementation Guidelines
 
-**When to use deactivated:**
-- **Phased validation** - When rolling out new constraints gradually
-- **Schema migration** - During schema evolution and migration
-- **Conditional rules** - When rules need to be temporarily disabled
-- **Testing** - When testing without certain constraints
-- **Lifecycle management** - Manage constraint lifecycle
+**When to use:** Temporarily disable constraints
 
 **Best practices:**
-- Document why a constraint is deactivated
-- Plan for reactivation of deactivated constraints
-- Use deactivated for temporary situations only
-- Combine with message for documentation
-- Review deactivated constraints regularly
+- Document why constraint is deactivated
+- Plan for reactivation
 
 **Common pitfalls:**
 - ❌ Forgetting to reactivate deactivated constraints
 - ❌ Using deactivated instead of removing obsolete constraints
-- ❌ Not documenting why a constraint is deactivated
-- ❌ Leaving constraints deactivated indefinitely
-- ❌ Confusing deactivated with other constraint features
 
 
 
@@ -3053,14 +2361,12 @@ The severity constraint defines the severity level of validation violations.
 
 <a id="constraints-message"></a>
 
-[mdld] <https://mdld.js.org/vocab/>
-[cat] <https://mdld.js.org/shacl/catalog/>
-[ex] <http://example.org/>
-
+[mdld] <https://mdld.js.org/>
+[cat] <mdld:shacl/>
 
 # Violation Message {=sh:message .class:MessageConstraint label}
 
-> Provides human-readable error messages for constraint violations. Essential for user-friendly validation feedback, debugging, and actionable error reporting. {comment}
+> Provides human-readable error messages for constraint violations {comment}
 
 <http://www.w3.org/ns/shacl#message> {?cat:fullIRI}
 
@@ -3071,93 +2377,49 @@ The severity constraint defines the severity level of validation violations.
 ~~~~~~md
 [ex] <tag:my@example.org,2026:message/>
 
-### Shape Definition
-
-**Contract value must be positive for financial compliance** {=ex:#valueRule .sh:PropertyShape sh:message}
+**Contract value must be positive** {=ex:#valueRule .sh:PropertyShape sh:message}
 [contract value] {+ex:contractValue ?sh:path} must be greater than [0] {sh:minInclusive ^^xsd:decimal}.
-
-**Contract must be approved before start date** {=ex:#dateRule .sh:PropertyShape sh:message}
-[approval date] {+ex:approvalDate ?sh:path} must be before [start date] {+ex:startDate ?sh:lessThan}.
 
 ---
 
 ### Test Data {=ex:data .Container}
 
-#### Valid Contract {=ex:ValidContract .ex:Contract ?member}
+#### Valid Contract {=ex:ValidContract ?member}
 Value: [50000.00] {ex:contractValue ^^xsd:decimal}
-Approval Date: [2024-01-15] {ex:approvalDate ^^xsd:date}
-Start Date: [2024-02-01] {ex:startDate ^^xsd:date}
 
-#### Invalid Contract {=ex:InvalidContract .ex:Contract ?member}
+#### Invalid Contract {=ex:InvalidContract ?member}
 Value: [-1000.00] {ex:contractValue ^^xsd:decimal}
-Approval Date: [2024-03-01] {ex:approvalDate ^^xsd:date}
-Start Date: [2024-02-01] {ex:startDate ^^xsd:date}
-
----
-
-[Demo] {=ex:demo} must produce exactly **2** violations.
 ~~~~~~
 
 ---
 
 ## 📝 MDLD Syntax Patterns
 
-The message constraint provides human-readable error messages for constraint violations.
-
 ~~~~~~md
-**[Business rule description]** {=ex:PropertyConstraint .sh:PropertyShape sh:message}
-
-[Property Name] {+ex:propertyName ?sh:path} [constraint description].
+**[Business rule]** {=ex:PropertyConstraint .sh:PropertyShape sh:message}
+[Property] {+ex:propertyName ?sh:path} [constraint description].
 ~~~~~~
 
-**Key components:**
-- **Validation message** - Human-readable error message (`{sh:message}`)
-- **Business context** - Explain what business rule is violated
-- **Impact description** - Describe why this matters
-- **Actionable guidance** - Suggest how to fix the issue
-- **Domain terminology** - Use appropriate business language
+**Use for:** User-friendly feedback, debugging, actionable reporting, business context
 
-**Important notes:**
+**Important:**
 - Messages should be specific and actionable
 - Use business terminology, not just technical
 - Keep messages concise but informative
-- Consider the target audience (technical vs business)
-- Messages help with debugging and user feedback
-
----
-
-## 🎯 Use Cases
-
-- **User-friendly feedback** - Provide clear error messages to users
-- **Debugging** - Help developers identify constraint violations
-- **Actionable reporting** - Guide users on how to fix issues
-- **Business context** - Explain violations in business terms
-- **Compliance reporting** - Regulatory and audit-focused language
 
 ---
 
 ## 🔧 Implementation Guidelines
 
-**When to use message:**
-- **All constraints** - Always provide messages for user-friendly feedback
-- **Business rules** - Explain violations in business terms
-- **Complex validation** - Help users understand what went wrong
-- **Compliance** - Provide regulatory and audit context
-- **Debugging** - Aid in identifying constraint violations
+**When to use:** Always provide messages for user-friendly feedback
 
 **Best practices:**
 - Use semantic, business-focused language
 - Keep messages concise but informative
-- Provide actionable guidance
-- Use consistent terminology across constraints
-- Consider internationalization (clear, translatable messages)
 
 **Common pitfalls:**
 - ❌ Using technical jargon instead of business language
 - ❌ Writing vague or unclear messages
-- ❌ Not providing actionable guidance
-- ❌ Making messages too long or verbose
-- ❌ Forgetting to include messages on constraints
 
 
 
@@ -3172,8 +2434,6 @@ The message constraint provides human-readable error messages for constraint vio
 
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
-[class] <cat:class/>
-
 
 # JavaScript Function {=sh:js .class:Constraint label}
 
@@ -3188,15 +2448,10 @@ The message constraint provides human-readable error messages for constraint vio
 ~~~~~~md
 [ex] <tag:my@example.org,2026:js/>
 
-### Shape Definition
-
-**Date Validation Shape** {=ex:DateValidationShape .sh:NodeShape label} targets all [Events] {+ex:Event ?sh:targetClass}.
-
-#### Event date must be a valid date string {=ex:DatePropertyShape .sh:PropertyShape ?sh:property sh:message}
-Must have an [eventDate] {+ex:eventDate ?sh:path} that is a valid JS date.
+**Event date must be valid** {=ex:DatePropertyShape .sh:PropertyShape}
+[eventDate] {+ex:eventDate ?sh:path} must be a valid JS date.
 
 ~~~~~~js {=ex:DateJSConstraint ?sh:JSConstraint sh:js}
-// Check if value is a valid date string
 const date = new Date(value);
 return !isNaN(date.getTime());
 ~~~~~~
@@ -3205,27 +2460,19 @@ return !isNaN(date.getTime());
 
 ### Test Data {=ex:data .Container}
 
-#### Valid Event {=ex:ValidEvent .ex:Event ?member}
+#### Valid Event {=ex:ValidEvent ?member}
 Event Date: [2024-12-25] {ex:eventDate ^^xsd:date}
 
-#### Invalid Event {=ex:InvalidEvent1 .ex:Event ?member}
+#### Invalid Event {=ex:InvalidEvent ?member}
 Event Date: [not-a-date] {ex:eventDate}
-
----
-
-[Demo] {=ex:demo} must produce exactly **1** violation.
 ~~~~~~
 
 ---
 
 ## 📝 MDLD Syntax Patterns
 
-The JavaScript constraint allows custom JavaScript validation functions for complex constraint logic.
-
 ~~~~~~md
-**[Property] must pass [JavaScript validation]** {=ex:PropertyJSConstraint .sh:PropertyShape ?sh:property sh:message}
-
-[Property Name] {+ex:propertyName ?sh:path} must pass custom validation.
+[Property] {+ex:propertyName ?sh:path} must pass custom validation.
 
 ~~~~~~js {=ex:JSConstraintName ?sh:JSConstraint sh:js}
 // Custom validation logic
@@ -3234,51 +2481,280 @@ return result;
 ~~~~~~
 ~~~~~~
 
-**Key components:**
-- **Property path** - The property to validate (`{+ex:propertyName ?sh:path}`)
-- **JavaScript constraint** - Reference to JS constraint (`{=ex:JSConstraintName ?sh:JSConstraint sh:js}`)
-- **JS function** - Custom validation function in fenced code block
-- **Validation message** - Human-readable error message (`{sh:message}`)
-- **Custom logic** - Implement complex validation rules
+**Use for:** Custom validation, complex logic, cross-property validation
 
-**Important notes:**
+**Important:**
 - JavaScript code is executed during validation
 - Function receives `value` parameter
 - Return `true` for valid, `false` for invalid
 - Use for complex validation not possible with standard constraints
-- Ensure JavaScript code is safe and well-tested
-
----
-
-## 🎯 Use Cases
-
-- **Custom validation** - Implement business-specific validation rules
-- **Complex logic** - Validate patterns not supported by standard constraints
-- **Cross-property validation** - Validate relationships between properties
-- **External API validation** - Check values against external services
-- **Data transformation** - Transform and validate data
 
 ---
 
 ## 🔧 Implementation Guidelines
 
-**When to use JavaScript:**
-- **Complex validation** - When standard constraints are insufficient
-- **Business rules** - Implement custom business logic
-- **Cross-property validation** - Validate relationships between properties
-- **External validation** - Check against external services
-- **Data transformation** - Transform and validate data
+**When to use:** Standard constraints are insufficient
 
 **Best practices:**
-- Keep JavaScript functions simple and focused
+- Keep JavaScript functions simple
 - Test JavaScript functions thoroughly
-- Document the validation logic clearly
-- Use descriptive function names
-- Consider performance implications
 
 **Common pitfalls:**
 - ❌ Writing overly complex JavaScript functions
 - ❌ Not testing JavaScript functions thoroughly
-- ❌ Using JavaScript when standard constraints would suffice
-- ❌ Not handling edge cases in JavaScript logic
-- ❌ Forgetting that JavaScript code is executed during validation
+
+
+
+
+
+
+{=}
+
+
+
+<a id="teach-choosing-constraints"></a>
+
+[mdld] <https://mdld.js.org/>
+[cat] <mdld:shacl/>
+
+# Choosing the Right Constraint
+
+> A decision guide for selecting appropriate SHACL constraints for your validation needs {comment}
+
+## Quick Decision Tree
+
+**What do you need to validate?**
+
+### Property Existence
+- **Property must be present** → Use `sh:minCount` with value `1`
+- **Property must have exactly one value** → Use both `sh:minCount` and `sh:maxCount` with value `1`
+- **Property can have multiple values** → Use `sh:maxCount` to set upper limit
+
+### Property Values
+- **Value must be a specific constant** → Use `sh:hasValue`
+- **Value must be from a predefined list** → Use `sh:in` (enumeration)
+- **Value must be a specific type (IRI)** → Use `sh:class`
+- **Value must be a specific type (literal)** → Use `sh:datatype`
+- **Value must be IRI or literal** → Use `sh:nodeKind`
+
+### Numeric Values
+- **Value must be within a range** → Use `sh:minInclusive`/`sh:maxInclusive` or `sh:minExclusive`/`sh:maxExclusive`
+- **Value must be positive** → Use `sh:minInclusive` with `0` or `0.01`
+- **Value must be less than another property** → Use `sh:lessThan`
+
+### String Values
+- **String must have minimum/maximum length** → Use `sh:minLength`/`sh:maxLength`
+- **String must match a pattern** → Use `sh:pattern`
+- **String must have specific language tag** → Use `sh:languageIn`
+
+### Complex Objects
+- **Property value must conform to a shape** → Use `sh:node` (nested validation)
+- **Property values must be unique in some way** → Use `sh:qualifiedMinCount`/`sh:qualifiedMaxCount`
+
+### Relationships Between Properties
+- **Properties must have disjoint values** → Use `sh:disjoint`
+- **Properties must be equal** → Use `sh:equals`
+- **One property must be before another** → Use `sh:lessThan`
+
+### Logical Combinations
+- **All conditions must pass** → Use `sh:and`
+- **Condition must not pass** → Use `sh:not`
+
+### Metadata
+- **Add custom error message** → Use `sh:message`
+- **Set violation severity** → Use `sh:severity`
+- **Temporarily disable constraint** → Use `sh:deactivated`
+
+## Common Validation Scenarios
+
+### Required Field
+```md
+[Property] {+ex:propertyName ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
+```
+
+### Email Validation
+```md
+[Property] {+ex:propertyName ?sh:path} must match [pattern] {sh:pattern}.
+```
+
+### Positive Number
+```md
+[Property] {+ex:propertyName ?sh:path} must be at least [0] {sh:minInclusive ^^xsd:decimal}.
+```
+
+### Enumerated Values
+```md
+[Property] {+ex:propertyName ?sh:path} must be in allowed list.
+**Allowed List** {=ex:list ?sh:in .rdf:List}: [value1] {rdf:first}, then [rest] {=ex:rest ?rdf:rest} by [value2] {rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
+```
+
+### Date Range
+```md
+[Property] {+ex:propertyName ?sh:path} must be at least [min-date] {sh:minInclusive ^^xsd:date} and at most [max-date] {sh:maxInclusive ^^xsd:date}.
+```
+
+## Constraint Groups Reference
+
+- **Value Type**: class, datatype, nodeKind
+- **Cardinality**: minCount, maxCount
+- **Value Range**: minInclusive, maxInclusive, minExclusive, maxExclusive
+- **String**: minLength, maxLength, pattern, languageIn
+- **Property Pair**: equals, disjoint, lessThan
+- **Logical**: and, not
+- **Shape-based**: node
+- **Other**: hasValue, in, qualifiedMinCount, qualifiedMaxCount
+
+See [Constraints](#constraints-index) for detailed documentation on each constraint.
+
+
+
+
+
+
+{=}
+
+
+
+<a id="teach-practical-workflow"></a>
+
+[mdld] <https://mdld.js.org/>
+[cat] <mdld:shacl/>
+
+# Practical Workflow: Designing a Complete Shape
+
+> Step-by-step example of designing a multi-constraint shape for a real-world use case {comment}
+
+## Use Case: E-Commerce Product Validation
+
+We need to validate product data with these requirements:
+- Product must have a name (required)
+- Product must have a price (required, must be positive)
+- Product must have a category (must be from allowed list)
+- Product description is optional but if present must be at least 10 characters
+- Product SKU must follow pattern "PROD-XXXXX" (5 digits)
+
+## Step 1: Define the Shape and Target
+
+~~~~~~md
+[ex] <tag:my@example.org,2026:product/>
+
+**Product Validation Shape** {=ex:ProductShape .sh:NodeShape ?cat:hasShape label}
+Validates all [Product] {+ex:Product ?sh:targetClass} instances.
+~~~~~~
+
+## Step 2: Add Required Properties
+
+~~~~~~md
+**Product name is required** {=ex:NameRule .sh:PropertyShape ?sh:property}
+[name] {+ex:name ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
+
+**Product price is required** {=ex:PriceRule .sh:PropertyShape ?sh:property}
+[price] {+ex:price ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
+
+**Product category is required** {=ex:CategoryRule .sh:PropertyShape ?sh:property}
+[category] {+ex:category ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
+~~~~~~
+
+## Step 3: Add Value Constraints
+
+~~~~~~md
+**Product price must be positive** {=ex:PriceRule .sh:PropertyShape ?sh:property}
+[price] {+ex:price ?sh:path} must be at least [0.01] {sh:minInclusive ^^xsd:decimal}.
+~~~~~~
+
+## Step 4: Add Enumeration Constraint
+
+~~~~~~md
+**Product category must be from allowed list** {=ex:CategoryRule .sh:PropertyShape ?sh:property}
+[category] {+ex:category ?sh:path} must be in allowed list.
+
+**Allowed Categories List** {=ex:cat-l1 ?sh:in .rdf:List}: [Electronics] {rdf:first}, then [rest] {=ex:cat-l2 ?rdf:rest} by [Clothing] {rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
+~~~~~~
+
+## Step 5: Add Optional Property with Conditional Constraint
+
+~~~~~~md
+**Product description is optional** {=ex:DescriptionRule .sh:PropertyShape ?sh:property}
+[description] {+ex:description ?sh:path} must have at least [10] {sh:minLength ^^xsd:integer} characters.
+~~~~~~
+
+## Step 6: Add Pattern Constraint
+
+~~~~~~md
+**Product SKU must match pattern** {=ex:SKURule .sh:PropertyShape ?sh:property}
+[sku] {+ex:sku ?sh:path} must match [PROD-\d{5}] {sh:pattern}.
+~~~~~~
+
+## Complete Shape
+
+~~~~~~md
+[ex] <tag:my@example.org,2026:product/>
+
+**Product Validation Shape** {=ex:ProductShape .sh:NodeShape ?cat:hasShape label}
+Validates all [Product] {+ex:Product ?sh:targetClass} instances.
+
+**Product name is required** {=ex:NameRule .sh:PropertyShape ?sh:property}
+[name] {+ex:name ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
+
+**Product price is required and positive** {=ex:PriceRule .sh:PropertyShape ?sh:property}
+[price] {+ex:price ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value and be at least [0.01] {sh:minInclusive ^^xsd:decimal}.
+
+**Product category is required and from allowed list** {=ex:CategoryRule .sh:PropertyShape ?sh:property}
+[category] {+ex:category ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value and be in allowed list.
+
+**Allowed Categories List** {=ex:cat-l1 ?sh:in .rdf:List}: [Electronics] {rdf:first}, then [rest] {=ex:cat-l2 ?rdf:rest} by [Clothing] {rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
+
+**Product description is optional but must be 10+ characters** {=ex:DescriptionRule .sh:PropertyShape ?sh:property}
+[description] {+ex:description ?sh:path} must have at least [10] {sh:minLength ^^xsd:integer} characters.
+
+**Product SKU must match pattern** {=ex:SKURule .sh:PropertyShape ?sh:property}
+[sku] {+ex:sku ?sh:path} must match [PROD-\d{5}] {sh:pattern}.
+~~~~~~
+
+## Test Data
+
+~~~~~~md
+### Test Data {=ex:data .Container}
+
+#### Valid Product {=ex:Laptop .ex:Product ?member}
+Name: [MacBook Pro] {ex:name}
+Price: [1299.99] {ex:price ^^xsd:decimal}
+Category: [Electronics] {ex:category}
+Description: [High-performance laptop] {ex:description}
+SKU: [PROD-12345] {ex:sku}
+
+#### Invalid Product - Missing Name {=ex:InvalidProduct1 .ex:Product ?member}
+Price: [99.99] {ex:price ^^xsd:decimal}
+Category: [Clothing] {ex:category}
+
+#### Invalid Product - Negative Price {=ex:InvalidProduct2 .ex:Product ?member}
+Name: [T-Shirt] {ex:name}
+Price: [-10.00] {ex:price ^^xsd:decimal}
+Category: [Clothing] {ex:category}
+
+#### Invalid Product - Invalid Category {=ex:InvalidProduct3 .ex:Product ?member}
+Name: [Shoes] {ex:name}
+Price: [50.00] {ex:price ^^xsd:decimal}
+Category: [Books] {ex:category}
+
+#### Invalid Product - Short Description {=ex:InvalidProduct4 .ex:Product ?member}
+Name: [Hat] {ex:name}
+Price: [25.00] {ex:price ^^xsd:decimal}
+Category: [Clothing] {ex:category}
+Description: [Small] {ex:description}
+~~~~~~
+
+## Key Takeaways
+
+1. **Start with targeting** - Define which data to validate first
+2. **Add required properties** - Use minCount/maxCount for required fields
+3. **Add value constraints** - Apply datatype, range, and pattern constraints
+4. **Combine constraints** - Multiple constraints can apply to the same property
+5. **Use RDF lists** - For enumeration (sh:in) and logical combinations (sh:and)
+6. **Test thoroughly** - Create valid and invalid test cases for each rule
+7. **Add error messages** - Use sh:message for user-friendly validation feedback
+
+## Next Steps
+
+- Explore [Targeting Mechanisms](#targeting-index) for more targeting options
+- Learn about specific [Constraints](#constraints-index) for detailed constraint patterns

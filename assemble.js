@@ -8,21 +8,15 @@ const originalDocumentGetter = await createNodeDocumentGetter()
 
 const configs = [
     {
-        name: 'Complete catalog',
-        indexFile: resolve('./index.md'),
-        documentGetter: originalDocumentGetter,
-        outputFile: 'shacl.md'
-    },
-    {
         name: 'Ontology only',
-        indexFile: resolve('./index.ontology.md'),
+        indexFile: resolve('./index.md'),
         documentGetter: async (path) => {
             if (path.endsWith('.demo.md')) {
                 throw new Error('Skipping demo file for ontology assembly')
             }
             return originalDocumentGetter(path)
         },
-        outputFile: 'shacl-ontology.md'
+        outputFile: 'shacl.md'
     },
     {
         name: 'Demo only',
