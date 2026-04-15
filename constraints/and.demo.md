@@ -1,7 +1,7 @@
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [ex] <mdld:shacl/example/logical/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # AND Constraint {=sh:and .class:LogicalConstraint label} Demo
 

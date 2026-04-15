@@ -1,7 +1,7 @@
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [ex] <mdld:shacl/example/language/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Language In {=sh:languageIn .class:StringConstraint label}
 
@@ -14,7 +14,7 @@
 ## 📋 Quick Start Pattern
 
 ~~~~~~md
-[ex] <mdld:shacl/example/language/>
+[ex] <tag:my@example.org,2026:language/>
 
 ### Shape Definition
 
@@ -40,7 +40,7 @@ Title: [Hallo Welt] {ex:title @de}
 
 ---
 
-[Demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
+[Demo] {=ex:demo} must produce exactly **1** violation.
 ~~~~~~
 
 ---

@@ -1,7 +1,7 @@
 [mdld] <https://mdld.js.org/vocab/>
 [cat] <https://mdld.js.org/shacl/catalog/>
 [ex] <http://example.org/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Deactivated Constraint {=sh:deactivated .class:DeactivatedConstraint label}
 
@@ -14,14 +14,11 @@
 ## 📋 Quick Start Pattern
 
 ~~~~~~md
-[mdld] <https://mdld.js.org/vocab/>
-[cat] <https://mdld.js.org/shacl/catalog/>
-[ex] <http://example.org/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+[ex] <tag:my@example.org,2026:deactivated/>
 
 ### Shape Definition
 
-**Deactivated Example Shape** {=ex:DeactivatedExampleShape .sh:NodeShape ?cat:hasShape label} targets [Valid Node] {+ex:ValidNode ?sh:targetNode} and [Invalid Node] {+ex:InvalidNode ?sh:targetNode}.
+**Deactivated Example Shape** {=ex:DeactivatedExampleShape .sh:NodeShape label} targets [Valid Node] {+ex:ValidNode ?sh:targetNode} and [Invalid Node] {+ex:InvalidNode ?sh:targetNode}.
 
 **User status must be active** {=ex:ActiveProperty .sh:PropertyShape sh:message}
 [status] {+ex:status ?sh:path} must be [active] {sh:hasValue}.
@@ -43,7 +40,7 @@ Category: [basic] {ex:category}
 
 ---
 
-[Demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
+[Demo] {=ex:demo} must produce exactly **1** violation.
 ~~~~~~
 
 ---

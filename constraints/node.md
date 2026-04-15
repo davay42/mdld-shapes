@@ -1,7 +1,7 @@
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [ex] <mdld:shacl/example/node/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Node Constraint {=sh:node .class:NodeConstraint label}
 
@@ -14,7 +14,7 @@
 ## 📋 Quick Start Pattern
 
 ~~~~~~md
-[ex] <mdld:shacl/example/node/>
+[ex] <tag:my@example.org,2026:node/>
 
 ### Shape Definition
 
@@ -43,7 +43,7 @@ City: [NY] {ex:city}
 
 ---
 
-[Demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
+[Demo] {=ex:demo} must produce exactly **1** violation.
 ~~~~~~
 
 ---

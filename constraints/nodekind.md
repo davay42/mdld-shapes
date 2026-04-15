@@ -1,7 +1,6 @@
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [class] <cat:class/>
-[ex] <cat:example/nodekind/>
 
 # Node Kind {=sh:nodeKind .class:Constraint label}
 
@@ -14,7 +13,7 @@
 ## � Quick Start Pattern
 
 ~~~~~~md
-[ex] <cat:example/nodekind/>
+[ex] <tag:my@example.org,2026:nodekind/>
 
 ### Shape Definition
 
@@ -38,7 +37,7 @@ Reference: [Invalid Reference String] {ex:reference}
 
 ---
 
-[Demo] {=ex:demo} must produce exactly **2** {cat:expectsViolations ^^xsd:integer} violations.
+[Demo] {=ex:demo} must produce exactly **2** violations.
 ~~~~~~
 
 ---

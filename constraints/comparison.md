@@ -1,7 +1,6 @@
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [ex] <mdld:shacl/example/comparison/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
 
 # Comparison Constraints {=sh:lessThan .class:ComparisonConstraint label}
 
@@ -16,11 +15,11 @@
 ## 📋 Quick Start Pattern
 
 ~~~~~~md
-[ex] <mdld:shacl/example/comparison/>
+[ex] <tag:my@example.org,2026:comparison/>
 
 ### Shape Definition
 
-**Event must follow business planning rules** {=ex:EventPlanningShape .sh:NodeShape ?cat:hasShape label}
+**Event must follow business planning rules** {=ex:EventPlanningShape .sh:NodeShape label}
 
 **Order Date Rule** {=ex:#orderDateRule .sh:PropertyShape ?sh:property}
 [order date] {+ex:orderDate ?sh:path} must be before [shipping date] {+ex:shippingDate ?sh:lessThan}: **Order must be placed before shipping** {sh:message}.
@@ -46,7 +45,7 @@ Latest Version: [3.0] {ex:latestVersion ^^xsd:string}
 
 ---
 
-[Demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
+[Demo] {=ex:demo} must produce exactly **1** violation.
 ~~~~~~
 
 ---

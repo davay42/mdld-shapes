@@ -1,7 +1,7 @@
 [mdld] <https://mdld.js.org/vocab/>
 [cat] <https://mdld.js.org/shacl/catalog/>
 [schema] <http://schema.org/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Closed World Constraint {=sh:closed .class:ClosedWorldConstraint label}
 
@@ -14,10 +14,8 @@
 ## 📋 Quick Start Pattern
 
 ~~~~~~md
-[mdld] <https://mdld.js.org/vocab/>
-[cat] <https://mdld.js.org/shacl/catalog/>
+[ex] <tag:my@example.org,2026:closed/>
 [schema] <http://schema.org/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
 
 ### Shape Definition
 
@@ -44,7 +42,7 @@ Email: [<jane@example.com>] {ex:email}
 
 ---
 
-[Demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
+[Demo] {=ex:demo} must produce exactly **1** violation.
 ~~~~~~
 
 ---

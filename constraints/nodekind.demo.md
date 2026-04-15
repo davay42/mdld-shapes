@@ -1,8 +1,8 @@
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [class] <cat:class/>
-[ex] <cat:example/nodekind/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+[ex] <tag:my@example.org,2026:nodekind/>
+
 
 # Node Kind {=sh:nodeKind .class:Constraint label} Demo
 

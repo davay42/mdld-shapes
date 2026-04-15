@@ -1,7 +1,7 @@
 [mdld] <https://mdld.js.org/vocab/>
 [cat] <https://mdld.js.org/shacl/catalog/>
 [ex] <http://example.org/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Violation Message {=sh:message .class:MessageConstraint label}
 
@@ -14,10 +14,7 @@
 ## 📋 Quick Start Pattern
 
 ~~~~~~md
-[mdld] <https://mdld.js.org/vocab/>
-[cat] <https://mdld.js.org/shacl/catalog/>
-[ex] <http://example.org/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+[ex] <tag:my@example.org,2026:message/>
 
 ### Shape Definition
 
@@ -43,7 +40,7 @@ Start Date: [2024-02-01] {ex:startDate ^^xsd:date}
 
 ---
 
-[Demo] {=ex:demo} must produce exactly **2** {cat:expectsViolations ^^xsd:integer} violations.
+[Demo] {=ex:demo} must produce exactly **2** violations.
 ~~~~~~
 
 ---

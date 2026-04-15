@@ -1,7 +1,7 @@
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [ex] <mdld:shacl/example/hasvalue/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Has Value {=sh:hasValue .class:Constraint label}
 
@@ -14,7 +14,7 @@
 ## 📋 Quick Start Pattern
 
 ~~~~~~md
-[ex] <mdld:shacl/example/hasvalue/>
+[ex] <tag:my@example.org,2026:hasvalue/>
 
 ### Shape Definition
 
@@ -42,7 +42,7 @@ Environment: [development] {ex:environment}
 
 ---
 
-[Demo] {=ex:demo} must produce exactly **2** {cat:expectsViolations ^^xsd:integer} violations.
+[Demo] {=ex:demo} must produce exactly **2** violations.
 ~~~~~~
 
 ---

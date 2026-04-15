@@ -1,8 +1,8 @@
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [class] <cat:class/>
-[ex] <cat:example/datatype/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+[ex] <tag:my@example.org,2026:datatype/>
+
 
 # Data Type {=sh:datatype .class:Constraint label} Demo
 

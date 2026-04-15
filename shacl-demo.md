@@ -55,7 +55,7 @@ Demo files for SHACL targeting predicates that determine which nodes get validat
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [ex] <mdld:shacl/example/targeting/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Target Class {=sh:targetClass .class:TargetingMechanism label} Demo
 
@@ -128,7 +128,7 @@ ig-cli validate ./targeting/targetClass.md
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [ex] <mdld:shacl/example/targeting/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Target Node {=sh:targetNode .class:TargetingMechanism label} Demo
 
@@ -216,7 +216,7 @@ ig-cli validate ./targeting/targetNode.md
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [ex] <mdld:shacl/example/targeting/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Target Subjects Of {=sh:targetSubjectsOf .class:TargetingMechanism label} Demo
 
@@ -326,7 +326,7 @@ ig-cli validate ./targeting/targetSubjectsOf.md
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [ex] <mdld:shacl/example/targeting/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Target Objects Of {=sh:targetObjectsOf .class:TargetingMechanism label} Demo
 
@@ -509,7 +509,7 @@ Demo files for SHACL constraints with test data and validation scenarios:
 [cat] <mdld:shacl/>
 [class] <cat:class/>
 [ex] <cat:example/class/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Class {=sh:class .class:Constraint label} Demo
 
@@ -570,7 +570,7 @@ ig-cli validate ./constraints/class.md
 [cat] <mdld:shacl/>
 [class] <cat:class/>
 [ex] <cat:example/datatype/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Data Type {=sh:datatype .class:Constraint label} Demo
 
@@ -635,7 +635,7 @@ ig-cli validate ./constraints/datatype.md
 [cat] <mdld:shacl/>
 [class] <cat:class/>
 [ex] <cat:example/nodekind/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Node Kind {=sh:nodeKind .class:Constraint label} Demo
 
@@ -698,7 +698,7 @@ ig-cli validate ./constraints/nodekind.demo.md
 [cat] <mdld:shacl/>
 [class] <cat:class/>
 [ex] <cat:example/count/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Min Count {=sh:minCount .class:Constraint label} Demo
 
@@ -720,7 +720,7 @@ The **Person Test Shape** {=ex:PersonTestShape .sh:NodeShape ?cat:hasShape label
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [ex] <mdld:shacl/example/range/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Minimum Inclusive {=sh:minInclusive .class:Constraint label} Demo
 
@@ -856,7 +856,7 @@ ig-cli validate ./constraints/range.md
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [ex] <mdld:shacl/example/comparison/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Comparison Constraints {=sh:lessThan .class:ComparisonConstraint label} Demo
 
@@ -961,7 +961,7 @@ ig-cli validate ./constraints/comparison.md
 [mdld] <https://mdld.js.org/vocab/>
 [cat] <https://mdld.js.org/shacl/catalog/>
 [ex] <http://example.org/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Disjoint Constraint {=sh:disjoint .class:DisjointConstraint label} Demo
 
@@ -1021,7 +1021,7 @@ ig-cli validate ./constraints/disjoint.md
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [ex] <mdld:shacl/example/not/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # NOT Constraint {=sh:not .class:LogicalConstraint label} Demo
 
@@ -1103,7 +1103,7 @@ ig-cli validate ./constraints/not.md
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [ex] <mdld:shacl/example/logical/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # AND Constraint {=sh:and .class:LogicalConstraint label} Demo
 
@@ -1191,7 +1191,7 @@ ig-cli validate ./constraints/logical.md
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [ex] <mdld:shacl/example/length/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Min Length {=sh:minLength .class:Constraint label} Demo
 
@@ -1215,7 +1215,7 @@ The **User Account Test Shape** {=ex:UserAccountTestShape .sh:NodeShape ?cat:has
 [mdld] <https://mdld.js.org/vocab/>
 [cat] <https://mdld.js.org/shacl/catalog/>
 [ex] <http://example.org/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Pattern Constraint {=sh:pattern .class:PatternConstraint label} Demo
 
@@ -1273,7 +1273,7 @@ ig-cli validate ./constraints/pattern.md
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [ex] <mdld:shacl/example/language/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Language In {=sh:languageIn .class:StringConstraint label} Demo
 
@@ -1382,7 +1382,7 @@ ig-cli validate ./constraints/language.md
 [mdld] <https://mdld.js.org/vocab/>
 [cat] <https://mdld.js.org/shacl/catalog/>
 [ex] <ttps://mdld.js.org/shacl/catalog/uniqueLang/example/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Unique Languages Constraint {=sh:uniqueLang .class:UniqueLanguageConstraint label} Demo
 
@@ -1445,7 +1445,7 @@ ig-cli validate ./constraints/uniqueLang.md
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [ex] <mdld:shacl/example/hasvalue/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Has Value {=sh:hasValue .class:Constraint label} Demo
 
@@ -1526,7 +1526,7 @@ ig-cli validate ./constraints/hasvalue.md
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [ex] <mdld:shacl/example/node/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Node Constraint {=sh:node .class:NodeConstraint label} Demo
 
@@ -1612,7 +1612,7 @@ ig-cli validate ./constraints/node.md
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [ex] <mdld:shacl/example/in/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Value Enumeration {=sh:in .class:PresenceConstraint label} Demo
 
@@ -1685,7 +1685,7 @@ ig-cli validate ./constraints/in.md
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [ex] <mdld:shacl/example/qualified/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Qualified Count Constraints {=sh:qualifiedMinCount .class:QualifiedConstraint label} Demo
 
@@ -1767,7 +1767,7 @@ ig-cli validate ./constraints/qualified.md
 [mdld] <https://mdld.js.org/vocab/>
 [cat] <https://mdld.js.org/shacl/catalog/>
 [schema] <http://schema.org/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Closed World Constraint {=sh:closed .class:ClosedWorldConstraint label} Demo
 
@@ -1832,7 +1832,7 @@ ig-cli validate ./constraints/closed.md
 [mdld] <https://mdld.js.org/vocab/>
 [cat] <https://mdld.js.org/shacl/catalog/>
 [ex] <http://example.org/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Deactivated Constraint {=sh:deactivated .class:DeactivatedConstraint label} Demo
 
@@ -1898,7 +1898,7 @@ ig-cli validate ./constraints/deactivated.md
 [mdld] <https://mdld.js.org/vocab/>
 [cat] <https://mdld.js.org/shacl/catalog/>
 [ex] <http://example.org/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Severity Levels {=sh:severity .class:SeverityConstraint label} Demo
 
@@ -1969,7 +1969,7 @@ ig-cli validate ./constraints/severity.md
 [mdld] <https://mdld.js.org/vocab/>
 [cat] <https://mdld.js.org/shacl/catalog/>
 [ex] <http://example.org/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Violation Message {=sh:message .class:MessageConstraint label} Demo
 
@@ -2041,7 +2041,7 @@ ig-cli validate ./constraints/message.md
 [cat] <mdld:shacl/>
 [class] <cat:class/>
 [ex] <cat:example/js/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # JavaScript Function {=sh:js .class:Constraint label} Demo
 

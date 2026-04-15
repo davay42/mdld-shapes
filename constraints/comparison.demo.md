@@ -1,7 +1,7 @@
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [ex] <mdld:shacl/example/comparison/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Comparison Constraints {=sh:lessThan .class:ComparisonConstraint label} Demo
 

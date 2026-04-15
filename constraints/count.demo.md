@@ -1,8 +1,7 @@
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [class] <cat:class/>
-[ex] <cat:example/count/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+[ex] <tag:my@example.org,2026:count/>
 
 # Min Count {=sh:minCount .class:Constraint label} Demo
 

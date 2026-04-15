@@ -1,7 +1,7 @@
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [ex] <mdld:shacl/example/qualified/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Qualified Count Constraints {=sh:qualifiedMinCount .class:QualifiedConstraint label}
 
@@ -15,7 +15,7 @@
 ## 📋 Quick Start Pattern
 
 ~~~~~~md
-[ex] <mdld:shacl/example/qualified/>
+[ex] <tag:my@example.org,2026:qualified/>
 
 ### Shape Definition
 
@@ -49,7 +49,7 @@ Email: [alice.personal@gmail.com] {ex:email}
 
 ---
 
-[Demo] {=ex:demo} must produce exactly **2** {cat:expectsViolations ^^xsd:integer} violations.
+[Demo] {=ex:demo} must produce exactly **2** violations.
 ~~~~~~
 
 ---

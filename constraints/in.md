@@ -1,7 +1,7 @@
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [ex] <mdld:shacl/example/in/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Value Enumeration {=sh:in .class:PresenceConstraint label}
 
@@ -14,7 +14,7 @@
 ## 📋 Quick Start Pattern
 
 ~~~~~~md
-[ex] <mdld:shacl/example/in/>
+[ex] <tag:my@example.org,2026:in/>
 
 ### Shape Definition
 
@@ -37,7 +37,7 @@ Status: [Pending] {ex:status}
 
 ---
 
-[Demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
+[Demo] {=ex:demo} must produce exactly **1** violation.
 ~~~~~~
 
 ---

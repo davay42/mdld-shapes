@@ -1,8 +1,7 @@
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [class] <cat:class/>
-[ex] <cat:example/js/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # JavaScript Function {=sh:js .class:Constraint label}
 
@@ -15,15 +14,11 @@
 ## 📋 Quick Start Pattern
 
 ~~~~~~md
-[mdld] <https://mdld.js.org/>
-[cat] <mdld:shacl/>
-[class] <cat:class/>
-[ex] <cat:example/js/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+[ex] <tag:my@example.org,2026:js/>
 
 ### Shape Definition
 
-**Date Validation Shape** {=ex:DateValidationShape .sh:NodeShape ?cat:hasShape label} targets all [Events] {+ex:Event ?sh:targetClass}.
+**Date Validation Shape** {=ex:DateValidationShape .sh:NodeShape label} targets all [Events] {+ex:Event ?sh:targetClass}.
 
 #### Event date must be a valid date string {=ex:DatePropertyShape .sh:PropertyShape ?sh:property sh:message}
 Must have an [eventDate] {+ex:eventDate ?sh:path} that is a valid JS date.
@@ -46,7 +41,7 @@ Event Date: [not-a-date] {ex:eventDate}
 
 ---
 
-[Demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
+[Demo] {=ex:demo} must produce exactly **1** violation.
 ~~~~~~
 
 ---

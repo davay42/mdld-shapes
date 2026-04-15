@@ -1,8 +1,6 @@
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [class] <cat:class/>
-[ex] <cat:example/datatype/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
 
 # Data Type {=sh:datatype .class:Constraint label}
 
@@ -15,7 +13,7 @@
 ## 📋 Quick Start Pattern
 
 ~~~~~~md
-[ex] <cat:example/datatype/>
+[ex] <tag:my@example.org,2026:datatype/>
 
 ### Shape Definition
 
@@ -39,7 +37,7 @@ Quantity: [five] {ex:quantity ^^xsd:string}
 
 ---
 
-[Demo] {=ex:demo} must produce exactly **2** {cat:expectsViolations ^^xsd:integer} violations.
+[Demo] {=ex:demo} must produce exactly **2** violations.
 ~~~~~~
 
 ---

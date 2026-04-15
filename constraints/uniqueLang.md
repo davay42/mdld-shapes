@@ -1,7 +1,7 @@
 [mdld] <https://mdld.js.org/vocab/>
 [cat] <https://mdld.js.org/shacl/catalog/>
 [ex] <ttps://mdld.js.org/shacl/catalog/uniqueLang/example/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Unique Languages Constraint {=sh:uniqueLang .class:UniqueLanguageConstraint label}
 
@@ -14,14 +14,11 @@
 ## 📋 Quick Start Pattern
 
 ~~~~~~md
-[mdld] <https://mdld.js.org/vocab/>
-[cat] <https://mdld.js.org/shacl/catalog/>
-[ex] <ttps://mdld.js.org/shacl/catalog/uniqueLang/example/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+[ex] <tag:my@example.org,2026:uniqueLang/>
 
 ### Shape Definition
 
-**Each language tag must appear only once** {=ex:UniqueLangExampleShape .sh:NodeShape ?cat:hasShape label}
+**Each language tag must appear only once** {=ex:UniqueLangExampleShape .sh:NodeShape label}
 [title] {+ex:title ?sh:path} values have [unique language tags] {sh:uniqueLang ^^xsd:boolean}: **Each language tag must appear only once** {sh:message}.
 
 ---
@@ -38,7 +35,7 @@ Title: [Hola Mundo] {ex:title @en}
 
 ---
 
-[Demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
+[Demo] {=ex:demo} must produce exactly **1** violation.
 ~~~~~~
 
 ---

@@ -1,7 +1,7 @@
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [ex] <mdld:shacl/example/length/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Min Length {=sh:minLength .class:Constraint label}
 
@@ -20,7 +20,7 @@
 ## 📋 Quick Start Pattern
 
 ~~~~~~md
-[ex] <mdld:shacl/example/length/>
+[ex] <tag:my@example.org,2026:length/>
 
 ### Shape Definition
 
@@ -48,7 +48,7 @@ Password: [short] {ex:password}
 
 ---
 
-[Demo] {=ex:demo} must produce exactly **2** {cat:expectsViolations ^^xsd:integer} violations.
+[Demo] {=ex:demo} must produce exactly **2** violations.
 ~~~~~~
 
 ---

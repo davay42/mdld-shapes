@@ -14,7 +14,7 @@
 ~~~~~~md
 [mdld] <https://mdld.js.org/>
 [ex] <mdld:shacl/example/logical/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # AND Constraint Demo
 

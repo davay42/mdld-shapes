@@ -1,7 +1,7 @@
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [ex] <mdld:shacl/example/in/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Value Enumeration {=sh:in .class:PresenceConstraint label} Demo
 

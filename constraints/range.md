@@ -1,7 +1,7 @@
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [ex] <mdld:shacl/example/range/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Minimum Inclusive {=sh:minInclusive .class:Constraint label}
 
@@ -32,7 +32,7 @@
 ## 📋 Quick Start Pattern
 
 ~~~~~~md
-[ex] <mdld:shacl/example/range/>
+[ex] <tag:my@example.org,2026:range/>
 
 ### Shape Definition
 
@@ -60,7 +60,7 @@ Attendee Age: [18] {ex:age ^^xsd:integer}
 
 ---
 
-[Demo] {=ex:demo} must produce exactly **2** {cat:expectsViolations ^^xsd:integer} violations.
+[Demo] {=ex:demo} must produce exactly **2** violations.
 ~~~~~~
 
 ---

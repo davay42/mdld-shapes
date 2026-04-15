@@ -1,7 +1,7 @@
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [ex] <mdld:shacl/example/node/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Node Constraint {=sh:node .class:NodeConstraint label} Demo
 

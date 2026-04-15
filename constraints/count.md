@@ -1,8 +1,6 @@
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [class] <cat:class/>
-[ex] <cat:example/count/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
 
 # Min Count {=sh:minCount .class:Constraint label}
 
@@ -21,7 +19,7 @@
 ## 📋 Quick Start Pattern
 
 ~~~~~~md
-[ex] <cat:example/count/>
+[ex] <tag:my@example.org,2026:count/>
 
 ### Shape Definition
 
@@ -48,11 +46,11 @@ Email: [work@example.com] {ex:email}
 Email: [personal@example.com] {ex:email}
 Phone: [555-1234] {ex:phone}
 Phone: [555-5678] {ex:phone}
-Phone: [555-9999] {ex:phone}
+Phone: [555-9012] {ex:phone}
 
 ---
 
-[Demo] {=ex:demo} must produce exactly **3** {cat:expectsViolations ^^xsd:integer} violations.
+[Demo] {=ex:demo} must produce exactly **2** violations.
 ~~~~~~
 
 ---

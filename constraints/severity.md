@@ -1,7 +1,6 @@
 [mdld] <https://mdld.js.org/vocab/>
 [cat] <https://mdld.js.org/shacl/catalog/>
 [ex] <http://example.org/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
 
 # Severity Levels {=sh:severity .class:SeverityConstraint label}
 
@@ -15,21 +14,18 @@
 ## 📋 Quick Start Pattern
 
 ~~~~~~md
-[mdld] <https://mdld.js.org/vocab/>
-[cat] <https://mdld.js.org/shacl/catalog/>
-[ex] <http://example.org/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+[ex] <tag:my@example.org,2026:severity/>
 
 ### Shape Definition
 
 **Email address is required and must be valid** {=ex:CriticalRule .sh:PropertyShape sh:message}
-[email] {+ex:email ?sh:path} must be [string] {+xsd:string ?sh:datatype} and at least [1] {sh:minCount ^^xsd:integer} corporate email [example.com] {sh:pattern} with [Violation severity] {+sh:Violation ?sh:severity}.
+[email] {+ex:email ?sh:path} must be [string] {?xsd:string ?sh:datatype} and at least [1] {sh:minCount ^^xsd:integer} corporate email [example.com] {sh:pattern} with [Violation severity] {+sh:Violation ?sh:severity}.
 
 **Age should be between 18 and 120** {=ex:WarningRule .sh:PropertyShape sh:message}
-[age] {+ex:age ?sh:path} must be [integer] {+xsd:integer ?sh:datatype}, more than [18] {sh:minInclusive ^^xsd:integer} and less than [120] {sh:maxInclusive ^^xsd:integer} with [Warning severity] {+sh:Warning ?sh:severity}.
+[age] {+ex:age ?sh:path} must be [integer] {?xsd:integer ?sh:datatype}, more than [18] {sh:minInclusive ^^xsd:integer} and less than [120] {sh:maxInclusive ^^xsd:integer} with [Warning severity] {+sh:Warning ?sh:severity}.
 
 **Name should be a string of 2+ letters** {=ex:InfoNameRule .sh:PropertyShape sh:message}
-[name] {+ex:name ?sh:path} must be [string] {+xsd:string ?sh:datatype} at least [1] {sh:minCount} and longer than [3] {sh:minInclusive} with [Info severity] {+sh:Info ?sh:severity}.
+[name] {+ex:name ?sh:path} must be [string] {?xsd:string ?sh:datatype} at least [1] {sh:minCount} and longer than [3] {sh:minInclusive} with [Info severity] {+sh:Info ?sh:severity}.
 
 ---
 
@@ -47,7 +43,7 @@ Name: [] {ex:name}
 
 ---
 
-[Demo] {=ex:demo} must produce exactly **3** {cat:expectsViolations ^^xsd:integer} violations.
+[Demo] {=ex:demo} must produce exactly **3** violations.
 ~~~~~~
 
 ---

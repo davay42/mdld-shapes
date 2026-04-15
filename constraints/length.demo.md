@@ -1,7 +1,7 @@
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [ex] <mdld:shacl/example/length/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Min Length {=sh:minLength .class:Constraint label} Demo
 

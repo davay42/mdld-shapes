@@ -1,7 +1,7 @@
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [ex] <mdld:shacl/example/qualified/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Qualified Count Constraints {=sh:qualifiedMinCount .class:QualifiedConstraint label} Demo
 

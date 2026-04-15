@@ -1,7 +1,7 @@
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [ex] <mdld:shacl/example/language/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Language In {=sh:languageIn .class:StringConstraint label} Demo
 

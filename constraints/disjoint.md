@@ -1,7 +1,7 @@
 [mdld] <https://mdld.js.org/vocab/>
 [cat] <https://mdld.js.org/shacl/catalog/>
 [ex] <http://example.org/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Disjoint Constraint {=sh:disjoint .class:DisjointConstraint label}
 
@@ -14,13 +14,11 @@
 ## 📋 Quick Start Pattern
 
 ~~~~~~md
-[mdld] <https://mdld.js.org/vocab/>
-[cat] <https://mdld.js.org/shacl/catalog/>
-[ex] <http://example.org/>
+[ex] <tag:my@example.org,2026:disjoint/>
 
 ### Shape Definition
 
-**Preferred labels must be different from alternative labels** {=ex:DisjointExampleShape .sh:NodeShape ?cat:hasShape label sh:message}
+**Preferred labels must be different from alternative labels** {=ex:DisjointExampleShape .sh:NodeShape label sh:message}
 [preferred labels] {+ex:prefLabel ?sh:path} must be [disjoint] {+ex:altLabel ?sh:disjoint} with [alternative labels].
 
 ---
@@ -37,7 +35,7 @@ Alternative Label: [Germany] {ex:altLabel}
 
 ---
 
-[Demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
+[Demo] {=ex:demo} must produce exactly **1** violation.
 ~~~~~~
 
 ---

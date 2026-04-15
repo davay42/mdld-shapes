@@ -1,7 +1,7 @@
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
 [ex] <mdld:shacl/example/targeting/>
-[xsd] <http://www.w3.org/2001/XMLSchema#>
+
 
 # Target Objects Of {=sh:targetObjectsOf .class:TargetingMechanism label} Demo
 
