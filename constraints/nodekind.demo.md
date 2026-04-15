@@ -3,34 +3,29 @@
 [class] <cat:class/>
 [ex] <tag:my@example.org,2026:nodekind/>
 
-
-# Node Kind {=sh:nodeKind .class:Constraint label} Demo
+# Node Kind {=sh:nodeKind .class:Constraint label}
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
-This demo demonstrates node kind constraints using document validation scenario.
+### Document Test Shape {=ex:DocumentTestShape .sh:NodeShape ?cat:hasShape label}
 
-Validates all [Document] {+ex:Document ?sh:targetClass} entities to demonstrate node kind constraints: **Content Literal Rule** {+ex:#contentLiteral ?sh:property} and **Reference IRI Rule** {+ex:#referenceIRI ?sh:property}.
+Validates [Valid Document] {+ex:ValidDocument ?sh:targetNode} and [Invalid Document] {+ex:InvalidDocument ?sh:targetNode} with **Content must be literal** {+ex:#contentLiteral ?sh:property} and **Reference must be IRI** {+ex:#referenceIRI ?sh:property}.
 
-## Rules
+**Content must be literal** {=ex:#contentLiteral .sh:PropertyShape} requires [content] {+ex:content ?sh:path} to be a [Literal] {+sh:Literal ?sh:nodeKind}.
 
-**Document content must be a literal** {=ex:#contentLiteral .sh:PropertyShape sh:message} -  all [content] {+ex:content ?sh:path} must be a [Literal] {+sh:Literal ?sh:nodeKind}.
-
-**Document reference must be an IRI** {=ex:#referenceIRI .sh:PropertyShape sh:message} - each [reference] {+ex:reference ?sh:path} must be an [IRI] {+sh:IRI ?sh:nodeKind}.
+**Reference must be IRI** {=ex:#referenceIRI .sh:PropertyShape} requires [reference] {+ex:reference ?sh:path} to be an [IRI] {+sh:IRI ?sh:nodeKind}.
 
 ---
 
 ### 📋 Test Data {=ex:data .Container}
 
-#### Valid Document {=ex:ValidDocument .ex:Document ?member}
+#### Valid Document {=ex:ValidDocument ?member}
+Content: [text] {ex:content}
+Reference: <https://example.org> {?ex:reference}
 
-Content: [This is the document content] {ex:content}
-Reference: <https://example.org/reference> {?ex:reference}
-
-#### Invalid Document {=ex:InvalidDocument .ex:Document ?member}
-
-Content: <https://example.org/invalid-content> {?ex:content}
-Reference: [Invalid Reference String] {ex:reference}
+#### Invalid Document {=ex:InvalidDocument ?member}
+Content: <https://example.org> {?ex:content}
+Reference: [text] {ex:reference}
 
 ---
 
@@ -38,14 +33,11 @@ Reference: [Invalid Reference String] {ex:reference}
 
 ### Expected Validation Results {=ex:results ?cat:hasResults}
 
-1. **Valid Document** - passes (title is IRI, content is literal, reference is IRI)
-2. **Invalid Document** - fails 2 times (title is string instead of IRI and content is IRI, but should be a literal)
-
-Note: SHACL may report only one violation per focus node. The Invalid Document has multiple node kind violations but only the first is reported.
+1. **Valid Document** - passes (content is literal, reference is IRI)
+2. **Invalid Document** - fails 2 times (content is IRI not literal, reference is text not IRI)
 
 ### 🔍 Test Validation
 
 ```bash
-# This should show 1 violation for node kind constraint violation
 ig-cli validate ./constraints/nodekind.demo.md
 ```

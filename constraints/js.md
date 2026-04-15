@@ -1,7 +1,5 @@
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
-[class] <cat:class/>
-
 
 # JavaScript Function {=sh:js .class:Constraint label}
 
@@ -16,15 +14,10 @@
 ~~~~~~md
 [ex] <tag:my@example.org,2026:js/>
 
-### Shape Definition
-
-**Date Validation Shape** {=ex:DateValidationShape .sh:NodeShape label} targets all [Events] {+ex:Event ?sh:targetClass}.
-
-#### Event date must be a valid date string {=ex:DatePropertyShape .sh:PropertyShape ?sh:property sh:message}
-Must have an [eventDate] {+ex:eventDate ?sh:path} that is a valid JS date.
+**Event date must be valid** {=ex:DatePropertyShape .sh:PropertyShape}
+[eventDate] {+ex:eventDate ?sh:path} must be a valid JS date.
 
 ~~~~~~js {=ex:DateJSConstraint ?sh:JSConstraint sh:js}
-// Check if value is a valid date string
 const date = new Date(value);
 return !isNaN(date.getTime());
 ~~~~~~
@@ -33,27 +26,19 @@ return !isNaN(date.getTime());
 
 ### Test Data {=ex:data .Container}
 
-#### Valid Event {=ex:ValidEvent .ex:Event ?member}
+#### Valid Event {=ex:ValidEvent ?member}
 Event Date: [2024-12-25] {ex:eventDate ^^xsd:date}
 
-#### Invalid Event {=ex:InvalidEvent1 .ex:Event ?member}
+#### Invalid Event {=ex:InvalidEvent ?member}
 Event Date: [not-a-date] {ex:eventDate}
-
----
-
-[Demo] {=ex:demo} must produce exactly **1** violation.
 ~~~~~~
 
 ---
 
 ## 📝 MDLD Syntax Patterns
 
-The JavaScript constraint allows custom JavaScript validation functions for complex constraint logic.
-
 ~~~~~~md
-**[Property] must pass [JavaScript validation]** {=ex:PropertyJSConstraint .sh:PropertyShape ?sh:property sh:message}
-
-[Property Name] {+ex:propertyName ?sh:path} must pass custom validation.
+[Property] {+ex:propertyName ?sh:path} must pass custom validation.
 
 ~~~~~~js {=ex:JSConstraintName ?sh:JSConstraint sh:js}
 // Custom validation logic
@@ -62,51 +47,24 @@ return result;
 ~~~~~~
 ~~~~~~
 
-**Key components:**
-- **Property path** - The property to validate (`{+ex:propertyName ?sh:path}`)
-- **JavaScript constraint** - Reference to JS constraint (`{=ex:JSConstraintName ?sh:JSConstraint sh:js}`)
-- **JS function** - Custom validation function in fenced code block
-- **Validation message** - Human-readable error message (`{sh:message}`)
-- **Custom logic** - Implement complex validation rules
+**Use for:** Custom validation, complex logic, cross-property validation
 
-**Important notes:**
+**Important:**
 - JavaScript code is executed during validation
 - Function receives `value` parameter
 - Return `true` for valid, `false` for invalid
 - Use for complex validation not possible with standard constraints
-- Ensure JavaScript code is safe and well-tested
-
----
-
-## 🎯 Use Cases
-
-- **Custom validation** - Implement business-specific validation rules
-- **Complex logic** - Validate patterns not supported by standard constraints
-- **Cross-property validation** - Validate relationships between properties
-- **External API validation** - Check values against external services
-- **Data transformation** - Transform and validate data
 
 ---
 
 ## 🔧 Implementation Guidelines
 
-**When to use JavaScript:**
-- **Complex validation** - When standard constraints are insufficient
-- **Business rules** - Implement custom business logic
-- **Cross-property validation** - Validate relationships between properties
-- **External validation** - Check against external services
-- **Data transformation** - Transform and validate data
+**When to use:** Standard constraints are insufficient
 
 **Best practices:**
-- Keep JavaScript functions simple and focused
+- Keep JavaScript functions simple
 - Test JavaScript functions thoroughly
-- Document the validation logic clearly
-- Use descriptive function names
-- Consider performance implications
 
 **Common pitfalls:**
 - ❌ Writing overly complex JavaScript functions
 - ❌ Not testing JavaScript functions thoroughly
-- ❌ Using JavaScript when standard constraints would suffice
-- ❌ Not handling edge cases in JavaScript logic
-- ❌ Forgetting that JavaScript code is executed during validation

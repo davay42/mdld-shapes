@@ -3,46 +3,40 @@
 [class] <cat:class/>
 [ex] <tag:my@example.org,2026:class/>
 
-# Class {=sh:class .class:Constraint label} Demo
+# Class {=sh:class .class:Constraint label}
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
 ### Employee Test Shape {=ex:EmployeeTestShape .sh:NodeShape ?cat:hasShape label}
 
-All [employees] {+member ?sh:targetObjectsOf} must have both **Human Manager** {+ex:#managerClass ?sh:property} and **Department** {+ex:#departmentClass ?sh:property} assigned.
+All [employees] {+member ?sh:targetObjectsOf} must have **Manager** {+ex:#managerClass ?sh:property} assigned.
 
-**Employee manager must be a Person instance** {=ex:#managerClass .sh:PropertyShape message} requires the [manager] {+ex:manager ?sh:path} property to be an instance of [Person] {+ex:Person ?sh:class}.
-
-**Employee department must be a Department instance** {=ex:#departmentClass .sh:PropertyShape sh:message}  requires the [department] {+ex:department ?sh:path} property to be an instance of [Department] {+ex:Department ?sh:class}
+**Manager must be a Person instance** {=ex:#managerClass .sh:PropertyShape} requires the [manager] {+ex:manager ?sh:path} property to be an instance of [Person] {+ex:Person ?sh:class}.
 
 ---
 
 ### 📋 Test Data {=ex:data .Container}
 
 #### Valid Employee {=ex:ValidEmployee ?member}
-
-Manager: [john-manager] {+ex:john ?ex:manager .ex:Person}
-Department: [engineering] {+ex:engineering ?ex:department .ex:Department}
+Manager: [john] {+ex:john ?ex:manager .ex:Person}
 
 #### Invalid Employee {=ex:InvalidEmployee ?member}
-
-Manager: [robot-ai] {+ex:ai ?ex:manager ex:Role}
-Department: [marketing] {+ex:marketing ?ex:department}
+Manager: [robot] {+ex:robot ?ex:manager ex:Role}
 
 ---
 
-[Demo] {=ex:demo} must produce exactly **2** {cat:expectsViolations ^^xsd:integer} violation.
+[Demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
 
 ### Expected Validation Results {=ex:results ?cat:hasResults}
 
-1. **Valid Employee** - passes (manager is a Person, department is a Department)
-2. **Invalid Employee** - fails (manager is not a Person, department is not a Department)
+1. **Valid Employee** - passes (manager is a Person)
+2. **Invalid Employee** - fails (manager is not a Person)
 
 ### 🔍 Test Validation
 
 ```bash
 # This should show 1 violation for class constraint violation
-ig-cli validate ./constraints/class.md
+ig-cli validate ./constraints/class.demo.md
 ```
 
 ---

@@ -3,103 +3,63 @@
 
 # AND Constraint {=sh:and .class:LogicalConstraint label}
 
-> Requires all constraints in the list to be satisfied. Essential when multiple conditions must all pass for validation to succeed. {comment}
+> Requires all constraints in the list to be satisfied {comment}
 
 <http://www.w3.org/ns/shacl#and> {?cat:fullIRI}
 
 ---
 
-## � Quick Start Pattern
+## 📋 Quick Start Pattern
 
-~~~~~~md {cat:quick-start}
-[mdld] <https://mdld.js.org/>
-[ex] <mdld:shacl/example/logical/>
+~~~~~~md
+[ex] <tag:my@example.org,2026:and/>
 
+**Product must have price and category** {sh:message}
 
-# AND Constraint Demo
+**Constraints List** {=ex:and-l1 ?sh:and .rdf:List}: [Price Required] {+ex:priceRequired ?rdf:first}, then [followed] {=ex:and-l2 ?rdf:rest} by [Category Required] {+ex:categoryRequired ?rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
 
-### Shape Definition
+**Price Required** {=ex:priceRequired .sh:PropertyShape} ensures [price] {+ex:price ?sh:path} has at least [1] {sh:minCount ^^xsd:integer} value.
 
-**Product must have a price and at least 1 category defined** {sh:message}
-
-**Constraints List** {=ex:and-l1 ?sh:and .rdf:List}: [Min Count] {+ex:priceRequired ?rdf:first}, 
-then [followed] {=ex:and-l2 ?rdf:rest} by the second constraint [Class] {+ex:categoryRequired ?rdf:first} 
-and a [nil] {+rdf:nil ?rdf:rest} node (end of list). Reset current subject: {=}
-
-**Price Required Constraint** {=ex:priceRequired .sh:PropertyShape} ensures [price] {+ex:price ?sh:path} has at least [1] {sh:minCount ^^xsd:integer} value.
-
-**Category Required Constraint** {=ex:categoryRequired .sh:PropertyShape} ensures [category] {+ex:category ?sh:path} has at least [1] {sh:minCount ^^xsd:integer} value.
+**Category Required** {=ex:categoryRequired .sh:PropertyShape} ensures [category] {+ex:category ?sh:path} has at least [1] {sh:minCount ^^xsd:integer} value.
 
 ---
 
 ### Test Data {=ex:data .Container}
 
 #### Valid Product {=ex:ValidProduct ?member}
-Name: [Laptop] {ex:name}
 Price: [999] {ex:price ^^xsd:integer}
 Category: [Electronics] {ex:category}
 
-#### Missing Price Product {=ex:MissingPriceProduct ?member}
-Name: [Phone] {ex:name}
+#### Invalid Product {=ex:MissingPriceProduct ?member}
 Category: [Electronics] {ex:category}
-
----
-
-[Demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
 ~~~~~~
 
 ---
 
-## �📝 MDLD Syntax Patterns
-
-The AND constraint uses verbose RDF list syntax to specify multiple constraints that must all be satisfied.
+## 📝 MDLD Syntax Patterns
 
 ~~~~~~md
-# AND Constraint Pattern
-**Constraints List** {=ex:and-l1 ?sh:and .rdf:List}: [First Constraint] {+ex:firstConstraint ?rdf:first}, 
-then [followed] {=ex:and-l2 ?rdf:rest} by the second constraint [Second Constraint] {+ex:secondConstraint ?rdf:first} 
-and a [nil] {+rdf:nil ?rdf:rest} node (end of list). Reset current subject to avoid accidental further assignments: {=}
+[Constraints List] {=ex:and-l1 ?sh:and .rdf:List}: [First] {+ex:first ?rdf:first}, then [rest] {=ex:and-l2 ?rdf:rest} by [Second] {+ex:second ?rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
 ~~~~~~
 
-**Key components:**
-- **List node** - Anonymous RDF list container (`{=ex:and-l1 ?sh:and .rdf:List}`)
-- **First element** - First constraint in the list (`{+ex:firstConstraint ?rdf:first}`)
-- **Rest elements** - Subsequent list nodes (`{=ex:and-l2 ?rdf:rest}`)
-- **Termination** - List ends with `rdf:nil`
-- **Subject reset** - `{=}` prevents unintended subject continuation
+**Use for:** Multi-property validation, cross-field validation, business rule combinations
 
-**Important notes:**
-- Each list element must reference a previously defined constraint (PropertyShape or NodeShape)
-- Use unique list identifiers (e.g., `and-l1`, `and-l2`) to avoid collisions
-- Always reset subject with `{=}` after defining the list structure
-- All constraints in the list must be satisfied for the node to pass validation
-
----
-
-## 🎯 Use Cases
-
-- **Multi-property validation** - Product must have price AND category
-- **Cross-field validation** - User must have email AND phone number
-- **Business rule combinations** - Order must be paid AND shipped
+**Important:**
+- Uses RDF list syntax (rdf:first, rdf:rest, rdf:nil)
+- All constraints in list must be satisfied
+- Use unique list identifiers (and-l1, and-l2)
+- Always reset subject with {=} after list definition
 
 ---
 
 ## 🔧 Implementation Guidelines
 
-**When to use AND:**
-- **Multiple required properties** - When several properties must all be present
-- **Cross-property dependencies** - When one property's validity depends on another
-- **Complex business rules** - When business logic requires multiple conditions
-- **Data integrity** - When multiple aspects of data must be valid together
+**When to use:** Multiple conditions must all pass
 
 **Best practices:**
-- Keep the list short (2-3 constraints) for maintainability
-- Use descriptive constraint names for clarity
-- Test each constraint individually before combining
-- Consider using separate shapes if the logic becomes complex
+- Keep list short (2-3 constraints)
+- Test each constraint individually first
 
 **Common pitfalls:**
-- ❌ Forgetting the subject reset `{=}` after list definition
+- ❌ Forgetting subject reset {=} after list
 - ❌ Reusing list identifiers causing collisions
-- ❌ Creating circular dependencies between constraints
-- ❌ Making the constraint list too complex to debug

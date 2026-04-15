@@ -3,7 +3,7 @@
 
 # NOT Constraint {=sh:not .class:LogicalConstraint label}
 
-> Requires value nodes to NOT conform to a given shape. Essential for negation patterns and exclusion rules. {comment}
+> Requires value nodes to NOT conform to a given shape {comment}
 
 <http://www.w3.org/ns/shacl#not> {?cat:fullIRI}
 
@@ -12,87 +12,50 @@
 ## 📋 Quick Start Pattern
 
 ~~~~~~md
-[ex] <mdld:shacl/example/not/>
+[ex] <tag:my@example.org,2026:not/>
 
-### Shape Definition
+**User cannot have deleted status** {=ex:UserStatusShape .sh:NodeShape}
 
-**User cannot have deleted status** {sh:message}
+User status must not conform to [Forbidden Status Shape] {+ex:ForbiddenStatusShape ?sh:not}.
 
-**User Status Shape** {=ex:UserStatusShape .sh:NodeShape ?cat:hasShape label} targets all [users] {+ex:User ?sh:targetClass}.
-
-User status must not conform to the forbidden shape using [Forbidden Status Shape] {+ex:ForbiddenStatusShape ?sh:not}.
-
-**Forbidden Status Shape** {=ex:ForbiddenStatusShape .sh:NodeShape} requires the [status] {+ex:status ?sh:path} property to be exactly [deleted] {sh:hasValue}.
+**Forbidden Status Shape** {=ex:ForbiddenStatusShape .sh:NodeShape} requires [status] {+ex:status ?sh:path} to be exactly [deleted] {sh:hasValue}.
 
 ---
 
 ### Test Data {=ex:data .Container}
 
-#### Valid User - Active {=ex:ValidActiveUser .ex:User}
-Name: [Alice] {ex:name}
+#### Valid User {=ex:ValidActiveUser ?member}
 Status: [active] {ex:status}
 
-#### Invalid User - Deleted {=ex:InvalidDeletedUser .ex:User}
-Name: [Charlie] {ex:name}
+#### Invalid User {=ex:InvalidDeletedUser ?member}
 Status: [deleted] {ex:status}
-
----
-
-[Demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
 ~~~~~~
 
 ---
 
-## �� MDLD Syntax Patterns
-
-The NOT constraint requires a shape reference that defines the forbidden pattern.
+## 📝 MDLD Syntax Patterns
 
 ~~~~~~md
-# NOT Constraint Pattern
-**[Shape Name] must not conform to forbidden pattern** {=ex:ForbiddenShape .sh:NodeShape ?sh:not}
-
-**Forbidden Pattern Shape** {=ex:ForbiddenPattern .sh:NodeShape} defines the pattern to reject:
-[Property] {+ex:property ?sh:path} must be [forbidden value] {sh:hasValue}
+[Shape] {=ex:Shape .sh:NodeShape} must not conform to [Forbidden Shape] {+ex:ForbiddenShape ?sh:not}.
 ~~~~~~
 
-**Key components:**
-- **NOT reference** - Links to the forbidden shape (`{+ex:ForbiddenShape ?sh:not}`)
-- **Forbidden shape** - Defines the pattern to reject (PropertyShape or NodeShape)
-- **Shape definition** - Can be a simple property constraint or complex shape
-- **Validation logic** - Any node conforming to the forbidden shape fails validation
+**Use for:** Forbidden values, exclusion patterns, business rule negation
 
-**Important notes:**
-- The forbidden shape must be defined before or alongside the NOT constraint
-- NOT only validates nodes that would conform to the forbidden shape
-- Nodes that don't match the forbidden shape pass validation automatically
-- Can be used with both PropertyShape and NodeShape contexts
-
----
-
-## 🎯 Use Cases
-
-- **Forbidden values** - Prevent users from having deleted status
-- **Exclusion patterns** - Prevent products from being in certain categories
-- **Business rule negation** - Ensure orders don't have invalid states
+**Important:**
+- Forbidden shape defines pattern to reject
+- Nodes not matching forbidden shape pass automatically
+- Can be used with PropertyShape and NodeShape
 
 ---
 
 ## 🔧 Implementation Guidelines
 
-**When to use NOT:**
-- **Forbidden values** - When certain values must be explicitly prohibited
-- **Exclusion patterns** - When nodes must not conform to a specific pattern
-- **Business rule negation** - When business logic requires negation
-- **Data integrity** - When certain states must be prevented
+**When to use:** Certain values must be explicitly prohibited
 
 **Best practices:**
-- Keep forbidden shapes simple and focused
+- Keep forbidden shapes simple
 - Use descriptive names for forbidden shapes
-- Test the forbidden shape independently first
-- Document why the pattern is forbidden
 
 **Common pitfalls:**
-- ❌ Creating circular dependencies between shapes
-- ❌ Making forbidden shapes too complex to understand
-- ❌ Forgetting that non-matching nodes automatically pass
-- ❌ Using NOT when a positive constraint would be clearer
+- ❌ Creating circular dependencies
+- ❌ Making forbidden shapes too complex

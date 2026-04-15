@@ -1,61 +1,42 @@
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
-[ex] <mdld:shacl/example/in/>
-
+[ex] <tag:my@example.org,2026:in/>
 
 # Value Enumeration {=sh:in .class:PresenceConstraint label} Demo
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
-This demo demonstrates value enumeration using a status validation scenario.
-
 ### Status Validation Shape {=ex:StatusValidationShape .sh:NodeShape ?cat:hasShape label}
 
-Targets all [employees] {+ex:Employee ?sh:targetClass} to validate status values.
+Validates all [member] {+member ?sh:targetObjectsOf} entities with **Status must be Active or Inactive** {+ex:#allowedStatus ?sh:property}.
 
-**Status must be in allowed list** {=ex:#allowedStatus .sh:PropertyShape ?sh:property sh:message}
+**Status must be Active or Inactive** {=ex:#allowedStatus .sh:PropertyShape} requires [status] {+ex:status ?sh:path} to be in allowed list.
 
-[Status] {+ex:status ?sh:path} must be either Active or Inactive. We need to define these using verbose RDF list syntax.
-
-First we need a [List] {=ex:in-l1 ?sh:in .rdf:List} node with the first item assigned to it [Active] {+ex:Active ?rdf:first}, then followed by another [list] {=ex:in-l2 ?rdf:rest} node with the second item [Inactive] {+ex:Inactive ?rdf:first} followed by a nil node (end of list) [nil] {+rdf:nil ?rdf:rest} And reset current subject to avoid accidental assignments: {=}
+**Allowed Values List** {=ex:in-l1 ?sh:in .rdf:List}: [Active] {+ex:Active ?rdf:first}, then [rest] {=ex:in-l2 ?rdf:rest} by [Inactive] {+ex:Inactive ?rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
 
 ---
 
-### 📋 Test Data {=ex:data .Container}
+### Test Data {=ex:data .Container}
 
-#### Valid Employee {=ex:ValidEmployee .ex:Employee}
-
-A valid employee with allowed status.
-
+#### Valid Employee {=ex:ValidEmployee ?member}
 Status: [Active] {+ex:Active ?ex:status}
 
-#### Invalid Status Employee {=ex:InvalidStatusEmployee .ex:Employee}
-
-An employee with invalid status.
-
+#### Invalid Employee {=ex:InvalidStatusEmployee ?member}
 Status: [Pending] {+ex:Pending ?ex:status}
-
-#### Missing Status Employee {=ex:MissingStatusEmployee .ex:Employee}
-
-An employee with no status (not validated by sh:in).
 
 ---
 
-[This demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
+[Demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
 
 ### Expected Validation Results {=ex:results ?cat:hasResults}
 
-1. **Valid Employee** - passes (status: Active ✓)
-2. **Invalid Status Employee** - fails once (status: Pending ✗)
-3. **Missing Status Employee** - not validated (no status property - sh:in doesn't check presence)
-
-Note: `sh:in` only validates values if the property exists. Use `sh:minCount` to check for required properties.
+1. **Valid Employee** - passes (status is Active)
+2. **Invalid Employee** - fails (status is Pending, not allowed)
 
 ### 🔍 Test Validation
 
 ```bash
-# This should show 1 violation - invalid status value
-ig-cli validate ./constraints/in.md
+ig-cli validate ./constraints/in.demo.md
 ```
 
 ---

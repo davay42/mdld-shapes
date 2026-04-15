@@ -1,54 +1,42 @@
-[mdld] <https://mdld.js.org/vocab/>
-[cat] <https://mdld.js.org/shacl/catalog/>
-[ex] <http://example.org/>
+[mdld] <https://mdld.js.org/>
+[cat] <mdld:shacl/>
+[ex] <tag:my@example.org,2026:deactivated/>
 
-
-# Deactivated Constraint {=sh:deactivated .class:DeactivatedConstraint label} Demo
+# Deactivated {=sh:deactivated .class:DeactivatedConstraint label} Demo
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
-This demo demonstrates deactivated constraint using user account validation.
+### Deactivated Example Shape {=ex:DeactivatedExampleShape .sh:NodeShape ?cat:hasShape label}
 
-### Shape
+Validates all [member] {+member ?sh:targetObjectsOf} entities with **User status must be active** {+ex:ActiveProperty ?sh:property}.
 
-The **Deactivated Example Shape** {=ex:DeactivatedExampleShape .sh:NodeShape ?cat:hasShape label} targets [Valid Node] {+ex:ValidNode ?sh:targetNode}  [Invalid Node] {+ex:InvalidNode  ?sh:targetNode} to validate user account properties with **Active Status Rule** {+ex:ActiveProperty ?sh:property label} and **Deactivated Category Rule** {+ex:DeactivatedProperty ?sh:property label} 
+**User status must be active** {=ex:ActiveProperty .sh:PropertyShape} requires [status] {+ex:status ?sh:path} to be [active] {sh:hasValue}.
 
-### Rules
-
-**User status must be active** {=ex:ActiveProperty .sh:PropertyShape sh:message}: [status] {+ex:status ?sh:path} must be [active] {sh:hasValue}.
-
-**Must have premium category** {=ex:DeactivatedProperty .sh:PropertyShape sh:message}: [category] {+ex:category ?sh:path} is always [premium] {sh:hasValue}. Was temporarily [deactivated] {sh:deactivated}.
-
-### 📋 Test Data {=ex:data .Container}
-
-#### Valid Account {=ex:ValidNode}
-
-Account with active status (satisfies active rule).
-
-Status: [active] {ex:status}
-Category: [basic] {ex:category}  # Would violate category rule but it's deactivated
-
-#### Invalid Account {=ex:InvalidNode}
-
-Account with inactive status (violates active rule).
-
-Status: [inactive] {ex:status}  # Violates active rule
-Category: [basic] {ex:category}  # Would violate category rule but it's deactivated
+**Category rule** {=ex:DeactivatedProperty .sh:PropertyShape} is [deactivated] {sh:deactivated}.
 
 ---
 
-[This demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
+### Test Data {=ex:data .Container}
+
+#### Valid Account {=ex:ValidNode ?member}
+Status: [active] {ex:status}
+
+#### Invalid Account {=ex:InvalidNode ?member}
+Status: [inactive] {ex:status}
+
+---
+
+[Demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
 
 ### Expected Validation Results {=ex:results ?cat:hasResults}
 
-1. **Valid Account** - passes (status is "active" ✓, category rule deactivated ✓)
-2. **Invalid Account** - fails once (status is "inactive" ✗, category rule deactivated ✓)
+1. **Valid Account** - passes (status is active)
+2. **Invalid Account** - fails (status is inactive)
 
 ### 🔍 Test Validation
 
 ```bash
-# This should show 1 violation - only from active status rule
-ig-cli validate ./constraints/deactivated.md
+ig-cli validate ./constraints/deactivated.demo.md
 ```
 
 ---

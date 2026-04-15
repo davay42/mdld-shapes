@@ -1,93 +1,42 @@
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
-[ex] <mdld:shacl/example/comparison/>
+[ex] <tag:my@example.org,2026:comparison/>
 
-
-# Comparison Constraints {=sh:lessThan .class:ComparisonConstraint label} Demo
+# Comparison {=sh:lessThan .class:ComparisonConstraint label}
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
-This demo demonstrates comparison constraints using event scheduling and pricing validation.
+### Order Test Shape {=ex:OrderTestShape .sh:NodeShape ?cat:hasShape label}
 
-### Event Validation Demo
+Validates all [member] {+member ?sh:targetObjectsOf} entities with **Order date must be before shipping date** {+ex:#orderDateRule ?sh:property}.
 
-The **Event Planning Shape** {=ex:EventPlanningShape .sh:NodeShape ?cat:hasShape label} targets all [events] {+ex:Event ?sh:targetClass} to validate business rules: **Event must follow business planning rules** {sh:message}
-
-**Order Date Rule** {=ex:#orderDateRule .sh:PropertyShape ?sh:property} ensures [order date] {+ex:orderDate ?sh:path} is scheduled before [shipping date] {+ex:shippingDate ?sh:lessThan}: **Order must be placed before shipping** {sh:message}.
-
-{=ex:EventPlanningShape}
-
-**Version Rule** {=ex:#versionRule .sh:PropertyShape ?sh:property} ensures [current version] {+ex:currentVersion ?sh:path} does not exceed [latest version] {+ex:latestVersion ?sh:lessThanOrEquals}: **Current version must be ≤ latest version** {sh:message}.
-
-{=ex:EventPlanningShape}
-
-**Pricing Rule** {=ex:#pricingRule .sh:PropertyShape ?sh:property} ensures [ticket price] {+ex:ticketPrice ?sh:path} matches [standard price] {+ex:standardPrice ?sh:equals}: **Ticket price must equal standard price** {sh:message}.
-
-{=ex:demo}
-
-### 📋 Test Data {=ex:data .Container}
-
-#### Valid Event {=ex:ValidEvent .ex:Event}
-
-A properly scheduled event with correct versioning and standard pricing.
-
-Order Date: [2024-06-15] {ex:orderDate ^^xsd:date}
-Shipping Date: [2024-06-20] {ex:shippingDate ^^xsd:date}
-Current Version: [2.1] {ex:currentVersion ^^xsd:string}
-Latest Version: [3.0] {ex:latestVersion ^^xsd:string}
-Ticket Price: [99.99] {ex:ticketPrice ^^xsd:decimal}
-Standard Price: [99.99] {ex:standardPrice ^^xsd:decimal}
-
-#### Invalid Event - Late Order {=ex:LateOrderEvent .ex:Event}
-
-An event with order date after shipping date (violates temporal business rule).
-
-Order Date: [2024-06-25] {ex:orderDate ^^xsd:date}
-Shipping Date: [2024-06-20] {ex:shippingDate ^^xsd:date}
-Current Version: [2.1] {ex:currentVersion ^^xsd:string}
-Latest Version: [3.0] {ex:latestVersion ^^xsd:string}
-Ticket Price: [99.99] {ex:ticketPrice ^^xsd:decimal}
-Standard Price: [99.99] {ex:standardPrice ^^xsd:decimal}
-
-#### Invalid Event - Version Mismatch {=ex:VersionMismatchEvent .ex:Event}
-
-An event using version [3.1] {ex:currentVersion ^^xsd:string} newer than latest available (violates version control).
-
-Order Date: [2024-06-15] {ex:orderDate ^^xsd:date}
-Shipping Date: [2024-06-20] {ex:shippingDate ^^xsd:date}
-Latest Version: [3.0] {ex:latestVersion ^^xsd:string}
-Ticket Price: [99.99] {ex:ticketPrice ^^xsd:decimal}
-Standard Price: [99.99] {ex:standardPrice ^^xsd:decimal}
-
-#### Invalid Event - Price Mismatch {=ex:PriceMismatchEvent .ex:Event}
-
-An event with non-standard pricing (violates pricing policy).
-
-Order Date: [2024-06-15] {ex:orderDate ^^xsd:date}
-Shipping Date: [2024-06-20] {ex:shippingDate ^^xsd:date}
-Current Version: [2.1] {ex:currentVersion ^^xsd:string}
-Latest Version: [3.0] {ex:latestVersion ^^xsd:string}
-Ticket Price: [149.99] {ex:ticketPrice ^^xsd:decimal}
-Standard Price: [99.99] {ex:standardPrice ^^xsd:decimal}
+**Order date must be before shipping date** {=ex:#orderDateRule .sh:PropertyShape} requires [order date] {+ex:orderDate ?sh:path} to be before [shipping date] {+ex:shippingDate ?sh:lessThan}.
 
 ---
 
-[This demo] {=ex:demo} must produce exactly **4** {cat:expectsViolations ^^xsd:integer} violations.
+### Test Data {=ex:data .Container}
+
+#### Valid Order {=ex:ValidOrder ?member}
+Order Date: [2024-06-15] {ex:orderDate ^^xsd:date}
+Shipping Date: [2024-06-20] {ex:shippingDate ^^xsd:date}
+
+#### Invalid Order {=ex:InvalidOrder ?member}
+Order Date: [2024-06-25] {ex:orderDate ^^xsd:date}
+Shipping Date: [2024-06-20] {ex:shippingDate ^^xsd:date}
+
+---
+
+[Demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
 
 ### Expected Validation Results {=ex:results ?cat:hasResults}
 
-1. **Valid Event** - passes (order < shipping ✓, version ≤ latest ✓, price = standard ✓)
-2. **Invalid Event - Late Order** - fails once (order > shipping ✗, version ≤ latest ✓, price = standard ✓)
-3. **Invalid Event - Version Mismatch** - fails once (order ≤ shipping ✓, version > latest ✗, price = standard ✓)
-4. **Invalid Event - Price Mismatch** - fails once (order ≤ shipping ✓, version ≤ latest ✓, price ≠ standard ✗)
-
-Note: Each constraint validates independently; multiple violations can occur on same event.
+1. **Valid Order** - passes (order date is before shipping date)
+2. **Invalid Order** - fails (order date is after shipping date)
 
 ### 🔍 Test Validation
 
 ```bash
-# This should show 4 violations - late order, version mismatch, and price mismatch
-ig-cli validate ./constraints/comparison.md
+ig-cli validate ./constraints/comparison.demo.md
 ```
 
 ---

@@ -1,97 +1,40 @@
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
-[ex] <mdld:shacl/example/language/>
+[ex] <tag:my@example.org,2026:language/>
 
-
-# Language In {=sh:languageIn .class:StringConstraint label} Demo
+# Language {=sh:languageIn .class:StringConstraint label} Demo
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
-This demo demonstrates language constraint using multilingual document scenarios.
+### Multilingual Document Shape {=ex:MultilingualDocumentShape .sh:NodeShape ?cat:hasShape label}
 
-### Multilingual Document Demo
+Validates all [member] {+member ?sh:targetObjectsOf} entities with **Title language must be en or fr** {+ex:#titleLanguage ?sh:property}.
 
-The **Multilingual Document Shape** {=ex:MultilingualDocumentShape .sh:NodeShape ?cat:hasShape label} targets all [documents] {+ex:Document ?sh:targetClass} to validate language tags.
+**Title language must be en or fr** {=ex:#titleLanguage .sh:PropertyShape} requires [title] {+ex:title ?sh:path} language tags to be in allowed list.
 
-**Title language must be in allowed list** {=ex:#titleLanguage .sh:PropertyShape ?sh:property sh:message} defines rules for the [title] {+ex:title ?sh:path} property.
+**Allowed Languages List** {=ex:lang-l1 ?sh:languageIn .rdf:List}: [en] {rdf:first}, then [rest] {=ex:lang-l2 ?rdf:rest} by [fr] {rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
 
-Title language tags must be in the allowed list using verbose RDF list syntax.
+---
 
-We start from the [List] {=ex:lang-l1 ?sh:languageIn .rdf:List} of the list, followed by first literal value [en] {rdf:first}, then goes the next list [node] {=ex:lang-l2 ?rdf:rest} with another language as literal in an inline value carrier [fr] {rdf:first} followed by a closing [nil] {+rdf:nil ?rdf:rest} and as subject reset.
-{=}
+### Test Data {=ex:data .Container}
 
-***
-
-### 📋 Test Data {=ex:data .Container}
-
-#### English Document {=ex:EnglishDocument .ex:Document}
-
-A valid document with English title.
-
+#### English Document {=ex:EnglishDocument ?member}
 Title: [Hello World] {ex:title @en}
 
-#### French Document {=ex:FrenchDocument .ex:Document}
-
-A valid document with French title.
-
-Title: [Bonjour le monde] {ex:title @fr}
-
-#### German Document {=ex:GermanDocument .ex:Document}
-
-An invalid document with German title (not in allowed list).
-
+#### Invalid Document {=ex:GermanDocument ?member}
 Title: [Hallo Welt] {ex:title @de}
 
-#### No Language Document {=ex:NoLanguageDocument .ex:Document}
+---
 
-A document without language tag.
-
-Title: [Untitled] {ex:title}
-
-***
-
-{=ex:demo} must produce exactly **2** {cat:expectsViolations ^^xsd:integer} violation.
+[Demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
 
 ### Expected Validation Results {=ex:results ?cat:hasResults}
 
-1. **English Document** - passes (title: @en ✓)
-2. **French Document** - passes (title: @fr ✓)
-3. **German Document** - fails once (title: @de ✗)
-4. **No Language Document** - fails once (no language tag)
-
-Note: `sh:languageIn` only validates language tags if they exist. Use `sh:minCount` to check for required properties.
+1. **English Document** - passes (title language is en)
+2. **Invalid Document** - fails (title language is de, not allowed)
 
 ### 🔍 Test Validation
 
 ```bash
-# This should show 2 violation - German title not in allowed list
-ig-cli validate ./constraints/language.md
+ig-cli validate ./constraints/language.demo.md
 ```
-
-***
-
-**Use cases:**
-
-* **Multilingual content** - restrict documents to specific languages
-
-* **Regional compliance** - ensure content meets language requirements
-
-* **Content localization** - validate language-specific versions
-
-* **International standards** - enforce language tag standards
-
-* **Translation workflows** - control which languages are allowed
-
-**Key advantages:**
-
-* ✅ **Language validation** - ensures content uses approved languages
-
-* ✅ **Internationalization support** - essential for global applications
-
-* ✅ **Compliance enforcement** - meets regional language requirements
-
-* ✅ **Content quality** - maintains language consistency
-
-* ✅ **Workflow control** - manages translation processes
-
-***

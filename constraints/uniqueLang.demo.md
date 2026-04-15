@@ -1,51 +1,42 @@
-[mdld] <https://mdld.js.org/vocab/>
-[cat] <https://mdld.js.org/shacl/catalog/>
-[ex] <ttps://mdld.js.org/shacl/catalog/uniqueLang/example/>
+[mdld] <https://mdld.js.org/>
+[cat] <mdld:shacl/>
+[ex] <tag:my@example.org,2026:uniqueLang/>
 
-
-# Unique Languages Constraint {=sh:uniqueLang .class:UniqueLanguageConstraint label} Demo
+# Unique Languages {=sh:uniqueLang .class:UniqueLanguageConstraint label} Demo
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
-This demo demonstrates unique language constraint using multilingual document titles.
+### Unique Language Example Shape {=ex:UniqueLangExampleShape .sh:NodeShape ?cat:hasShape label}
 
-### Multilingual Document Demo
+Validates all [member] {+member ?sh:targetObjectsOf} entities with **Each language tag must appear only once** {+ex:TitleProperty ?sh:property}.
 
-The **Unique Language Example Shape** {=ex:UniqueLangExampleShape .sh:NodeShape ?cat:hasShape label} targets [ValidNode] {+ex:ValidNode ?sh:targetNode} and [InvalidNode] {+ex:InvalidNode ?sh:targetNode} to validate 
+**Each language tag must appear only once** {=ex:TitleProperty .sh:PropertyShape} requires [title] {+ex:title ?sh:path} values to have [true] {sh:uniqueLang ^^xsd:boolean}.
 
-**Each language tag must appear only once** {=ex:TitleProperty .sh:PropertyShape ?sh:property sh:message} - [title] {+ex:title ?sh:path} values have [true] {sh:uniqueLang ^^xsd:boolean}. 
+---
 
+### Test Data {=ex:data .Container}
 
-### 📋 Test Data {=ex:data .Container}
-
-#### Valid Document {=ex:ValidNode}
-
-Document with unique language tags.
-
+#### Valid Document {=ex:ValidNode ?member}
 Title: [Hello World] {ex:title @en}
 Title: [Bonjour Monde] {ex:title @fr}
 
-#### Invalid Document {=ex:InvalidNode}
-
-Document with duplicate language tag (violates unique language constraint).
-
+#### Invalid Document {=ex:InvalidNode ?member}
 Title: [Hello World] {ex:title @en}
-Title: [Hola Mundo] {ex:title @en}  # Duplicate "en" language tag
+Title: [Hola Mundo] {ex:title @en}
 
-***
+---
 
-[This demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
+[Demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
 
 ### Expected Validation Results {=ex:results ?cat:hasResults}
 
-1. **Valid Document** - passes (unique "en" and "fr" language tags ✓)
-2. **Invalid Document** - fails once (duplicate "en" language tag ✗)
+1. **Valid Document** - passes (unique language tags)
+2. **Invalid Document** - fails (duplicate en language tag)
 
 ### 🔍 Test Validation
 
 ```bash
-# This should show 1 violation - InvalidNode has duplicate "en" language tag
-ig-cli validate ./constraints/uniqueLang.md
+ig-cli validate ./constraints/uniqueLang.demo.md
 ```
 
 ***

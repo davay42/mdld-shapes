@@ -1,48 +1,42 @@
-[mdld] <https://mdld.js.org/vocab/>
-[cat] <https://mdld.js.org/shacl/catalog/>
-[ex] <http://example.org/>
+[mdld] <https://mdld.js.org/>
+[cat] <mdld:shacl/>
+[ex] <tag:my@example.org,2026:disjoint/>
 
-
-# Disjoint Constraint {=sh:disjoint .class:DisjointConstraint label} Demo
+# Disjoint {=sh:disjoint .class:DisjointConstraint label} Demo
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
-This demo demonstrates the disjoint constraint using country labels.
+### Label Test Shape {=ex:DisjointExampleShape .sh:NodeShape ?cat:hasShape label}
 
-### Country Label Demo
+Validates all [member] {+member ?sh:targetObjectsOf} entities with **Preferred labels must be different from alternative labels** {+ex:#disjointRule ?sh:property}.
 
-The **Disjoint Example Shape** {=ex:DisjointExampleShape .sh:NodeShape ?cat:hasShape label} targets [USA] {+ex:USA ?sh:targetNode} and [Germany] {+ex:Germany ?sh:targetNode} to validate that [preferred labels] {+ex:prefLabel ?sh:path} are [disjoint] {+ex:altLabel ?sh:disjoint}: **Preferred labels must be different from alternative labels** {sh:message}.
+**Preferred labels must be different from alternative labels** {=ex:#disjointRule .sh:PropertyShape} requires [preferred labels] {+ex:prefLabel ?sh:path} to be [disjoint] {+ex:altLabel ?sh:disjoint} with [alternative labels].
 
-### 📋 Test Data {=ex:data .Container}
+---
 
-#### Valid Case - USA {=ex:USA}
+### Test Data {=ex:data .Container}
 
-Country with distinct preferred and alternative labels.
-
+#### Valid Case {=ex:USA ?member}
 Preferred Label: [USA] {ex:prefLabel}
 Alternative Label: [United States] {ex:altLabel}
 
-#### Invalid Case - Germany {=ex:Germany}
-
-Country with same value in both labels (violates disjoint constraint).
-
+#### Invalid Case {=ex:Germany ?member}
 Preferred Label: [Germany] {ex:prefLabel}
 Alternative Label: [Germany] {ex:altLabel}
 
 ---
 
-[This demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
+[Demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
 
 ### Expected Validation Results {=ex:results ?cat:hasResults}
 
-1. **USA** - passes (prefLabel "USA" ≠ altLabel "United States" ✓)
-2. **Germany** - fails once (prefLabel "Germany" = altLabel "Germany" ✗)
+1. **Valid Case** - passes (labels are different)
+2. **Invalid Case** - fails (labels are the same)
 
 ### 🔍 Test Validation
 
 ```bash
-# This should show 1 violation - Germany has same value in both properties
-ig-cli validate ./constraints/disjoint.md
+ig-cli validate ./constraints/disjoint.demo.md
 ```
 
 ---

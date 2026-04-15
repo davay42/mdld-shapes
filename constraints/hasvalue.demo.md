@@ -1,69 +1,40 @@
 [mdld] <https://mdld.js.org/>
 [cat] <mdld:shacl/>
-[ex] <mdld:shacl/example/hasvalue/>
-
+[ex] <tag:my@example.org,2026:hasvalue/>
 
 # Has Value {=sh:hasValue .class:Constraint label} Demo
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
-### Shapes
+### System Status Test Shape {=ex:SystemStatusTestShape .sh:NodeShape ?cat:hasShape label}
 
-The **System Status Test Shape** {=ex:SystemStatusTestShape .sh:NodeShape ?cat:hasShape label} validates all [member] {+member ?sh:targetObjectsOf} entities of the test data container to demonstrate hasValue constraints for mandatory system properties with **Status Required Rule** {+ex:#statusRequired ?sh:property} and **Environment Required Rule** {+ex:#environmentRequired ?sh:property}.
+Validates all [member] {+member ?sh:targetObjectsOf} entities with **Status must be active** {+ex:#statusRequired ?sh:property}.
 
-### Rules
-
-**Main server must have active status** {=ex:#statusRequired .sh:PropertyShape sh:message} requires the [status] {+ex:status ?sh:path} property to be exactly [active] {sh:hasValue}.
-
-**Main server must be in production environment** {=ex:#environmentRequired .sh:PropertyShape sh:message} that requires the [environment] {+ex:environment ?sh:path} property to be exactly [production] {sh:hasValue}.
+**Status must be active** {=ex:#statusRequired .sh:PropertyShape} requires [status] {+ex:status ?sh:path} to be exactly [active] {sh:hasValue}.
 
 ---
 
-{=ex:demo}
+### Test Data {=ex:data .Container}
 
-### 📋 Test Data {=ex:data .Container}
-
-#### Main Server {=ex:MainServer ?member}
-
-The primary production server that must meet all requirements.
-
+#### Valid Server {=ex:MainServer ?member}
 Status: [active] {ex:status}
-Environment: [production] {ex:environment}
-Version: [1.2.3] {ex:version}
 
-#### Backup Server {=ex:BackupServer ?member}
-
-A secondary server that fails status requirement.
-
+#### Invalid Server {=ex:BackupServer ?member}
 Status: [standby] {ex:status}
-Environment: [production] {ex:environment}
-Version: [1.2.3] {ex:version}
-
-#### Development Server {=ex:DevelopmentServer ?member}
-
-A dev server that fails environment requirement.
-
-Status: [active] {ex:status}
-Environment: [development] {ex:environment}
-Version: [1.2.4] {ex:version}
 
 ---
 
-{=ex:demo} must produce exactly **2** {cat:expectsViolations ^^xsd:integer} violations.
+[Demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
 
 ### Expected Validation Results {=ex:results ?cat:hasResults}
 
-1. **Main Server** - passes (has active status AND production environment)
-2. **Backup Server** - fails once (status is standby, not active)
-3. **Development Server** - fails once (environment is development, not production)
-
-Note: Container member targeting with proper member annotations ensures all servers are validated. HasValue constraints enforce exact value matches for mandatory properties.
+1. **Valid Server** - passes (status is active)
+2. **Invalid Server** - fails (status is standby, not active)
 
 ### 🔍 Test Validation
 
 ```bash
-# This should show 2 violations - status and environment failures
-ig-cli validate ./constraints/hasvalue.md
+ig-cli validate ./constraints/hasvalue.demo.md
 ```
 
 ---
