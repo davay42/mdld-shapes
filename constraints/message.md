@@ -11,91 +11,98 @@
 
 ---
 
+## 📋 Quick Start Pattern
 
-### Valid Contract {=ex:ValidContract .ex:Contract}
+~~~~~~md
+[mdld] <https://mdld.js.org/vocab/>
+[cat] <https://mdld.js.org/shacl/catalog/>
+[ex] <http://example.org/>
+[xsd] <http://www.w3.org/2001/XMLSchema#>
 
-Contract that meets all business requirements.
+### Shape Definition
 
+**Contract value must be positive for financial compliance** {=ex:#valueRule .sh:PropertyShape sh:message}
+[contract value] {+ex:contractValue ?sh:path} must be greater than [0] {sh:minInclusive ^^xsd:decimal}.
+
+**Contract must be approved before start date** {=ex:#dateRule .sh:PropertyShape sh:message}
+[approval date] {+ex:approvalDate ?sh:path} must be before [start date] {+ex:startDate ?sh:lessThan}.
+
+---
+
+### Test Data {=ex:data .Container}
+
+#### Valid Contract {=ex:ValidContract .ex:Contract ?member}
 Value: [50000.00] {ex:contractValue ^^xsd:decimal}
 Approval Date: [2024-01-15] {ex:approvalDate ^^xsd:date}
 Start Date: [2024-02-01] {ex:startDate ^^xsd:date}
 
-### Invalid Contract {=ex:InvalidContract .ex:Contract}
-
-Contract with multiple business rule violations.
-
-Value: [-1000.00] {ex:contractValue ^^xsd:decimal}  # Negative value
-Approval Date: [2024-03-01] {ex:approvalDate ^^xsd:date}  # After start date
+#### Invalid Contract {=ex:InvalidContract .ex:Contract ?member}
+Value: [-1000.00] {ex:contractValue ^^xsd:decimal}
+Approval Date: [2024-03-01] {ex:approvalDate ^^xsd:date}
 Start Date: [2024-02-01] {ex:startDate ^^xsd:date}
 
 ---
 
-[This demo] {=ex:demo} must produce exactly **2** {cat:expectsViolations ^^xsd:integer} violations.
-
-## Expected Validation Results {=ex:results ?cat:hasResults}
-
-1. **Valid Contract** - passes (positive value, approved before start, acceptable risk ✓)
-2. **Invalid Contract** - fails two times:
-   - **Value violation**: Contract value must be positive for financial compliance ✗
-   - **Date violation**: Contract must be approved before start date ✗
-
-### 🔍 Test Validation
-
-```bash
-# This should show 2 violations with semantic business messages
-ig-cli validate ./constraints/message.md
-```
+[Demo] {=ex:demo} must produce exactly **2** {cat:expectsViolations ^^xsd:integer} violations.
+~~~~~~
 
 ---
 
-## 📝 Message Design Principles
+## 📝 MDLD Syntax Patterns
 
-**Semantic clarity:**
+The message constraint provides human-readable error messages for constraint violations.
+
+~~~~~~md
+**[Business rule description]** {=ex:PropertyConstraint .sh:PropertyShape sh:message}
+
+[Property Name] {+ex:propertyName ?sh:path} [constraint description].
+~~~~~~
+
+**Key components:**
+- **Validation message** - Human-readable error message (`{sh:message}`)
 - **Business context** - Explain what business rule is violated
 - **Impact description** - Describe why this matters
 - **Actionable guidance** - Suggest how to fix the issue
 - **Domain terminology** - Use appropriate business language
 
-**Message structure patterns:**
+**Important notes:**
+- Messages should be specific and actionable
+- Use business terminology, not just technical
+- Keep messages concise but informative
+- Consider the target audience (technical vs business)
+- Messages help with debugging and user feedback
 
-### 1. Comparison Constraints
-```md
-**[Property] must be [relationship] [reference property]**: **[Business consequence]**
-```
-*Example*: "Contract must be approved before start date"
-*Why*: Explains temporal business rule clearly
+---
 
-### 2. Value Range Constraints  
-```md
-**[Property] must be [condition] for [business requirement]**: **[Compliance reason]**
-```
-*Example*: "Contract value must be positive for financial compliance"
-*Why*: Connects technical rule to business purpose
+## 🎯 Use Cases
 
-### 3. Enumeration Constraints
-```md
-**[Property] must be within acceptable [domain] parameters**: **[Business justification]**
-```
-*Example*: "Risk level must be within acceptable business parameters"
-*Why*: Explains domain validation in business terms
-
-## 🎯 Advanced Message Techniques
-
-**Context-aware messaging:**
-- **Multi-constraint scenarios** - Different messages for related violations
-- **Severity-appropriate language** - Critical vs. informational tone
-- **User role consideration** - Technical vs. business audience
-- **Internationalization ready** - Clear, translatable messages
-
-**Complex scenario handling:**
-- **Cascading violations** - When one failure causes others
-- **Interdependent rules** - Messages that reference related constraints
-- **Business process flow** - Messages that follow workflow logic
+- **User-friendly feedback** - Provide clear error messages to users
+- **Debugging** - Help developers identify constraint violations
+- **Actionable reporting** - Guide users on how to fix issues
+- **Business context** - Explain violations in business terms
 - **Compliance reporting** - Regulatory and audit-focused language
 
-**Message quality checklist:**
-- ✅ **Specific** - Identifies exact constraint violated
-- ✅ **Semantic** - Carries business meaning, not just technical
-- ✅ **Actionable** - Provides clear resolution path
-- ✅ **Consistent** - Uses uniform terminology across constraints
-- ✅ **Concise** - Delivers maximum information efficiently
+---
+
+## 🔧 Implementation Guidelines
+
+**When to use message:**
+- **All constraints** - Always provide messages for user-friendly feedback
+- **Business rules** - Explain violations in business terms
+- **Complex validation** - Help users understand what went wrong
+- **Compliance** - Provide regulatory and audit context
+- **Debugging** - Aid in identifying constraint violations
+
+**Best practices:**
+- Use semantic, business-focused language
+- Keep messages concise but informative
+- Provide actionable guidance
+- Use consistent terminology across constraints
+- Consider internationalization (clear, translatable messages)
+
+**Common pitfalls:**
+- ❌ Using technical jargon instead of business language
+- ❌ Writing vague or unclear messages
+- ❌ Not providing actionable guidance
+- ❌ Making messages too long or verbose
+- ❌ Forgetting to include messages on constraints

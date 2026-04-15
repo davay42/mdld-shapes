@@ -18,27 +18,32 @@
 
 ---
 
+## 📋 Quick Start Pattern
 
-**Person must have exactly one email address** {=ex:#emailExact .sh:PropertyShape  sh:message} requires the [email] {+ex:email ?sh:path} property to have exactly  [1] {sh:minCount sh:maxCount ^^xsd:integer}.
+~~~~~~md
+[ex] <cat:example/count/>
 
-**Person can have at most two phone numbers** {=ex:#phoneOptional .sh:PropertyShape  sh:message} allows the [phone] {+ex:phone ?sh:path} property to have at most [2] {sh:maxCount ^^xsd:integer} values.
+### Shape Definition
+
+**Person must have exactly one email address** {=ex:#emailExact .sh:PropertyShape sh:message}
+[email] {+ex:email ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
+
+**Person can have at most two phone numbers** {=ex:#phoneOptional .sh:PropertyShape sh:message}
+[phone] {+ex:phone ?sh:path} can have at most [2] {sh:maxCount ^^xsd:integer} values.
 
 ---
 
-### 📋 Test Data {=ex:data .Container}
+### Test Data {=ex:data .Container}
 
 #### Valid Person {=ex:ValidPerson ?member}
-
 Email: [work@example.com] {ex:email}
 Phone: [555-1234] {ex:phone}
 Phone: [555-5678] {ex:phone}
 
 #### Invalid Person - Too Few {=ex:InvalidPersonFew ?member}
-
 Phone: [555-1234] {ex:phone}
 
 #### Invalid Person - Too Many {=ex:InvalidPersonMany ?member}
-
 Email: [work@example.com] {ex:email}
 Email: [personal@example.com] {ex:email}
 Phone: [555-1234] {ex:phone}
@@ -48,29 +53,62 @@ Phone: [555-9999] {ex:phone}
 ---
 
 [Demo] {=ex:demo} must produce exactly **3** {cat:expectsViolations ^^xsd:integer} violations.
-
-### Expected Validation Results {=ex:results ?cat:hasResults}
-
-1. **Valid Person** - passes (1 email, 2 phones - all within limits)
-2. **Invalid Person - Too Few** - fails (0 emails - below minCount of 1)
-3. **Invalid Person - Too Many** - fails 2 times (2 emails - exceeds maxCount of 1, 3 phones exceed the maxCount of 2)
-
-### 🔍 Test Validation
-
-```bash
-# This should show 3 violations for count constraint violations
-ig-cli validate ./constraints/count.md
-```
+~~~~~~
 
 ---
 
 ## 📝 MDLD Syntax Patterns
 
-**Recommended pattern for count constraints:**
+Count constraints control the number of values a property can have.
 
-1. Use exact values with both minCount and maxCount for required properties
-2. Use maxCount alone for optional multi-valued properties
-3. Combine multiple count constraints in a single NodeShape
-4. Provide clear validation messages that specify the exact requirement
+~~~~~~md
+**[Property] must have [Count] values** {=ex:PropertyCountConstraint .sh:PropertyShape sh:message}
 
-This approach ensures precise cardinality control while maintaining readability.
+[Property Name] {+ex:propertyName ?sh:path} must have at least [min] {sh:minCount ^^xsd:integer} and at most [max] {sh:maxCount ^^xsd:integer} values.
+~~~~~~
+
+**Key components:**
+- **Property path** - The property to validate (`{+ex:propertyName ?sh:path}`)
+- **Minimum count** - Minimum number of values (`{sh:minCount ^^xsd:integer}`)
+- **Maximum count** - Maximum number of values (`{sh:maxCount ^^xsd:integer}`)
+- **Exact count** - Both minCount and maxCount with same value
+- **Validation message** - Human-readable error message (`{sh:message}`)
+
+**Important notes:**
+- Use `minCount` alone for "at least X values"
+- Use `maxCount` alone for "at most X values"
+- Use both with same value for "exactly X values"
+- Combine with other constraints for complete validation
+- Empty properties fail minCount validation
+
+---
+
+## 🎯 Use Cases
+
+- **Required properties** - Ensure property has at least 1 value (minCount: 1)
+- **Single-valued properties** - Ensure property has exactly 1 value (minCount: 1, maxCount: 1)
+- **Multi-valued limits** - Limit number of values for optional properties (maxCount: N)
+- **Exact cardinality** - Enforce specific number of values
+
+---
+
+## � Implementation Guidelines
+
+**When to use count constraints:**
+- **Required properties** - Ensure data completeness
+- **Data modeling** - Enforce cardinality constraints
+- **Validation rules** - Ensure proper number of values
+- **Data quality** - Prevent missing or excessive values
+
+**Best practices:**
+- Use minCount: 1 for required properties
+- Use both minCount and maxCount: 1 for single-valued properties
+- Combine with datatype/class constraints for complete validation
+- Provide clear validation messages specifying exact requirements
+
+**Common pitfalls:**
+- ❌ Forgetting to specify the datatype ^^xsd:integer
+- ❌ Using negative values for counts
+- ❌ Confusing minCount with maxCount
+- ❌ Not combining with other constraints for complete validation
+- ❌ Using count constraints when other constraints would be more appropriate
