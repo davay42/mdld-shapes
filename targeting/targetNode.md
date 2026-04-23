@@ -13,33 +13,45 @@
 
 ## 📋 Quick Start Pattern
 
+The targetNode constraint targets specific individual nodes for validation. This example demonstrates critical infrastructure and executive validation scenarios.
+
 ~~~~~~md
-[ex] <tag:my@example.org,2026:targeting/>
+[ex] <mdld:shacl/example/targeting/>
 
-### Shape Definition
+## Critical Infrastructure Demo
 
-**Database Validation Shape** {=ex:DatabaseValidationShape .sh:NodeShape label} targets the [Main Database] {+ex:MainDatabase ?sh:targetNode} for critical infrastructure validation.
+The **Database Validation Shape** {=ex:DatabaseValidationShape .sh:NodeShape ?cat:hasShape label} targets the [Main Database] {+ex:MainDatabase ?sh:targetNode} for critical infrastructure validation: [status] {+#databaseStatus ?sh:property sh:name} and [uptime] {+#databaseUptime ?sh:property sh:name}.
 
-**Database Status Rule** {=#databaseStatus .sh:PropertyShape ?sh:property} requires the [status] {+ex:status ?sh:path} property to be exactly [online] {sh:hasValue}: **Main database must be online** {sh:message}
+**Main database must be online** {=#databaseStatus .sh:PropertyShape sh:message} requires the [status] {+ex:status ?sh:path} property to be exactly [online] {sh:hasValue}.
 
-**Database Uptime Rule** {=#databaseUptime .sh:PropertyShape ?sh:property} requires the [uptime] {+ex:uptime ?sh:path} property to be at least [99.9] {sh:minInclusive ^^xsd:decimal}: **Database uptime must be at least 99.9%** {sh:message}
+**Database uptime must be at least 99.9%** {=#databaseUptime .sh:PropertyShape sh:message} that requires the [uptime] {+ex:uptime ?sh:path} property to be at least [99.9] {sh:minInclusive ^^xsd:decimal}.
+
+## Executive Validation Demo
+
+**CEO Validation Shape** {=ex:CEOValidationShape .sh:NodeShape ?cat:hasShape label} targets the [CEO] {+ex:CEO ?sh:targetNode} for [executive] {+#executiveClearance ?sh:property sh:name} level clearance.
+
+**CEO must have top-secret security clearance** {=#executiveClearance .sh:PropertyShape sh:message} requires the [securityClearance] {+ex:securityClearance ?sh:path} property to be exactly [top-secret] {sh:hasValue}.
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Main Database {=ex:MainDatabase ?member}
+### Main Database {=ex:MainDatabase}
 Status: [offline] {ex:status}
 Uptime: [95.5] {ex:uptime ^^xsd:decimal}
 
-#### Backup Database {=ex:BackupDatabase ?member}
+### Backup Database {=ex:BackupDatabase}
 Status: [online] {ex:status}
 Uptime: [99.8] {ex:uptime ^^xsd:decimal}
 
----
+### CEO {=ex:CEO}
+Security Clearance: [secret] {ex:securityClearance}
 
-[Demo] {=ex:demo} must produce exactly **2** violations.
+### CFO {=ex:CFO}
+Security Clearance: [secret] {ex:securityClearance}
 ~~~~~~
+
+**Expected Result:** 3 violations (MainDatabase fails twice: status offline AND uptime < 99.9%; CEO fails: clearance is secret not top-secret; BackupDatabase and CFO not validated as they're not targeted)
 
 ---
 

@@ -40,9 +40,9 @@ Uptime: [99.8] {ex:uptime ^^xsd:decimal}
 
 ### CEO {=ex:CEO}
 
-The chief executive with proper clearance.
+The chief executive with improper clearance.
 
-Security Clearance: [top-secret] {ex:securityClearance}
+Security Clearance: [secret] {ex:securityClearance}
 
 ### CFO {=ex:CFO}
 
@@ -58,7 +58,7 @@ Security Clearance: [secret] {ex:securityClearance}
 
 1. **Main Database** - fails twice (status: offline ≠ online AND uptime: 95.5% < 99.9%)
 2. **Backup Database** - not validated (not targeted by specific node validation)
-3. **CEO** - passes (has top-secret clearance as required)
+3. **CEO** - fails (security clearance is secret, not top-secret)
 4. **CFO** - not validated (not targeted by CEO-specific validation)
 
 Note: Node-based targeting provides precise control over which specific entities get validated, making it ideal for critical infrastructure and executive validation.

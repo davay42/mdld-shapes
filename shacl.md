@@ -56,14 +56,12 @@ Let's create a simple shape for validating user accounts:
 ~~~~~~md
 [ex] <tag:my@example.org,2026:users/>
 
-**User Validation Shape** {=ex:UserShape .sh:NodeShape  label}
-Validates all [User] {+ex:User ?sh:targetClass} instances.
+**User Validation Shape** {=ex:UserShape .sh:NodeShape label}
+Validates all [User] {+ex:User ?sh:targetClass} instances to have a [name] {+ex:UsernameRule ?sh:property sh:name} and an [email] {+ex:EmailRule ?sh:property sh:name}.
 
-**Username is required** {=ex:UsernameRule .sh:PropertyShape ?sh:property}
-[username] {+ex:username ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
+**Username is required** {=ex:UsernameRule .sh:PropertyShape sh:message} requires [username] {+ex:username ?sh:path} to have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
 
-**Email is required** {=ex:EmailRule .sh:PropertyShape ?sh:property}
-[email] {+ex:email ?sh:path} must have at least [1] {sh:minCount ^^xsd:integer} value.
+**Email is required** {=ex:EmailRule .sh:PropertyShape sh:message} requires [email] {+ex:email ?sh:path} must have at least [1] {sh:minCount ^^xsd:integer} value.
 ~~~~~~
 
 ## Key MDLD Syntax Patterns
@@ -146,36 +144,36 @@ These are targeting predicates that determine which nodes get validated (not con
 
 ## 📋 Quick Start Pattern
 
+The targetClass constraint targets all nodes that are instances of a specific RDF class. This example validates all Product instances for business requirements.
+
 ~~~~~~md
-[ex] <tag:my@example.org,2026:targeting/>
+[ex] <mdld:shacl/example/targeting/>
 
-### Shape Definition
+## Product Validation Shape {=ex:ProductValidationShape .sh:NodeShape  label}
 
-**Product Validation Shape** {=ex:ProductValidationShape .sh:NodeShape label} targets all [Product] {+ex:Product ?sh:targetClass} instances to validate core product requirements.
+Targets all [Product] {+ex:Product ?sh:targetClass} instances to validate core product requirements: [name] {+#productName ?sh:property sh:name} and [price] {+#productPrice ?sh:property sh:name}.
 
-**Product Name Rule** {=#productName .sh:PropertyShape ?sh:property} requires the [name] {+ex:name ?sh:path} property to have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value: **Product must have exactly one name** {sh:message}
+**Product must have exactly one name** {=#productName .sh:PropertyShape sh:message} requires the [name] {+ex:name ?sh:path} property to have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
 
-**Product Price Rule** {=#productPrice .sh:PropertyShape ?sh:property} requires the [price] {+ex:price ?sh:path} property to be at least [0.01] {sh:minInclusive ^^xsd:decimal}: **Product price must be positive** {sh:message}
+**Product price must be positive** {=#productPrice .sh:PropertyShape sh:message} requires the [price] {+ex:price ?sh:path} property to be at least [0.01] {sh:minInclusive ^^xsd:decimal}.
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Valid Product {=ex:Laptop .ex:Product ?member}
+### Laptop {=ex:Laptop .ex:Product}
 Name: [MacBook Pro] {ex:name}
 Price: [1299.99] {ex:price ^^xsd:decimal}
 
-#### Invalid Product {=ex:InvalidProduct .ex:Product ?member}
+### Invalid Product {=ex:InvalidProduct .ex:Product}
 Price: [-50.00] {ex:price ^^xsd:decimal}
 
-#### Service {=ex:Service .ex:Service ?member}
+### Service {=ex:Service .ex:Service}
 Name: [Consulting] {ex:name}
 Price: [200.00] {ex:price ^^xsd:decimal}
-
----
-
-[Demo] {=ex:demo} must produce exactly **2** violations.
 ~~~~~~
+
+**Expected Result:** 2 violations (InvalidProduct fails twice: missing name AND negative price; Service not validated since it's not a Product)
 
 ---
 
@@ -263,33 +261,45 @@ Target class targets all nodes that are instances of a specific RDF class for sh
 
 ## 📋 Quick Start Pattern
 
+The targetNode constraint targets specific individual nodes for validation. This example demonstrates critical infrastructure and executive validation scenarios.
+
 ~~~~~~md
-[ex] <tag:my@example.org,2026:targeting/>
+[ex] <mdld:shacl/example/targeting/>
 
-### Shape Definition
+## Critical Infrastructure Demo
 
-**Database Validation Shape** {=ex:DatabaseValidationShape .sh:NodeShape label} targets the [Main Database] {+ex:MainDatabase ?sh:targetNode} for critical infrastructure validation.
+The **Database Validation Shape** {=ex:DatabaseValidationShape .sh:NodeShape ?cat:hasShape label} targets the [Main Database] {+ex:MainDatabase ?sh:targetNode} for critical infrastructure validation: [status] {+#databaseStatus ?sh:property sh:name} and [uptime] {+#databaseUptime ?sh:property sh:name}.
 
-**Database Status Rule** {=#databaseStatus .sh:PropertyShape ?sh:property} requires the [status] {+ex:status ?sh:path} property to be exactly [online] {sh:hasValue}: **Main database must be online** {sh:message}
+**Main database must be online** {=#databaseStatus .sh:PropertyShape sh:message} requires the [status] {+ex:status ?sh:path} property to be exactly [online] {sh:hasValue}.
 
-**Database Uptime Rule** {=#databaseUptime .sh:PropertyShape ?sh:property} requires the [uptime] {+ex:uptime ?sh:path} property to be at least [99.9] {sh:minInclusive ^^xsd:decimal}: **Database uptime must be at least 99.9%** {sh:message}
+**Database uptime must be at least 99.9%** {=#databaseUptime .sh:PropertyShape sh:message} that requires the [uptime] {+ex:uptime ?sh:path} property to be at least [99.9] {sh:minInclusive ^^xsd:decimal}.
+
+## Executive Validation Demo
+
+**CEO Validation Shape** {=ex:CEOValidationShape .sh:NodeShape ?cat:hasShape label} targets the [CEO] {+ex:CEO ?sh:targetNode} for [executive] {+#executiveClearance ?sh:property sh:name} level clearance.
+
+**CEO must have top-secret security clearance** {=#executiveClearance .sh:PropertyShape sh:message} requires the [securityClearance] {+ex:securityClearance ?sh:path} property to be exactly [top-secret] {sh:hasValue}.
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Main Database {=ex:MainDatabase ?member}
+### Main Database {=ex:MainDatabase}
 Status: [offline] {ex:status}
 Uptime: [95.5] {ex:uptime ^^xsd:decimal}
 
-#### Backup Database {=ex:BackupDatabase ?member}
+### Backup Database {=ex:BackupDatabase}
 Status: [online] {ex:status}
 Uptime: [99.8] {ex:uptime ^^xsd:decimal}
 
----
+### CEO {=ex:CEO}
+Security Clearance: [secret] {ex:securityClearance}
 
-[Demo] {=ex:demo} must produce exactly **2** violations.
+### CFO {=ex:CFO}
+Security Clearance: [secret] {ex:securityClearance}
 ~~~~~~
+
+**Expected Result:** 3 violations (MainDatabase fails twice: status offline AND uptime < 99.9%; CEO fails: clearance is secret not top-secret; BackupDatabase and CFO not validated as they're not targeted)
 
 ---
 
@@ -377,39 +387,56 @@ Target node targets specific individual nodes identified by their IRI for precis
 
 ## 📋 Quick Start Pattern
 
+The targetSubjectsOf constraint targets all subjects (nodes) that have a specific property pointing to any value. This example demonstrates management and approval scenarios where we validate entities that initiate relationships.
+
 ~~~~~~md
-[ex] <tag:my@example.org,2026:targeting/>
+[ex] <mdld:shacl/example/targeting/>
 
-### Shape Definition
+## Management Validation Demo
 
-**Manager Validation Shape** {=ex:ManagerValidationShape .sh:NodeShape label} targets all [managers] {+ex:manages ?sh:targetSubjectsOf} of the manages relationship to validate management requirements.
+The **Manager Validation Shape** {=ex:ManagerValidationShape .sh:NodeShape label} targets all [managers] {+ex:manages ?sh:targetSubjectsOf} of the manages relationship to validate management requirements: [level] {+#managementLevel ?sh:property sh:name} and [teamSize] {+#teamSize ?sh:property sh:name}.
 
-**Management Level Rule** {=#managementLevel .sh:PropertyShape ?sh:property} requires the [level] {+ex:level ?sh:path} property to be at least [3] {sh:minInclusive ^^xsd:integer}: **Managers must have level 3 or higher** {sh:message}
+**Managers must have level 3 or higher** {=#managementLevel .sh:PropertyShape sh:message} requires the [level] {+ex:level ?sh:path} property to be at least [3] {sh:minInclusive ^^xsd:integer}.
 
-**Team Size Rule** {=#teamSize .sh:PropertyShape ?sh:property} requires the [teamSize] {+ex:teamSize ?sh:path} property to be at most [10] {sh:maxInclusive ^^xsd:integer}: **Managers can oversee at most 10 team members** {sh:message}
+**Managers can oversee at most 10 team members** {=#teamSize .sh:PropertyShape sh:message} that requires the [teamSize] {+ex:teamSize ?sh:path} property to be at most [10] {sh:maxInclusive ^^xsd:integer}.
+
+## Approval Validation Demo
+
+**Approver Validation Shape** {=ex:ApproverValidationShape .sh:NodeShape label} targets all [approvers] {+ex:approves ?sh:targetSubjectsOf} of the approves relationship to validate approval [authority] {+#approvalAuthority ?sh:property sh:name}.
+
+**Approvers must have authority level 2 or higher** {=#approvalAuthority .sh:PropertyShape sh:message} requires the [authority] {+ex:authority ?sh:path} property to be at least [2] {sh:minInclusive ^^xsd:integer}.
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Engineering Manager {=ex:EngineeringManager ?member}
+### Engineering Manager {=ex:EngineeringManager}
 Level: [2] {ex:level ^^xsd:integer}
 Team Size: [15] {ex:teamSize ^^xsd:integer}
 Manages: [EngineeringTeam] {ex:manages}
 
-#### Senior Manager {=ex:SeniorManager ?member}
+### Senior Manager {=ex:SeniorManager}
 Level: [4] {ex:level ^^xsd:integer}
 Team Size: [8] {ex:teamSize ^^xsd:integer}
 Manages: [QATeam] {ex:manages}
 
-#### Junior Developer {=ex:JuniorDeveloper ?member}
+### Junior Developer {=ex:JuniorDeveloper}
 Level: [1] {ex:level ^^xsd:integer}
 Team Size: [0] {ex:teamSize ^^xsd:integer}
 
----
+### Finance Approver {=ex:FinanceApprover}
+Authority: [1] {ex:authority ^^xsd:integer}
+Approves: [ExpenseReport] {ex:approves}
 
-[Demo] {=ex:demo} must produce exactly **2** violations.
+### Executive Approver {=ex:ExecutiveApprover}
+Authority: [3] {ex:authority ^^xsd:integer}
+Approves: [BudgetRequest] {ex:approves}
+
+### Regular Employee {=ex:RegularEmployee}
+Authority: [0] {ex:authority ^^xsd:integer}
 ~~~~~~
+
+**Expected Result:** 3 violations (EngineeringManager fails twice: level < 3 AND teamSize > 10; FinanceApprover fails: authority < 2; JuniorDeveloper and RegularEmployee not validated as they don't initiate the relationships)
 
 ---
 
@@ -497,39 +524,61 @@ Target subjects of targets all subjects that have a specific property pointing t
 
 ## 📋 Quick Start Pattern
 
+The targetObjectsOf constraint targets all objects (nodes) that are referenced by a specific property. This example demonstrates team membership and product reference scenarios where we validate entities that are referenced by others.
+
 ~~~~~~md
-[ex] <tag:my@example.org,2026:targeting/>
+[ex] <mdld:shacl/example/targeting/>
 
-### Shape Definition
+## Team Membership Demo
 
-**Team Member Validation Shape** {=ex:TeamMemberValidationShape .sh:NodeShape label} targets all [team members] {+ex:memberOf ?sh:targetObjectsOf} to validate team membership requirements.
+The **Team Member Validation Shape** {=ex:TeamMemberValidationShape .sh:NodeShape label} targets all [team members] {+ex:memberOf ?sh:targetObjectsOf} to validate team membership requirements: [workload] {+#workloadRule ?sh:property sh:name} and [status] {+#activeStatus ?sh:property sh:name}.
 
-**Workload Rule** {=#workloadRule .sh:PropertyShape ?sh:property} requires the [workload] {+ex:workload ?sh:path} property to be at most [40] {sh:maxInclusive ^^xsd:integer}: **Team members must not exceed 40 hours workload** {sh:message}
+**Team members must not exceed 40 hours workload** {=#workloadRule .sh:PropertyShape sh:message} requires the [workload] {+ex:workload ?sh:path} property to be at most [40] {sh:maxInclusive ^^xsd:integer}.
 
-**Active Status Rule** {=#activeStatus .sh:PropertyShape ?sh:property} requires the [status] {+ex:status ?sh:path} property to be exactly [active] {sh:hasValue}: **Team members must be active** {sh:message}
+**Team members must be active** {=#activeStatus .sh:PropertyShape sh:message} that requires the [status] {+ex:status ?sh:path} property to be exactly [active] {sh:hasValue}.
+
+## Product Reference Demo
+
+**Referenced Product Validation Shape** {=ex:ReferencedProductValidationShape .sh:NodeShape label} targets all [referenced products] {+ex:references ?sh:targetObjectsOf} to validate product reference requirements: [availability] {+#productAvailability ?sh:property sh:name} and [price] {+#productPrice ?sh:property sh:name}.
+
+**Referenced products must be available** {=#productAvailability .sh:PropertyShape sh:message} requires the [available] {+ex:available ?sh:path} property to be exactly [true] {sh:hasValue}.
+
+**Referenced products must cost $1000 or less** {=#productPrice .sh:PropertyShape sh:message} that requires the [price] {+ex:price ?sh:path} property to be at most [1000.00] {sh:maxInclusive ^^xsd:decimal}.
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Senior Developer {=ex:SeniorDeveloper ?member}
+### EngineeringTeam {=ex:EngineeringTeam}
 Workload: [45] {ex:workload ^^xsd:integer}
 Status: [inactive] {ex:status}
-Member Of: [EngineeringTeam] {ex:memberOf}
 
-#### Junior Developer {=ex:JuniorDeveloper ?member}
+### QATeam {=ex:QATeam}
 Workload: [35] {ex:workload ^^xsd:integer}
 Status: [active] {ex:status}
-Member Of: [EngineeringTeam] {ex:memberOf}
 
-#### Manager {=ex:Manager ?member}
-Workload: [50] {ex:workload ^^xsd:integer}
-Status: [active] {ex:status}
+### Senior Developer {=ex:SeniorDeveloper}
+Member Of: [Engineering team] {+ex:EngineeringTeam ?ex:memberOf}
 
----
+### Junior Developer {=ex:JuniorDeveloper}
+Member Of: [QATeam] {+ex:QATeam ?ex:memberOf}
 
-[Demo] {=ex:demo} must produce exactly **2** violations.
+### Expensive Product {=ex:ExpensiveProduct}
+Price: [1500.00] {ex:price ^^xsd:decimal}
+Available: [false] {ex:available}
+
+### Affordable Product {=ex:AffordableProduct}
+Price: [299.99] {ex:price ^^xsd:decimal}
+Available: [true] {ex:available}
+
+### Order123 {=ex:Order123}
+References: [Expensive product] {+ex:ExpensiveProduct ?ex:references}
+
+### Order456 {=ex:Order456}
+References: [Affordable product] {+ex:AffordableProduct ?ex:references}
 ~~~~~~
+
+**Expected Result:** 4 violations (EngineeringTeam fails twice: workload > 40 AND status inactive; ExpensiveProduct fails twice: price > 1000 AND unavailable; QATeam and AffordableProduct pass; developers and orders not validated as they're subjects, not objects)
 
 ---
 
@@ -783,22 +832,29 @@ Need to check if these are working:
 
 ## 📋 Quick Start Pattern
 
+The class constraint ensures property values are instances of a specific RDF class. This example validates that employee managers must be Person instances.
+
 ~~~~~~md
 [ex] <tag:my@example.org,2026:class/>
 
-**Manager must be a Person instance** {=#managerClass .sh:PropertyShape}
-[manager] {+ex:manager ?sh:path} must be an instance of [Person] {+ex:Person ?sh:class}
+## Employee Test Shape {=ex:EmployeeTestShape .sh:NodeShape  label}
+
+All [employees] {+member ?sh:targetObjectsOf} must have **manager** {+#managerClass ?sh:property sh:name} class assigned.
+
+**Manager must be a Person instance** {=#managerClass .sh:PropertyShape sh:message} requires the [manager] {+ex:manager ?sh:path} property to be an instance of a [Person] {+ex:Person ?sh:class}.
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Valid Employee {=ex:ValidEmployee ?member}
+### Valid Employee {=ex:ValidEmployee ?member}
 Manager: [john] {+ex:john ?ex:manager .ex:Person}
 
-#### Invalid Employee {=ex:InvalidEmployee ?member}
+### Invalid Employee {=ex:InvalidEmployee ?member}
 Manager: [robot] {+ex:robot ?ex:manager ex:Role}
 ~~~~~~
+
+**Expected Result:** 1 violation (InvalidEmployee fails because manager is not a Person)
 
 ---
 
@@ -856,22 +912,29 @@ Manager: [robot] {+ex:robot ?ex:manager ex:Role}
 
 ## 📋 Quick Start Pattern
 
+The datatype constraint ensures literal values have the correct datatype. This example validates that product prices must be decimal values.
+
 ~~~~~~md
 [ex] <tag:my@example.org,2026:datatype/>
 
-**Price must be decimal** {=#priceDecimal .sh:PropertyShape}
-[price] {+ex:price ?sh:path} must be a [decimal] {+xsd:decimal ?sh:datatype} value.
+## Product Test Shape {=ex:ProductTestShape .sh:NodeShape sh:name}
+
+Validates [Valid Product] {+ex:ValidProduct ?sh:targetNode} and [Invalid Product] {+ex:InvalidProduct ?sh:targetNode} with **price** {+#priceDecimal ?sh:property sh:name}.
+
+**Price must be decimal** {=#priceDecimal .sh:PropertyShape sh:message} requires the [price] {+ex:price ?sh:path} property to be a [decimal] {+xsd:decimal ?sh:datatype} value.
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Valid Product {=ex:ValidProduct ?member}
+### Valid Product {=ex:ValidProduct ?member}
 Price: [29.99] {ex:price ^^xsd:decimal}
 
-#### Invalid Product {=ex:InvalidProduct ?member}
+### Invalid Product {=ex:InvalidProduct ?member}
 Price: [29.99] {ex:price ^^xsd:string}
 ~~~~~~
+
+**Expected Result:** 1 violation (InvalidProduct fails because price is string, not decimal)
 
 ---
 
@@ -928,27 +991,33 @@ Price: [29.99] {ex:price ^^xsd:string}
 
 ## 📋 Quick Start Pattern
 
+The nodeKind constraint expects a node to be of a specific kind (blank node, IRI, or literal). This example validates that content must be literal and references must be IRIs.
+
 ~~~~~~md
 [ex] <tag:my@example.org,2026:nodekind/>
 
-**Content must be literal** {=#contentLiteral .sh:PropertyShape}
-[content] {+ex:content ?sh:path} must be a [Literal] {+sh:Literal ?sh:nodeKind}.
+## Document Test Shape {=ex:DocumentTestShape .sh:NodeShape  label}
 
-**Reference must be IRI** {=#referenceIRI .sh:PropertyShape}
-[reference] {+ex:reference ?sh:path} must be an [IRI] {+sh:IRI ?sh:nodeKind}.
+Validates [Valid Document] {+ex:ValidDocument ?sh:targetNode} and [Invalid Document] {+ex:InvalidDocument ?sh:targetNode} with literal **content** {+#contentLiteral ?sh:property sh:name} and IRI for **reference** {+#referenceIRI ?sh:property sh:name}.
+
+**Content must be literal** {=#contentLiteral .sh:PropertyShape sh:message} requires [content] {+ex:content ?sh:path} to be a [Literal] {+sh:Literal ?sh:nodeKind}.
+
+**Reference must be IRI** {=#referenceIRI .sh:PropertyShape sh:message} requires [reference] {+ex:reference ?sh:path} to be an [IRI] {+sh:IRI ?sh:nodeKind}.
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Valid Document {=ex:ValidDocument ?member}
+### Valid Document {=ex:ValidDocument ?member}
 Content: [text] {ex:content}
 Reference: <https://example.org> {?ex:reference}
 
-#### Invalid Document {=ex:InvalidDocument ?member}
+### Invalid Document {=ex:InvalidDocument ?member}
 Content: <https://example.org> {?ex:content}
 Reference: [text] {ex:reference}
 ~~~~~~
+
+**Expected Result:** 2 violations (InvalidDocument fails twice: content is IRI not literal, reference is text not IRI)
 
 ---
 
@@ -1011,23 +1080,30 @@ Reference: [text] {ex:reference}
 
 ## 📋 Quick Start Pattern
 
+Count constraints specify the minimum and maximum number of values a property must have. This example validates that email must be exactly one value.
+
 ~~~~~~md
 [ex] <tag:my@example.org,2026:count/>
 
-**Email must be exactly one** {=#emailExact .sh:PropertyShape}
-[email] {+ex:email ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
+## Person Test Shape {=ex:PersonTestShape .sh:NodeShape  sh:name}
+
+Validates all [member] {+member ?sh:targetObjectsOf} entities with **email** {+#emailExact ?sh:property sh:name}.
+
+**Email must be exactly one** {=#emailExact .sh:PropertyShape sh:message} requires [email] {+ex:email ?sh:path} to have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Valid Person {=ex:ValidPerson ?member}
+### Valid Person {=ex:ValidPerson ?member}
 Email: [work@example.com] {ex:email}
 
-#### Invalid Person {=ex:InvalidPerson ?member}
+### Invalid Person {=ex:InvalidPerson ?member}
 Email: [work@example.com] {ex:email}
 Email: [personal@example.com] {ex:email}
 ~~~~~~
+
+**Expected Result:** 1 violation (InvalidPerson fails because it has two emails instead of one)
 
 ---
 
@@ -1102,22 +1178,29 @@ Email: [personal@example.com] {ex:email}
 
 ## 📋 Quick Start Pattern
 
+Range constraints specify minimum and maximum values for numeric or date properties. This example validates that product prices must be between 10 and 100 inclusive.
+
 ~~~~~~md
 [ex] <tag:my@example.org,2026:range/>
 
-**Price must be between 10 and 100 inclusive** {=#priceRange .sh:PropertyShape}
-[price] {+ex:price ?sh:path} must be at least [10] {sh:minInclusive ^^xsd:decimal} and at most [100] {sh:maxInclusive ^^xsd:decimal}.
+## Product Test Shape {=ex:ProductTestShape .sh:NodeShape label}
+
+Validates all [member] {+member ?sh:targetObjectsOf} entities with conforming **price** {+#priceRange ?sh:property}.
+
+**Price must be between 10 and 100 inclusive** {=#priceRange .sh:PropertyShape sh:message} requires [price] {+ex:price ?sh:path} to be at least [10] {sh:minInclusive ^^xsd:decimal} and at most [100] {sh:maxInclusive ^^xsd:decimal}.
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Valid Product {=ex:ValidProduct ?member}
+### Valid Product {=ex:ValidProduct ?member}
 Price: [50] {ex:price ^^xsd:decimal}
 
-#### Invalid Product {=ex:InvalidProduct ?member}
+### Invalid Product {=ex:InvalidProduct ?member}
 Price: [5] {ex:price ^^xsd:decimal}
 ~~~~~~
+
+**Expected Result:** 1 violation (InvalidProduct fails because price is 5, below the minimum of 10)
 
 ---
 
@@ -1177,24 +1260,31 @@ Price: [5] {ex:price ^^xsd:decimal}
 
 ## 📋 Quick Start Pattern
 
+Comparison constraints validate property values against reference nodes using comparison operators. This example validates that order dates must be before shipping dates.
+
 ~~~~~~md
 [ex] <tag:my@example.org,2026:comparison/>
 
-**Order date must be before shipping date** {=#orderDateRule .sh:PropertyShape}
-[order date] {+ex:orderDate ?sh:path} must be before [shipping date] {+ex:shippingDate ?sh:lessThan}.
+## Order Test Shape {=ex:OrderTestShape .sh:NodeShape  label}
+
+Validates all [member] {+member ?sh:targetObjectsOf} entities with **order date before shipping date** {+#orderDateRule ?sh:property sh:name}.
+
+**Order date must be before shipping date** {=#orderDateRule .sh:PropertyShape sh:message} requires [order date] {+ex:orderDate ?sh:path} to be before [shipping date] {+ex:shippingDate ?sh:lessThan}.
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Valid Order {=ex:ValidOrder ?member}
+### Valid Order {=ex:ValidOrder ?member}
 Order Date: [2024-06-15] {ex:orderDate ^^xsd:date}
 Shipping Date: [2024-06-20] {ex:shippingDate ^^xsd:date}
 
-#### Invalid Order {=ex:InvalidOrder ?member}
+### Invalid Order {=ex:InvalidOrder ?member}
 Order Date: [2024-06-25] {ex:orderDate ^^xsd:date}
 Shipping Date: [2024-06-20] {ex:shippingDate ^^xsd:date}
 ~~~~~~
+
+**Expected Result:** 1 violation (InvalidOrder fails because order date is after shipping date)
 
 ---
 
@@ -1251,24 +1341,31 @@ Shipping Date: [2024-06-20] {ex:shippingDate ^^xsd:date}
 
 ## 📋 Quick Start Pattern
 
+The disjoint constraint ensures that values of a property are disjoint with values of another property. This example validates that preferred labels must be different from alternative labels.
+
 ~~~~~~md
 [ex] <tag:my@example.org,2026:disjoint/>
 
-**Preferred labels must be different from alternative labels** {=ex:DisjointExampleShape .sh:NodeShape}
-[preferred labels] {+ex:prefLabel ?sh:path} must be [disjoint] {+ex:altLabel ?sh:disjoint} with [alternative labels].
+## Label Test Shape {=ex:DisjointExampleShape .sh:NodeShape label}
+
+Validates all [member] {+member ?sh:targetObjectsOf} entities with **disjoint labels** {+#disjointRule ?sh:property sh:name}.
+
+**Preferred labels must be different from alternative labels** {=#disjointRule .sh:PropertyShape sh:message} requires [preferred labels] {+ex:prefLabel ?sh:path} to be disjoint with [alternative labels] {+ex:altLabel ?sh:disjoint}.
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Valid Case {=ex:USA ?member}
+### Valid Case {=ex:USA ?member}
 Preferred Label: [USA] {ex:prefLabel}
 Alternative Label: [United States] {ex:altLabel}
 
-#### Invalid Case {=ex:Germany ?member}
+### Invalid Case {=ex:Germany ?member}
 Preferred Label: [Germany] {ex:prefLabel}
 Alternative Label: [Germany] {ex:altLabel}
 ~~~~~~
+
+**Expected Result:** 1 violation (Germany fails because preferred and alternative labels are the same)
 
 ---
 
@@ -1323,25 +1420,29 @@ Alternative Label: [Germany] {ex:altLabel}
 
 ## 📋 Quick Start Pattern
 
+The NOT constraint requires value nodes to NOT conform to a given shape. This example validates that users cannot have a deleted status.
+
 ~~~~~~md
 [ex] <tag:my@example.org,2026:not/>
 
-**User cannot have deleted status** {=ex:UserStatusShape .sh:NodeShape}
+## User Status Shape {=ex:UserStatusShape .sh:NodeShape  label}
 
-User status must not conform to [Forbidden Status Shape] {+ex:ForbiddenStatusShape ?sh:not}.
+Validates all [member] {+member ?sh:targetObjectsOf} entities to not conform to the forbidden **shape** {+ex:ForbiddenStatusShape ?sh:not}.
 
 **Forbidden Status Shape** {=ex:ForbiddenStatusShape .sh:NodeShape} requires [status] {+ex:status ?sh:path} to be exactly [deleted] {sh:hasValue}.
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Valid User {=ex:ValidActiveUser ?member}
+### Valid User {=ex:ValidActiveUser ?member}
 Status: [active] {ex:status}
 
-#### Invalid User {=ex:InvalidDeletedUser ?member}
+### Invalid User {=ex:InvalidDeletedUser ?member}
 Status: [deleted] {ex:status}
 ~~~~~~
+
+**Expected Result:** 1 violation (InvalidDeletedUser fails because status is deleted, which conforms to the forbidden shape)
 
 ---
 
@@ -1396,10 +1497,14 @@ Status: [deleted] {ex:status}
 
 ## 📋 Quick Start Pattern
 
+The AND constraint requires all specified constraints to be satisfied. This example validates that products must have both a price and a category.
+
 ~~~~~~md
 [ex] <tag:my@example.org,2026:and/>
 
-**Product must have price and category** {sh:message}
+## Product Validation Shape {=ex:ProductValidationShape .sh:NodeShape label}
+
+Validates all [member] {+member ?sh:targetObjectsOf} entities with **Product must have price and category** {sh:message}.
 
 **Constraints List** {=ex:and-l1 ?sh:and .rdf:List}: [Price Required] {+ex:priceRequired ?rdf:first}, then [followed] {=ex:and-l2 ?rdf:rest} by [Category Required] {+ex:categoryRequired ?rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
 
@@ -1409,15 +1514,17 @@ Status: [deleted] {ex:status}
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Valid Product {=ex:ValidProduct ?member}
+### Valid Product {=ex:ValidProduct ?member}
 Price: [999] {ex:price ^^xsd:integer}
 Category: [Electronics] {ex:category}
 
-#### Invalid Product {=ex:MissingPriceProduct ?member}
+### Invalid Product {=ex:MissingPriceProduct ?member}
 Category: [Electronics] {ex:category}
 ~~~~~~
+
+**Expected Result:** 1 violation (MissingPriceProduct fails because it lacks price)
 
 ---
 
@@ -1479,22 +1586,29 @@ Category: [Electronics] {ex:category}
 
 ## 📋 Quick Start Pattern
 
+Length constraints specify the minimum and maximum length of string values. This example validates that usernames must be between 3 and 20 characters.
+
 ~~~~~~md
 [ex] <tag:my@example.org,2026:length/>
 
-**Username must be 3-20 characters** {=#usernameLength .sh:PropertyShape}
-[username] {+ex:username ?sh:path} must have at least [3] {sh:minLength ^^xsd:integer} and at most [20] {sh:maxLength ^^xsd:integer} characters.
+## User Account Test Shape {=ex:UserAccountTestShape .sh:NodeShape  label}
+
+Validates all [member] {+member ?sh:targetObjectsOf} entities with correct length of the **username** {+#usernameLength ?sh:property sh:name}.
+
+**Username must be 3-20 characters** {=#usernameLength .sh:PropertyShape sh:message} requires [username] {+ex:username ?sh:path} to have at least [3] {sh:minLength ^^xsd:integer} and at most [20] {sh:maxLength ^^xsd:integer} characters.
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Valid User {=ex:ValidUser ?member}
+### Valid User {=ex:ValidUser ?member}
 Username: [john_doe] {ex:username}
 
-#### Invalid User {=ex:InvalidUser ?member}
+### Invalid User {=ex:InvalidUser ?member}
 Username: [jd] {ex:username}
 ~~~~~~
+
+**Expected Result:** 1 violation (InvalidUser fails because username is only 2 characters, below the minimum of 3)
 
 ---
 
@@ -1550,22 +1664,29 @@ Username: [jd] {ex:username}
 
 ## 📋 Quick Start Pattern
 
+The pattern constraint validates string values against regular expression patterns. This example validates that emails must end with example.com.
+
 ~~~~~~md
 [ex] <tag:my@example.org,2026:pattern/>
 
-**Email must end with example.com** {=ex:EmailPatternConstraint .sh:PropertyShape}
-[email] {+ex:email ?sh:path} must match [example\.com$] {sh:pattern} with [i] {sh:flags}.
+## Email Validation Shape {=ex:PatternExampleShape .sh:NodeShape label}
+
+Validates all [member] {+member ?sh:targetObjectsOf} entities with corporate **email** {+ex:EmailPatternConstraint ?sh:property sh:name}.
+
+**Email must end with example.com** {=ex:EmailPatternConstraint .sh:PropertyShape sh:message} requires [email] {+ex:email ?sh:path} to match [example\.com$] {sh:pattern} with [i] {sh:flags}.
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Valid Email {=ex:ValidEmail ?member}
+### Valid Email {=ex:ValidEmail ?member}
 Email: [user@example.com] {ex:email}
 
-#### Invalid Email {=ex:InvalidEmail ?member}
+### Invalid Email {=ex:InvalidEmail ?member}
 Email: [user@example.org] {ex:email}
 ~~~~~~
+
+**Expected Result:** 1 violation (InvalidEmail fails because it doesn't match the pattern - ends with .org not .com)
 
 ---
 
@@ -1622,24 +1743,29 @@ Email: [user@example.org] {ex:email}
 
 ## 📋 Quick Start Pattern
 
+The languageIn constraint constrains string literals to have language tags from a specified list. This example validates that document titles must be in English or French.
+
 ~~~~~~md
 [ex] <tag:my@example.org,2026:language/>
 
-**Title language must be en or fr** {=#titleLanguage .sh:PropertyShape}
-[title] {+ex:title ?sh:path} language tags must be in allowed list.
+## Multilingual Document Shape {=ex:MultilingualDocumentShape .sh:NodeShape  label}
 
-**Allowed Languages List** {=ex:lang-l1 ?sh:languageIn .rdf:List}: [en] {rdf:first}, then [rest] {=ex:lang-l2 ?rdf:rest} by [fr] {rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
+Validates all [member] {+member ?sh:targetObjectsOf} entities with english or french **title** {+#titleLanguage ?sh:property sh:name}.
+
+**Title language must be en or fr** {=#titleLanguage .sh:PropertyShape sh:message} requires [title] {+ex:title ?sh:path} language tags to be in the **Allowed Languages List** {=ex:lang-l1 ?sh:languageIn .rdf:List}: **en** {rdf:first},  [or] {=ex:lang-l2 ?rdf:rest} **fr** {rdf:first} - [only these 2 languages are allowed] {+rdf:nil ?rdf:rest}. {=}
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### English Document {=ex:EnglishDocument ?member}
+### English Document {=ex:EnglishDocument ?member}
 Title: [Hello World] {ex:title @en}
 
-#### Invalid Document {=ex:GermanDocument ?member}
+### Invalid Document {=ex:GermanDocument ?member}
 Title: [Hallo Welt] {ex:title @de}
 ~~~~~~
+
+**Expected Result:** 1 violation (GermanDocument fails because title language is de, not in the allowed list)
 
 ---
 
@@ -1697,24 +1823,31 @@ Title: [Hallo Welt] {ex:title @de}
 
 ## 📋 Quick Start Pattern
 
+The uniqueLang constraint ensures that language tags of string literals are unique within a property. This example validates that document titles cannot have duplicate language tags.
+
 ~~~~~~md
 [ex] <tag:my@example.org,2026:uniqueLang/>
 
-**Each language tag must appear only once** {=ex:UniqueLangExampleShape .sh:NodeShape}
-[title] {+ex:title ?sh:path} values have [true] {sh:uniqueLang ^^xsd:boolean}.
+## Unique Language Example Shape {=ex:UniqueLangExampleShape .sh:NodeShape label}
+
+Validates all [member] {+member ?sh:targetObjectsOf} entities with unique **language** {+ex:TitleProperty ?sh:property sh:name}.
+
+**Each language tag must appear only once** {=ex:TitleProperty .sh:PropertyShape sh:message} requires [title] {+ex:title ?sh:path} values to have [true] {sh:uniqueLang ^^xsd:boolean}.
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Valid Document {=ex:ValidNode ?member}
+### Valid Document {=ex:ValidNode ?member}
 Title: [Hello World] {ex:title @en}
 Title: [Bonjour Monde] {ex:title @fr}
 
-#### Invalid Document {=ex:InvalidNode ?member}
+### Invalid Document {=ex:InvalidNode ?member}
 Title: [Hello World] {ex:title @en}
 Title: [Hola Mundo] {ex:title @en}
 ~~~~~~
+
+**Expected Result:** 1 violation (InvalidDocument fails because it has duplicate @en language tags)
 
 ---
 
@@ -1769,22 +1902,29 @@ Title: [Hola Mundo] {ex:title @en}
 
 ## 📋 Quick Start Pattern
 
+The hasValue constraint requires a property to have exactly a specific value. This example validates that server status must be exactly "active".
+
 ~~~~~~md
 [ex] <tag:my@example.org,2026:hasvalue/>
 
-**Status must be active** {=#statusRequired .sh:PropertyShape}
-[status] {+ex:status ?sh:path} must be exactly [active] {sh:hasValue}.
+## System Status Test Shape {=ex:SystemStatusTestShape .sh:NodeShape label}
+
+Validates all [member] {+member ?sh:targetObjectsOf} entities with active **status** {+#statusRequired ?sh:property sh:name}.
+
+**Status must be active** {=#statusRequired .sh:PropertyShape sh:message} requires [status] {+ex:status ?sh:path} to be exactly [active] {sh:hasValue ^^xsd:string}.
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Valid Server {=ex:MainServer ?member}
+### Valid Server {=ex:MainServer ?member}
 Status: [active] {ex:status}
 
-#### Invalid Server {=ex:BackupServer ?member}
+### Invalid Server {=ex:BackupServer ?member}
 Status: [standby] {ex:status}
 ~~~~~~
+
+**Expected Result:** 1 violation (BackupServer fails because status is standby, not active)
 
 ---
 
@@ -1841,26 +1981,33 @@ Status: [standby] {ex:status}
 
 ## 📋 Quick Start Pattern
 
+The node constraint requires property values to conform to a specific node shape. This example validates that employee addresses must conform to an AddressShape with minimum street length.
+
 ~~~~~~md
 [ex] <tag:my@example.org,2026:node/>
 
-**Employee must have valid address** {=#addressRule .sh:PropertyShape}
-[address] {+ex:address ?sh:path} must conform to [Address Shape] {+ex:AddressShape ?sh:node}.
+## Employee Validation Shape {=ex:EmployeeValidationShape .sh:NodeShape  label}
+
+Validates all [member] {+member ?sh:targetObjectsOf} entities to have correct **address** {+#addressRule ?sh:property sh:name}.
+
+**Employee must have valid address** {=#addressRule .sh:PropertyShape sh:message} requires [address] {+ex:address ?sh:path} to conform to [Address Shape] {+ex:AddressShape ?sh:node}.
 
 **Address Shape** {=ex:AddressShape .sh:NodeShape} requires [street] {+ex:street ?sh:path} to have at least [5] {sh:minLength ^^xsd:integer} characters.
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Valid Employee {=ex:ValidEmployee ?member}
+### Valid Employee {=ex:ValidEmployee ?member}
 Address: [Valid Address] {=ex:ValidAddress .ex:Address ?ex:address}
 Street: [Main Street] {ex:street}
 
-#### Invalid Employee {=ex:InvalidEmployee ?member}
+### Invalid Employee {=ex:InvalidEmployee ?member}
 Address: [Short Address] {=ex:ShortAddress .ex:Address ?ex:address}
 Street: [St] {ex:street}
 ~~~~~~
+
+**Expected Result:** 1 violation (InvalidEmployee fails because address doesn't conform to AddressShape - street is too short)
 
 ---
 
@@ -1916,24 +2063,31 @@ Street: [St] {ex:street}
 
 ## 📋 Quick Start Pattern
 
+The in constraint constrains property values to be within a specified list of allowed values. This example validates that status must be either "Active" or "Inactive".
+
 ~~~~~~md
 [ex] <tag:my@example.org,2026:in/>
 
-**Status must be Active or Inactive** {=#allowedStatus .sh:PropertyShape}
-[status] {+ex:status ?sh:path} must be in allowed list.
+## Status Validation Shape {=ex:StatusValidationShape .sh:NodeShape  label}
 
-**Allowed Values List** {=ex:in-l1 ?sh:in .rdf:List}: [Active] {+ex:Active ?rdf:first}, then [rest] {=ex:in-l2 ?rdf:rest} by [Inactive] {+ex:Inactive ?rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
+Validates all [member] {+member ?sh:targetObjectsOf} entities with correct **status** {+#allowedStatus ?sh:property sh:name}.
+
+**Status must be Active or Inactive** {=#allowedStatus .sh:PropertyShape sh:message} requires [status] {+ex:status ?sh:path} to be in allowed list.
+
+**Allowed Values List** {=ex:in-l1 ?sh:in .rdf:List}: **Active** {+ex:Active ?rdf:first} [or] {=ex:in-l2 ?rdf:rest} **Inactive** {+ex:Inactive ?rdf:first} - [only] {+rdf:nil ?rdf:rest} these 2 values are allowed.
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Valid Employee {=ex:ValidEmployee ?member}
-Status: [Active] {ex:status}
+### Valid Employee {=ex:ValidEmployee ?member}
+Status: [Active] {+ex:Active ?ex:status}
 
-#### Invalid Employee {=ex:InvalidStatusEmployee ?member}
-Status: [Pending] {ex:status}
+### Invalid Employee {=ex:InvalidStatusEmployee ?member}
+Status: [Pending] {+ex:Pending ?ex:status}
 ~~~~~~
+
+**Expected Result:** 1 violation (InvalidStatusEmployee fails because status is Pending, not in the allowed list)
 
 ---
 
@@ -1993,24 +2147,31 @@ Status: [Pending] {ex:status}
 
 ## 📋 Quick Start Pattern
 
+Qualified count constraints apply count constraints only to values that meet additional shape criteria. This example validates that employees must have exactly one work email (matching the WorkEmailShape pattern).
+
 ~~~~~~md
 [ex] <tag:my@example.org,2026:qualified/>
 
-**Employee must have exactly one work email** {=#workEmailRule .sh:PropertyShape}
-[email] {+ex:email ?sh:path} must have exactly [1] {sh:qualifiedMinCount sh:qualifiedMaxCount ^^xsd:integer} work email matching **Work Email Shape** {=ex:WorkEmailShape .sh:NodeShape ?sh:qualifiedValueShape}.
+## Employee Validation Shape {=ex:EmployeeValidationShape .sh:NodeShape  label}
+
+Validates all [member] {+member ?sh:targetObjectsOf} entities with one work **email** {+#workEmailRule ?sh:property sh:name}.
+
+**Employee must have exactly one work email** {=#workEmailRule .sh:PropertyShape sh:message} requires [email] {+ex:email ?sh:path} to have exactly [1] {sh:qualifiedMinCount sh:qualifiedMaxCount ^^xsd:integer} work email matching **Work Email Shape** {=ex:WorkEmailShape .sh:NodeShape ?sh:qualifiedValueShape}.
 
 **Work Email Shape** {=ex:WorkEmailShape .sh:NodeShape} must be a [literal] {+sh:Literal ?sh:nodeKind} with pattern [company.org] {sh:pattern}.
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Valid Employee {=ex:ValidEmployee ?member}
+### Valid Employee {=ex:ValidEmployee ?member}
 Email: [john@company.org] {ex:email}
 
-#### Invalid Employee {=ex:NoWorkEmployee ?member}
+### Invalid Employee {=ex:NoWorkEmployee ?member}
 Email: [bob@gmail.com] {ex:email}
 ~~~~~~
+
+**Expected Result:** 1 violation (NoWorkEmployee fails because it has 0 work emails - the email doesn't match the WorkEmailShape pattern)
 
 ---
 
@@ -2067,37 +2228,41 @@ Email: [bob@gmail.com] {ex:email}
 
 ## 📋 Quick Start Pattern
 
+The closed constraint enables closed world validation where only explicitly declared properties are allowed. This example validates that person data can only have declared properties (name, age).
+
 ~~~~~~md
 [ex] <tag:my@example.org,2026:closed/>
 [schema] <http://schema.org/>
 
-### Shape Definition
+## Person Data Demo
 
-**Only declared properties allowed** {=ex:ClosedExampleShape .sh:NodeShape  label} with **no additional properties** {sh:closed}.
+**Only declared properties allowed** {=ex:ClosedExampleShape .sh:NodeShape label} targets [ValidPerson] {+ex:ValidPerson ?sh:targetNode} and [InvalidPerson] {+ex:InvalidPerson ?sh:targetNode} with **no additional properties** {sh:closed} constraint except [Name] {+ex:NameProperty ?sh:property sh:name} and [Age] {+ex:AgeProperty ?sh:property sh:name}.
 
-**Person must have a name** {=ex:NameProperty .sh:PropertyShape sh:message}
-[name] {+schema:name ?sh:path} is [string] {+xsd:string ?sh:datatype} and [1] {sh:minCount}.
+**Person must have a name** {=ex:NameProperty .sh:PropertyShape sh:message} ensures [name] {+schema:name ?sh:path} is [string] {+xsd:string ?sh:datatype} and [1] {sh:minCount ^^xsd:integer}.
 
-**Person must have exactly one age** {=ex:AgeProperty .sh:PropertyShape sh:message}
-[age] {+ex:age ?sh:path} is [integer] {+xsd:integer ?sh:datatype} and exactly [1] {sh:minCount sh:maxCount}.
+**Person must have exactly one age** {=ex:AgeProperty .sh:PropertyShape sh:message} ensures [age] {+ex:age ?sh:path} is [integer] {+xsd:integer ?sh:datatype} and exactly [1] {sh:minCount sh:maxCount ^^xsd:integer}.
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Valid Person {=ex:ValidPerson}
+### Valid Person {=ex:ValidPerson}
+
+Person with only declared properties.
+
 Name: [John Doe] {schema:name ^^xsd:string}
 Age: [30] {ex:age ^^xsd:integer}
 
-#### Invalid Person {=ex:InvalidPerson}
+### Invalid Person {=ex:InvalidPerson}
+
+Person with undeclared property (violates closed world constraint).
+
 Name: [Jane Smith] {schema:name ^^xsd:string}
 Age: [25] {ex:age ^^xsd:integer}
 Email: [<jane@example.com>] {ex:email}
-
----
-
-[Demo] {=ex:demo} must produce exactly **1** violation.
 ~~~~~~
+
+**Expected Result:** 1 violation (InvalidPerson fails because it has undeclared email property)
 
 ---
 
@@ -2183,24 +2348,33 @@ The closed constraint enables closed world validation where only explicitly decl
 
 ## 📋 Quick Start Pattern
 
+The deactivated constraint temporarily disables specific constraints during validation. This example shows a deactivated category rule while the status rule remains active.
+
 ~~~~~~md
 [ex] <tag:my@example.org,2026:deactivated/>
 
-**User status must be active** {=ex:ActiveProperty .sh:PropertyShape}
-[status] {+ex:status ?sh:path} must be [active] {sh:hasValue}.
+## Deactivated Example Shape {=ex:DeactivatedExampleShape .sh:NodeShape label}
 
-**Category rule** {=ex:DeactivatedProperty .sh:PropertyShape} is [deactivated] {sh:deactivated}.
+Validates all **member** {+member ?sh:targetObjectsOf} entities to be an active *user* {+ex:ActiveProperty ?sh:property sh:name} and have an active *category* {+ex:CategoryProperty ?sh:property sh:name}.
+
+**User status must be active** {=ex:ActiveProperty .sh:PropertyShape sh:message} requires [status] {+ex:status ?sh:path} to be [active] {sh:hasValue}.
+
+**Category rule** {=ex:DeactivatedProperty .sh:PropertyShape sh:message} requires [category] {+ex:category ?sh:path} to be [active] {sh:hasValue}. This rule is temporarily [deactivated] {sh:deactivated}.
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Valid Account {=ex:ValidNode ?member}
+### Valid Account {=ex:ValidNode ?member}
 Status: [active] {ex:status}
+Category: [active] {ex:status}
 
-#### Invalid Account {=ex:InvalidNode ?member}
+### Invalid Account {=ex:InvalidNode ?member}
 Status: [inactive] {ex:status}
+Category: [inactive] {ex:status}
 ~~~~~~
+
+**Expected Result:** 1 violation (InvalidAccount fails because status is inactive; category rule is deactivated so it doesn't cause a violation)
 
 ---
 
@@ -2257,38 +2431,37 @@ Status: [inactive] {ex:status}
 
 ## 📋 Quick Start Pattern
 
+The severity constraint defines the severity level of validation violations (Info, Warning, Violation). This example demonstrates user account validation with different severity levels for different constraints.
+
 ~~~~~~md
-[ex] <tag:my@example.org,2026:severity/>
+[ex] <tag:my@example.org,2026:range/>
 
-### Shape Definition
+## User Validation Shape {=ex:UserValidationShape .sh:NodeShape label}
 
-**Email address is required and must be valid** {=ex:CriticalRule .sh:PropertyShape sh:message}
-[email] {+ex:email ?sh:path} must be [string] {?xsd:string ?sh:datatype} and at least [1] {sh:minCount ^^xsd:integer} corporate email [example.com] {sh:pattern} with [Violation severity] {+sh:Violation ?sh:severity}.
+Targets all [users] {+ex:User ?sh:targetClass} to validate account requirements with different severity levels: critical **email** {+ex:CriticalRule ?sh:property sh:name}, warning **age** {+ex:WarningRule ?sh:property sh:name} and info **name** {+ex:InfoNameRule ?sh:property sh:name}.
 
-**Age should be between 18 and 120** {=ex:WarningRule .sh:PropertyShape sh:message}
-[age] {+ex:age ?sh:path} must be [integer] {?xsd:integer ?sh:datatype}, more than [18] {sh:minInclusive ^^xsd:integer} and less than [120] {sh:maxInclusive ^^xsd:integer} with [Warning severity] {+sh:Warning ?sh:severity}.
+**Email address is required and must be valid** {=ex:CriticalRule .sh:PropertyShape sh:message} requires [email] {+ex:email ?sh:path} to be [string] {+xsd:string ?sh:datatype} and at least [1] {sh:minCount ^^xsd:integer} corporate email [example.com] {sh:pattern} with [Violation severity] {+sh:Violation ?sh:severity}.
 
-**Name should be a string of 2+ letters** {=ex:InfoNameRule .sh:PropertyShape sh:message}
-[name] {+ex:name ?sh:path} must be [string] {?xsd:string ?sh:datatype} at least [1] {sh:minCount} and longer than [3] {sh:minInclusive} with [Info severity] {+sh:Info ?sh:severity}.
+**Age should be between 18 and 120** {=ex:WarningRule .sh:PropertyShape sh:message} requires [age] {+ex:age ?sh:path} to be [integer] {+xsd:integer ?sh:datatype}, more than [18] {sh:minInclusive ^^xsd:integer} and less than [120] {sh:maxInclusive ^^xsd:integer} with [Warning severity] {+sh:Warning ?sh:severity}.
+
+**Name should be a string of 2+ letters** {=ex:InfoNameRule .sh:PropertyShape sh:message} requires [name] {+ex:name ?sh:path} to be [string] {+xsd:string ?sh:datatype} at least [1] {sh:minCount} and longer than [3] {sh:minInclusive} with [Info severity] {+sh:Info ?sh:severity}.
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Valid User {=ex:ValidUser .ex:User ?member}
+### Valid User {=ex:ValidUser .ex:User}
 Email: [user@example.com] {ex:email}
 Age: [25] {ex:age ^^xsd:integer}
 Name: [John Doe] {ex:name}
 
-#### Invalid User {=ex:InvalidUser .ex:User ?member}
+### Invalid User {=ex:InvalidUser .ex:User}
 Email: [invalid-email] {ex:email}
 Age: [150] {ex:age ^^xsd:integer}
 Name: [] {ex:name}
-
----
-
-[Demo] {=ex:demo} must produce exactly **3** violations.
 ~~~~~~
+
+**Expected Result:** 3 violations (InvalidUser fails three times: Critical for invalid email, Warning for age > 120, Info for missing name)
 
 ---
 
@@ -2375,22 +2548,29 @@ The severity constraint defines the severity level of validation violations.
 
 ## 📋 Quick Start Pattern
 
+The message constraint provides human-readable error messages for constraint violations. This example shows a custom violation message for contract value validation.
+
 ~~~~~~md
 [ex] <tag:my@example.org,2026:message/>
 
-**Contract value must be positive** {=#valueRule .sh:PropertyShape sh:message}
-[contract value] {+ex:contractValue ?sh:path} must be greater than [0] {sh:minInclusive ^^xsd:decimal}.
+## Business Rule Validation Shape {=ex:BusinessRuleValidationShape .sh:NodeShape  label}
+
+Validates all [member] {+member ?sh:targetObjectsOf} entities with positive **contract** {+ex:ContractValueRule ?sh:property sh:name}.
+
+**Contract value must be positive** {=ex:ContractValueRule .sh:PropertyShape sh:message} ensures [contract value] {+ex:contractValue ?sh:path} is greater than [0] {sh:minInclusive ^^xsd:decimal}.
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Valid Contract {=ex:ValidContract ?member}
+### Valid Contract {=ex:ValidContract ?member}
 Value: [50000.00] {ex:contractValue ^^xsd:decimal}
 
-#### Invalid Contract {=ex:InvalidContract ?member}
+### Invalid Contract {=ex:InvalidContract ?member}
 Value: [-1000.00] {ex:contractValue ^^xsd:decimal}
 ~~~~~~
+
+**Expected Result:** 1 violation (InvalidContract fails with message "Contract value must be positive")
 
 ---
 
@@ -2446,11 +2626,16 @@ Value: [-1000.00] {ex:contractValue ^^xsd:decimal}
 
 ## 📋 Quick Start Pattern
 
+The JavaScript constraint allows custom JavaScript validation functions for complex constraint logic. This example validates that event dates must be valid JavaScript dates.
+
 ~~~~~~md
 [ex] <tag:my@example.org,2026:js/>
 
-**Event date must be valid** {=ex:DatePropertyShape .sh:PropertyShape}
-[eventDate] {+ex:eventDate ?sh:path} must be a valid JS date.
+## Date Validation Shape {=ex:DateValidationShape .sh:NodeShape  label}
+
+Validates all [member] {+member ?sh:targetObjectsOf} entities with valid **date** {+ex:DatePropertyShape ?sh:property sh:name}.
+
+**Event date must be valid** {=ex:DatePropertyShape .sh:PropertyShape sh:message} requires [eventDate] {+ex:eventDate ?sh:path} to be a valid JS date:
 
 ~~~~~~js {=ex:DateJSConstraint ?sh:JSConstraint sh:js}
 const date = new Date(value);
@@ -2459,14 +2644,16 @@ return !isNaN(date.getTime());
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Valid Event {=ex:ValidEvent ?member}
+### Valid Event {=ex:ValidEvent ?member}
 Event Date: [2024-12-25] {ex:eventDate ^^xsd:date}
 
-#### Invalid Event {=ex:InvalidEvent ?member}
+### Invalid Event {=ex:InvalidEvent ?member}
 Event Date: [not-a-date] {ex:eventDate}
 ~~~~~~
+
+**Expected Result:** 1 violation (InvalidEvent fails because "not-a-date" is not a valid JavaScript date)
 
 ---
 
@@ -2639,51 +2826,64 @@ We need to validate product data with these requirements:
 ~~~~~~md
 [ex] <tag:my@example.org,2026:product/>
 
-**Product Validation Shape** {=ex:ProductShape .sh:NodeShape  label}
-Validates all [Product] {+ex:Product ?sh:targetClass} instances.
+# Product Validation Shape {=ex:ProductShape .sh:NodeShape  label}
+Validates all [Product] {+ex:Product ?sh:targetClass} instances to have mandatory [name] {+ex:NameRule ?sh:property sh:name}, [price] {+ex:PriceRule ?sh:property sh:name} and [category] {+ex:CategoryRule ?sh:property sh:name} assigned.
+
+
 ~~~~~~
 
 ## Step 2: Add Required Properties
 
 ~~~~~~md
-**Product name is required** {=ex:NameRule .sh:PropertyShape ?sh:property}
-[name] {+ex:name ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
+[ex] <tag:my@example.org,2026:product/>
 
-**Product price is required** {=ex:PriceRule .sh:PropertyShape ?sh:property}
-[price] {+ex:price ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
+## Product Validation Shape required properties {=ex:ProductShape}
 
-**Product category is required** {=ex:CategoryRule .sh:PropertyShape ?sh:property}
-[category] {+ex:category ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
+**Product name is required** {=ex:NameRule .sh:PropertyShape sh:message} requires that [name] {+ex:name ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
+
+**Product price is required** {=ex:PriceRule .sh:PropertyShape sh:message} requires that [price] {+ex:price ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
+
+**Product category is required** {=ex:CategoryRule .sh:PropertyShape sh:message} requires that [category] {+ex:category ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
 ~~~~~~
 
 ## Step 3: Add Value Constraints
 
 ~~~~~~md
-**Product price must be positive** {=ex:PriceRule .sh:PropertyShape ?sh:property}
-[price] {+ex:price ?sh:path} must be at least [0.01] {sh:minInclusive ^^xsd:decimal}.
+[ex] <tag:my@example.org,2026:product/>
+
+**Product** {=ex:ProductShape} also must have a positive [price] {+ex:PriceRule ?sh:property sh:name}.
+
+**Product price must be positive** {=ex:PriceRule .sh:PropertyShape sh:message}: [price] {+ex:price ?sh:path} must be at least [0.01] {sh:minInclusive ^^xsd:decimal}.
 ~~~~~~
 
 ## Step 4: Add Enumeration Constraint
 
 ~~~~~~md
-**Product category must be from allowed list** {=ex:CategoryRule .sh:PropertyShape ?sh:property}
-[category] {+ex:category ?sh:path} must be in allowed list.
+[ex] <tag:my@example.org,2026:product/>
 
-**Allowed Categories List** {=ex:cat-l1 ?sh:in .rdf:List}: [Electronics] {rdf:first}, then [rest] {=ex:cat-l2 ?rdf:rest} by [Clothing] {rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
+**Product** {=ex:ProductShape} must have an allowed [category] {+ex:CategoryRule ?sh:property sh:name}.
+
+**Product category must be from allowed list** {=ex:CategoryRule .sh:PropertyShape sh:message}: [category] {+ex:category ?sh:path} must be in **Allowed Categories List** {=ex:cat-l1 ?sh:in .rdf:List}: [Electronics] {rdf:first}, then [followed by] {=ex:cat-l2 ?rdf:rest} by [Clothing] {rdf:first} - [only these] {+rdf:nil ?rdf:rest}. {=}
 ~~~~~~
 
 ## Step 5: Add Optional Property with Conditional Constraint
 
 ~~~~~~md
-**Product description is optional** {=ex:DescriptionRule .sh:PropertyShape ?sh:property}
-[description] {+ex:description ?sh:path} must have at least [10] {sh:minLength ^^xsd:integer} characters.
+[ex] <tag:my@example.org,2026:product/>
+
+**Product** {=ex:ProductShape} must have an optional [descripton] {+ex:DescriptionRule ?sh:property sh:name}.
+
+**Product description is optional** {=ex:DescriptionRule .sh:PropertyShape sh:message}: [description] {+ex:description ?sh:path} must have at least [10] {sh:minLength ^^xsd:integer} characters.
 ~~~~~~
 
 ## Step 6: Add Pattern Constraint
 
 ~~~~~~md
-**Product SKU must match pattern** {=ex:SKURule .sh:PropertyShape ?sh:property}
-[sku] {+ex:sku ?sh:path} must match [PROD-\d{5}] {sh:pattern}.
+[ex] <tag:my@example.org,2026:product/>
+
+**Product** {=ex:ProductShape} must have an [SKU] {+ex:DescriptioSKURulenRule ?sh:property sh:name}.
+
+**Product SKU must match pattern** {=ex:SKURule .sh:PropertyShape sh:message}: [sku] {+ex:sku ?sh:path} must match [PROD-\d{5}] {sh:pattern}.
 ~~~~~~
 
 ## Complete Shape
@@ -2692,23 +2892,23 @@ Validates all [Product] {+ex:Product ?sh:targetClass} instances.
 [ex] <tag:my@example.org,2026:product/>
 
 **Product Validation Shape** {=ex:ProductShape .sh:NodeShape  label}
-Validates all [Product] {+ex:Product ?sh:targetClass} instances.
+Validates all [Product] {+ex:Product ?sh:targetClass} instances to have mandatory [name] {+ex:NameRule ?sh:property sh:name}, [price] {+ex:PriceRule ?sh:property sh:name} and [category] {+ex:CategoryRule ?sh:property sh:name} assigned, must have a positive [price] {+ex:PriceRule ?sh:property sh:name}, must have an allowed [category] {+ex:CategoryRule ?sh:property sh:name}, an optional [descripton] {+ex:DescriptionRule ?sh:property sh:name} and a correct [SKU] {+ex:DescriptioSKURulenRule ?sh:property sh:name}.
 
-**Product name is required** {=ex:NameRule .sh:PropertyShape ?sh:property}
+**Product name is required** {=ex:NameRule .sh:PropertyShape}
 [name] {+ex:name ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
 
-**Product price is required and positive** {=ex:PriceRule .sh:PropertyShape ?sh:property}
+**Product price is required and positive** {=ex:PriceRule .sh:PropertyShape}
 [price] {+ex:price ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value and be at least [0.01] {sh:minInclusive ^^xsd:decimal}.
 
-**Product category is required and from allowed list** {=ex:CategoryRule .sh:PropertyShape ?sh:property}
+**Product category is required and from allowed list** {=ex:CategoryRule .sh:PropertyShape}
 [category] {+ex:category ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value and be in allowed list.
 
 **Allowed Categories List** {=ex:cat-l1 ?sh:in .rdf:List}: [Electronics] {rdf:first}, then [rest] {=ex:cat-l2 ?rdf:rest} by [Clothing] {rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
 
-**Product description is optional but must be 10+ characters** {=ex:DescriptionRule .sh:PropertyShape ?sh:property}
+**Product description is optional but must be 10+ characters** {=ex:DescriptionRule .sh:PropertyShape}
 [description] {+ex:description ?sh:path} must have at least [10] {sh:minLength ^^xsd:integer} characters.
 
-**Product SKU must match pattern** {=ex:SKURule .sh:PropertyShape ?sh:property}
+**Product SKU must match pattern** {=ex:SKURule .sh:PropertyShape}
 [sku] {+ex:sku ?sh:path} must match [PROD-\d{5}] {sh:pattern}.
 ~~~~~~
 
@@ -2873,33 +3073,122 @@ Status: [active] {ex:status}
 ~~~~~~
 
 **Key pattern:**
+```
 - Use `[literal] {+ex:Identifier ?property}` to link to nested objects
 - Use `#####` headings to define nested objects with `{=ex:Identifier .ex:Class}`
 - Use `and` to chain multiple values
+```
 
 ## Complete Example
 
 The following example demonstrates multiple advanced techniques in a single validation scenario:
 
-```md
-## Employee Validation Shape {=ex:EmployeeValidationShape .sh:NodeShape  label}
+~~~~~~md
+[ex] <tag:my@example.org,2026:advanced/>
 
-Validates all [Employee] {+ex:Employee ?sh:targetClass} instances with comprehensive business rules: [department] {+ex:DepartmentRule ?sh:property}, [status] {+ex:StatusRule ?sh:property}, [2 projects] {+ex:ProjectsRule ?sh:property}, [salary] {+ex:SalaryRule ?sh:property}.
+## Employee Validation Shape {=ex:EmployeeValidationShape .sh:NodeShape label}
 
-**Employee must have valid department** {=ex:DepartmentRule .sh:PropertyShape ?sh:property}
-[department] {+ex:department ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value and must be in allowed list.
+Validates all [Employee] {+ex:Employee ?sh:targetClass} instances with comprehensive business rules: [department] {+ex:DepartmentRule ?sh:property sh:name}, [status] {+ex:StatusRule ?sh:property sh:name}, [projects] {+ex:ProjectsRule ?sh:property sh:name}, [salary] {+ex:SalaryRule ?sh:property sh:name}.
 
-**Allowed Departments List** {=ex:dept-l1 ?sh:in .rdf:List}: [Engineering] {rdf:first}, then [rest] {=ex:dept-l2 ?rdf:rest} by [Sales] {rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
+### Property Rules
 
-**Employee status cannot be terminated** {=ex:StatusRule .sh:PropertyShape ?sh:property}
-Employee status must not conform to [Terminated Status Shape] {+ex:TerminatedStatusShape ?sh:not}.
+**Employee must have valid department** {=ex:DepartmentRule .sh:PropertyShape} requires [department] {+ex:department ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value and must be in **Allowed Departments List** {=ex:dept-l1 ?sh:in .rdf:List}: [Engineering] {rdf:first}, then [rest] {=ex:dept-l2 ?rdf:rest} by [Sales] {rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
 
-**Employee must have at least 2 completed projects** {=ex:ProjectsRule .sh:PropertyShape ?sh:property}
-[projects] {+ex:projects ?sh:path} must have at least [2] {sh:qualifiedMinCount ^^xsd:integer} values that conform to [Completed Project Shape] {=ex:CompletedProjectShape .sh:NodeShape ?sh:qualifiedValueShape}.
+**Employee status cannot be terminated** {=ex:StatusRule .sh:PropertyShape sh:message}: Employee status must not conform to [Terminated Status Shape] {+ex:TerminatedStatusShape ?sh:not}.
 
-**Salary must be positive** {=ex:SalaryRule .sh:PropertyShape ?sh:property}
-[salary] {+ex:salary ?sh:path} must be at least [0.01] {sh:minInclusive ^^xsd:decimal}.
-```
+**Employee must have at least 2 completed projects** {=ex:ProjectsRule .sh:PropertyShape sh:message}: [projects] {+ex:projects ?sh:path} must have at least [2] {sh:qualifiedMinCount ^^xsd:integer} values that conform to [Completed Project Shape] {=ex:CompletedProjectShape .sh:NodeShape ?sh:qualifiedValueShape}.
+
+**Salary must be positive** {=ex:SalaryRule .sh:PropertyShape sh:message}: [salary] {+ex:salary ?sh:path} must be at least [0.01] {sh:minInclusive ^^xsd:decimal}.
+
+---
+
+## Terminated Status Shape {=ex:TerminatedStatusShape .sh:NodeShape  label}
+Defines the forbidden terminated [status] {+ex:TerminatedStatusRule ?sh:property sh:name} pattern.
+
+**Status must be terminated** {=ex:TerminatedStatusRule .sh:PropertyShape sh:message}: [status] {+ex:status ?sh:path} must be exactly [terminated] {sh:hasValue}.
+
+---
+
+## Completed Project Shape {=ex:CompletedProjectShape .sh:NodeShape  label}
+
+Validates completed projects to have completed [status] {+ex:ProjectStatusRule ?sh:property sh:name} and positive [budget] {+ex:ProjectBudgetRule ?sh:property sh:name}.
+
+**Project must be completed** {=ex:ProjectStatusRule .sh:PropertyShape sh:message}: [status] {+ex:status ?sh:path} must be exactly [completed] {sh:hasValue}.
+
+**Project must have positive budget** {=ex:ProjectBudgetRule .sh:PropertyShape sh:message}: [budget] {+ex:budget ?sh:path} must be at least [0.01] {sh:minInclusive ^^xsd:decimal}.
+
+---
+
+## Test Data {=ex:data .Container}
+
+### Valid Employee {=ex:Employee1 .ex:Employee ?member}
+Department: [Engineering] {ex:department}
+Status: [active] {ex:status}
+Salary: [75000.00] {ex:salary ^^xsd:decimal}
+Projects: [project1] {+ex:Project1 ?ex:projects} and [project2] {+ex:Project2 ?ex:projects}
+
+##### Project 1 {=ex:Project1 .ex:Project}
+Status: [completed] {ex:status}
+Budget: [50000.00] {ex:budget ^^xsd:decimal}
+
+##### Project 2 {=ex:Project2 .ex:Project}
+Status: [completed] {ex:status}
+Budget: [30000.00] {ex:budget ^^xsd:decimal}
+
+### Invalid Employee - Invalid Department {=ex:Employee2 .ex:Employee ?member}
+Department: [invalid-dept] {ex:department}
+Status: [active] {ex:status}
+Salary: [65000.00] {ex:salary ^^xsd:decimal}
+Projects: [project3] {+ex:Project3 ?ex:projects} and [project3b] {+ex:Project3b ?ex:projects}
+
+##### Project 3 {=ex:Project3 .ex:Project}
+Status: [completed] {ex:status}
+Budget: [40000.00] {ex:budget ^^xsd:decimal}
+
+##### Project 3b {=ex:Project3b .ex:Project}
+Status: [completed] {ex:status}
+Budget: [20000.00] {ex:budget ^^xsd:decimal}
+
+### Invalid Employee - Terminated Status {=ex:Employee3 .ex:Employee ?member}
+Department: [Engineering] {ex:department}
+Status: [terminated] {ex:status}
+Salary: [60000.00] {ex:salary ^^xsd:decimal}
+Projects: [project4] {+ex:Project4 ?ex:projects} and [project4b] {+ex:Project4b ?ex:projects}
+
+##### Project 4 {=ex:Project4 .ex:Project}
+Status: [completed] {ex:status}
+Budget: [35000.00] {ex:budget ^^xsd:decimal}
+
+##### Project 4b {=ex:Project4b .ex:Project}
+Status: [completed] {ex:status}
+Budget: [15000.00] {ex:budget ^^xsd:decimal}
+
+### Invalid Employee - Insufficient Completed Projects {=ex:Employee4 .ex:Employee ?member}
+Department: [Engineering] {ex:department}
+Status: [active] {ex:status}
+Salary: [70000.00] {ex:salary ^^xsd:decimal}
+Projects: [project5] {+ex:Project5 ?ex:projects}
+
+##### Project 5 {=ex:Project5 .ex:Project}
+Status: [completed] {ex:status}
+Budget: [45000.00] {ex:budget ^^xsd:decimal}
+
+### Invalid Employee - Negative Salary {=ex:Employee5 .ex:Employee ?member}
+Department: [Engineering] {ex:department}
+Status: [active] {ex:status}
+Salary: [-1000.00] {ex:salary ^^xsd:decimal}
+Projects: [project6] {+ex:Project6 ?ex:projects} and [project6b] {+ex:Project6b ?ex:projects}
+
+##### Project 6 {=ex:Project6 .ex:Project}
+Status: [completed] {ex:status}
+Budget: [20000.00] {ex:budget ^^xsd:decimal}
+
+##### Project 6b {=ex:Project6b .ex:Project}
+Status: [completed] {ex:status}
+Budget: [15000.00] {ex:budget ^^xsd:decimal}
+~~~~~~
+
+**Expected Result:** 4 violations (Employee2 fails: invalid department; Employee3 fails: terminated status (NOT constraint); Employee4 fails: only 1 completed project, needs 2; Employee5 fails: negative salary; Employee1 passes)
 
 ## Best Practices
 

@@ -12,13 +12,13 @@
 
 #### Constraint Metadata Shape {=meta:Constraint .sh:NodeShape label}
 
-Validates that all SHACL constraints have proper metadata: labels, full IRIs, and comments.
+Validates that all SHACL constraints have proper metadata: [labels] {+meta:label ?sh:property sh:name}, full [IRIs] {+meta:fulliri ?sh:property sh:name}, and [comments] {+meta:comment ?sh:property sh:name}.
 
-**Label Validation** {?sh:property =meta:label .sh:PropertyShape} ensures each [constraint] {+class:Constraint ?sh:targetClass} has exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} short human readable [label] {+label ?sh:path} for proper catalog organization: **Each SHACL constraint must have an label** {sh:message}
+**Each SHACL constraint must have an label** {=meta:label .sh:PropertyShape sh:message} ensures each [constraint] {+class:Constraint ?sh:targetClass} has exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} short human readable [label] {+label ?sh:path} for proper catalog organization.
 
-**Full IRI Validation** {=meta:fulliri .sh:PropertyShape ?sh:property} ensures each [constraint] {+class:Constraint ?sh:targetClass} has exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} full IRI documentation [fullIRI] {+cat:fullIRI ?sh:path} for completeness: **Each SHACL constraint must document its full IRI** {sh:message}
+**Each SHACL constraint must document its full IRI** {=meta:fulliri .sh:PropertyShape sh:message} ensures each [constraint] {+class:Constraint ?sh:targetClass} has exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} full IRI documentation [fullIRI] {+cat:fullIRI ?sh:path} for completeness.
 
-**Comment Validation** {=meta:comment .sh:PropertyShape ?sh:property} ensures each [constraint] {+class:Constraint ?sh:targetClass} has exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} [comment] {+comment ?sh:path} for discoverability: **Each SHACL constraint must have an comment** {sh:message}
+**Each SHACL constraint must have an comment** {=meta:comment .sh:PropertyShape sh:message} ensures each [constraint] {+class:Constraint ?sh:targetClass} has exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} [comment] {+comment ?sh:path} for discoverability.
 
 ### 📋 **Constraint Categories**
 

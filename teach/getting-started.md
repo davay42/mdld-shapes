@@ -24,14 +24,12 @@ Let's create a simple shape for validating user accounts:
 ~~~~~~md
 [ex] <tag:my@example.org,2026:users/>
 
-**User Validation Shape** {=ex:UserShape .sh:NodeShape  label}
-Validates all [User] {+ex:User ?sh:targetClass} instances.
+**User Validation Shape** {=ex:UserShape .sh:NodeShape label}
+Validates all [User] {+ex:User ?sh:targetClass} instances to have a [name] {+ex:UsernameRule ?sh:property sh:name} and an [email] {+ex:EmailRule ?sh:property sh:name}.
 
-**Username is required** {=ex:UsernameRule .sh:PropertyShape ?sh:property}
-[username] {+ex:username ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
+**Username is required** {=ex:UsernameRule .sh:PropertyShape sh:message} requires [username] {+ex:username ?sh:path} to have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
 
-**Email is required** {=ex:EmailRule .sh:PropertyShape ?sh:property}
-[email] {+ex:email ?sh:path} must have at least [1] {sh:minCount ^^xsd:integer} value.
+**Email is required** {=ex:EmailRule .sh:PropertyShape sh:message} requires [email] {+ex:email ?sh:path} must have at least [1] {sh:minCount ^^xsd:integer} value.
 ~~~~~~
 
 ## Key MDLD Syntax Patterns

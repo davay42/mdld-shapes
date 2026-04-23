@@ -13,39 +13,56 @@
 
 ## 📋 Quick Start Pattern
 
+The targetSubjectsOf constraint targets all subjects (nodes) that have a specific property pointing to any value. This example demonstrates management and approval scenarios where we validate entities that initiate relationships.
+
 ~~~~~~md
-[ex] <tag:my@example.org,2026:targeting/>
+[ex] <mdld:shacl/example/targeting/>
 
-### Shape Definition
+## Management Validation Demo
 
-**Manager Validation Shape** {=ex:ManagerValidationShape .sh:NodeShape label} targets all [managers] {+ex:manages ?sh:targetSubjectsOf} of the manages relationship to validate management requirements.
+The **Manager Validation Shape** {=ex:ManagerValidationShape .sh:NodeShape label} targets all [managers] {+ex:manages ?sh:targetSubjectsOf} of the manages relationship to validate management requirements: [level] {+#managementLevel ?sh:property sh:name} and [teamSize] {+#teamSize ?sh:property sh:name}.
 
-**Management Level Rule** {=#managementLevel .sh:PropertyShape ?sh:property} requires the [level] {+ex:level ?sh:path} property to be at least [3] {sh:minInclusive ^^xsd:integer}: **Managers must have level 3 or higher** {sh:message}
+**Managers must have level 3 or higher** {=#managementLevel .sh:PropertyShape sh:message} requires the [level] {+ex:level ?sh:path} property to be at least [3] {sh:minInclusive ^^xsd:integer}.
 
-**Team Size Rule** {=#teamSize .sh:PropertyShape ?sh:property} requires the [teamSize] {+ex:teamSize ?sh:path} property to be at most [10] {sh:maxInclusive ^^xsd:integer}: **Managers can oversee at most 10 team members** {sh:message}
+**Managers can oversee at most 10 team members** {=#teamSize .sh:PropertyShape sh:message} that requires the [teamSize] {+ex:teamSize ?sh:path} property to be at most [10] {sh:maxInclusive ^^xsd:integer}.
+
+## Approval Validation Demo
+
+**Approver Validation Shape** {=ex:ApproverValidationShape .sh:NodeShape label} targets all [approvers] {+ex:approves ?sh:targetSubjectsOf} of the approves relationship to validate approval [authority] {+#approvalAuthority ?sh:property sh:name}.
+
+**Approvers must have authority level 2 or higher** {=#approvalAuthority .sh:PropertyShape sh:message} requires the [authority] {+ex:authority ?sh:path} property to be at least [2] {sh:minInclusive ^^xsd:integer}.
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Engineering Manager {=ex:EngineeringManager ?member}
+### Engineering Manager {=ex:EngineeringManager}
 Level: [2] {ex:level ^^xsd:integer}
 Team Size: [15] {ex:teamSize ^^xsd:integer}
 Manages: [EngineeringTeam] {ex:manages}
 
-#### Senior Manager {=ex:SeniorManager ?member}
+### Senior Manager {=ex:SeniorManager}
 Level: [4] {ex:level ^^xsd:integer}
 Team Size: [8] {ex:teamSize ^^xsd:integer}
 Manages: [QATeam] {ex:manages}
 
-#### Junior Developer {=ex:JuniorDeveloper ?member}
+### Junior Developer {=ex:JuniorDeveloper}
 Level: [1] {ex:level ^^xsd:integer}
 Team Size: [0] {ex:teamSize ^^xsd:integer}
 
----
+### Finance Approver {=ex:FinanceApprover}
+Authority: [1] {ex:authority ^^xsd:integer}
+Approves: [ExpenseReport] {ex:approves}
 
-[Demo] {=ex:demo} must produce exactly **2** violations.
+### Executive Approver {=ex:ExecutiveApprover}
+Authority: [3] {ex:authority ^^xsd:integer}
+Approves: [BudgetRequest] {ex:approves}
+
+### Regular Employee {=ex:RegularEmployee}
+Authority: [0] {ex:authority ^^xsd:integer}
 ~~~~~~
+
+**Expected Result:** 3 violations (EngineeringManager fails twice: level < 3 AND teamSize > 10; FinanceApprover fails: authority < 2; JuniorDeveloper and RegularEmployee not validated as they don't initiate the relationships)
 
 ---
 

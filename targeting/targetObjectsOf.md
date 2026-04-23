@@ -13,39 +13,61 @@
 
 ## 📋 Quick Start Pattern
 
+The targetObjectsOf constraint targets all objects (nodes) that are referenced by a specific property. This example demonstrates team membership and product reference scenarios where we validate entities that are referenced by others.
+
 ~~~~~~md
-[ex] <tag:my@example.org,2026:targeting/>
+[ex] <mdld:shacl/example/targeting/>
 
-### Shape Definition
+## Team Membership Demo
 
-**Team Member Validation Shape** {=ex:TeamMemberValidationShape .sh:NodeShape label} targets all [team members] {+ex:memberOf ?sh:targetObjectsOf} to validate team membership requirements.
+The **Team Member Validation Shape** {=ex:TeamMemberValidationShape .sh:NodeShape label} targets all [team members] {+ex:memberOf ?sh:targetObjectsOf} to validate team membership requirements: [workload] {+#workloadRule ?sh:property sh:name} and [status] {+#activeStatus ?sh:property sh:name}.
 
-**Workload Rule** {=#workloadRule .sh:PropertyShape ?sh:property} requires the [workload] {+ex:workload ?sh:path} property to be at most [40] {sh:maxInclusive ^^xsd:integer}: **Team members must not exceed 40 hours workload** {sh:message}
+**Team members must not exceed 40 hours workload** {=#workloadRule .sh:PropertyShape sh:message} requires the [workload] {+ex:workload ?sh:path} property to be at most [40] {sh:maxInclusive ^^xsd:integer}.
 
-**Active Status Rule** {=#activeStatus .sh:PropertyShape ?sh:property} requires the [status] {+ex:status ?sh:path} property to be exactly [active] {sh:hasValue}: **Team members must be active** {sh:message}
+**Team members must be active** {=#activeStatus .sh:PropertyShape sh:message} that requires the [status] {+ex:status ?sh:path} property to be exactly [active] {sh:hasValue}.
+
+## Product Reference Demo
+
+**Referenced Product Validation Shape** {=ex:ReferencedProductValidationShape .sh:NodeShape label} targets all [referenced products] {+ex:references ?sh:targetObjectsOf} to validate product reference requirements: [availability] {+#productAvailability ?sh:property sh:name} and [price] {+#productPrice ?sh:property sh:name}.
+
+**Referenced products must be available** {=#productAvailability .sh:PropertyShape sh:message} requires the [available] {+ex:available ?sh:path} property to be exactly [true] {sh:hasValue}.
+
+**Referenced products must cost $1000 or less** {=#productPrice .sh:PropertyShape sh:message} that requires the [price] {+ex:price ?sh:path} property to be at most [1000.00] {sh:maxInclusive ^^xsd:decimal}.
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Senior Developer {=ex:SeniorDeveloper ?member}
+### EngineeringTeam {=ex:EngineeringTeam}
 Workload: [45] {ex:workload ^^xsd:integer}
 Status: [inactive] {ex:status}
-Member Of: [EngineeringTeam] {ex:memberOf}
 
-#### Junior Developer {=ex:JuniorDeveloper ?member}
+### QATeam {=ex:QATeam}
 Workload: [35] {ex:workload ^^xsd:integer}
 Status: [active] {ex:status}
-Member Of: [EngineeringTeam] {ex:memberOf}
 
-#### Manager {=ex:Manager ?member}
-Workload: [50] {ex:workload ^^xsd:integer}
-Status: [active] {ex:status}
+### Senior Developer {=ex:SeniorDeveloper}
+Member Of: [Engineering team] {+ex:EngineeringTeam ?ex:memberOf}
 
----
+### Junior Developer {=ex:JuniorDeveloper}
+Member Of: [QATeam] {+ex:QATeam ?ex:memberOf}
 
-[Demo] {=ex:demo} must produce exactly **2** violations.
+### Expensive Product {=ex:ExpensiveProduct}
+Price: [1500.00] {ex:price ^^xsd:decimal}
+Available: [false] {ex:available}
+
+### Affordable Product {=ex:AffordableProduct}
+Price: [299.99] {ex:price ^^xsd:decimal}
+Available: [true] {ex:available}
+
+### Order123 {=ex:Order123}
+References: [Expensive product] {+ex:ExpensiveProduct ?ex:references}
+
+### Order456 {=ex:Order456}
+References: [Affordable product] {+ex:AffordableProduct ?ex:references}
 ~~~~~~
+
+**Expected Result:** 4 violations (EngineeringTeam fails twice: workload > 40 AND status inactive; ExpensiveProduct fails twice: price > 1000 AND unavailable; QATeam and AffordableProduct pass; developers and orders not validated as they're subjects, not objects)
 
 ---
 

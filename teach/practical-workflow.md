@@ -19,51 +19,64 @@ We need to validate product data with these requirements:
 ~~~~~~md
 [ex] <tag:my@example.org,2026:product/>
 
-**Product Validation Shape** {=ex:ProductShape .sh:NodeShape  label}
-Validates all [Product] {+ex:Product ?sh:targetClass} instances.
+# Product Validation Shape {=ex:ProductShape .sh:NodeShape  label}
+Validates all [Product] {+ex:Product ?sh:targetClass} instances to have mandatory [name] {+ex:NameRule ?sh:property sh:name}, [price] {+ex:PriceRule ?sh:property sh:name} and [category] {+ex:CategoryRule ?sh:property sh:name} assigned.
+
+
 ~~~~~~
 
 ## Step 2: Add Required Properties
 
 ~~~~~~md
-**Product name is required** {=ex:NameRule .sh:PropertyShape ?sh:property}
-[name] {+ex:name ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
+[ex] <tag:my@example.org,2026:product/>
 
-**Product price is required** {=ex:PriceRule .sh:PropertyShape ?sh:property}
-[price] {+ex:price ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
+## Product Validation Shape required properties {=ex:ProductShape}
 
-**Product category is required** {=ex:CategoryRule .sh:PropertyShape ?sh:property}
-[category] {+ex:category ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
+**Product name is required** {=ex:NameRule .sh:PropertyShape sh:message} requires that [name] {+ex:name ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
+
+**Product price is required** {=ex:PriceRule .sh:PropertyShape sh:message} requires that [price] {+ex:price ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
+
+**Product category is required** {=ex:CategoryRule .sh:PropertyShape sh:message} requires that [category] {+ex:category ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
 ~~~~~~
 
 ## Step 3: Add Value Constraints
 
 ~~~~~~md
-**Product price must be positive** {=ex:PriceRule .sh:PropertyShape ?sh:property}
-[price] {+ex:price ?sh:path} must be at least [0.01] {sh:minInclusive ^^xsd:decimal}.
+[ex] <tag:my@example.org,2026:product/>
+
+**Product** {=ex:ProductShape} also must have a positive [price] {+ex:PriceRule ?sh:property sh:name}.
+
+**Product price must be positive** {=ex:PriceRule .sh:PropertyShape sh:message}: [price] {+ex:price ?sh:path} must be at least [0.01] {sh:minInclusive ^^xsd:decimal}.
 ~~~~~~
 
 ## Step 4: Add Enumeration Constraint
 
 ~~~~~~md
-**Product category must be from allowed list** {=ex:CategoryRule .sh:PropertyShape ?sh:property}
-[category] {+ex:category ?sh:path} must be in allowed list.
+[ex] <tag:my@example.org,2026:product/>
 
-**Allowed Categories List** {=ex:cat-l1 ?sh:in .rdf:List}: [Electronics] {rdf:first}, then [rest] {=ex:cat-l2 ?rdf:rest} by [Clothing] {rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
+**Product** {=ex:ProductShape} must have an allowed [category] {+ex:CategoryRule ?sh:property sh:name}.
+
+**Product category must be from allowed list** {=ex:CategoryRule .sh:PropertyShape sh:message}: [category] {+ex:category ?sh:path} must be in **Allowed Categories List** {=ex:cat-l1 ?sh:in .rdf:List}: [Electronics] {rdf:first}, then [followed by] {=ex:cat-l2 ?rdf:rest} by [Clothing] {rdf:first} - [only these] {+rdf:nil ?rdf:rest}. {=}
 ~~~~~~
 
 ## Step 5: Add Optional Property with Conditional Constraint
 
 ~~~~~~md
-**Product description is optional** {=ex:DescriptionRule .sh:PropertyShape ?sh:property}
-[description] {+ex:description ?sh:path} must have at least [10] {sh:minLength ^^xsd:integer} characters.
+[ex] <tag:my@example.org,2026:product/>
+
+**Product** {=ex:ProductShape} must have an optional [descripton] {+ex:DescriptionRule ?sh:property sh:name}.
+
+**Product description is optional** {=ex:DescriptionRule .sh:PropertyShape sh:message}: [description] {+ex:description ?sh:path} must have at least [10] {sh:minLength ^^xsd:integer} characters.
 ~~~~~~
 
 ## Step 6: Add Pattern Constraint
 
 ~~~~~~md
-**Product SKU must match pattern** {=ex:SKURule .sh:PropertyShape ?sh:property}
-[sku] {+ex:sku ?sh:path} must match [PROD-\d{5}] {sh:pattern}.
+[ex] <tag:my@example.org,2026:product/>
+
+**Product** {=ex:ProductShape} must have an [SKU] {+ex:DescriptioSKURulenRule ?sh:property sh:name}.
+
+**Product SKU must match pattern** {=ex:SKURule .sh:PropertyShape sh:message}: [sku] {+ex:sku ?sh:path} must match [PROD-\d{5}] {sh:pattern}.
 ~~~~~~
 
 ## Complete Shape
@@ -72,23 +85,23 @@ Validates all [Product] {+ex:Product ?sh:targetClass} instances.
 [ex] <tag:my@example.org,2026:product/>
 
 **Product Validation Shape** {=ex:ProductShape .sh:NodeShape  label}
-Validates all [Product] {+ex:Product ?sh:targetClass} instances.
+Validates all [Product] {+ex:Product ?sh:targetClass} instances to have mandatory [name] {+ex:NameRule ?sh:property sh:name}, [price] {+ex:PriceRule ?sh:property sh:name} and [category] {+ex:CategoryRule ?sh:property sh:name} assigned, must have a positive [price] {+ex:PriceRule ?sh:property sh:name}, must have an allowed [category] {+ex:CategoryRule ?sh:property sh:name}, an optional [descripton] {+ex:DescriptionRule ?sh:property sh:name} and a correct [SKU] {+ex:DescriptioSKURulenRule ?sh:property sh:name}.
 
-**Product name is required** {=ex:NameRule .sh:PropertyShape ?sh:property}
+**Product name is required** {=ex:NameRule .sh:PropertyShape}
 [name] {+ex:name ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
 
-**Product price is required and positive** {=ex:PriceRule .sh:PropertyShape ?sh:property}
+**Product price is required and positive** {=ex:PriceRule .sh:PropertyShape}
 [price] {+ex:price ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value and be at least [0.01] {sh:minInclusive ^^xsd:decimal}.
 
-**Product category is required and from allowed list** {=ex:CategoryRule .sh:PropertyShape ?sh:property}
+**Product category is required and from allowed list** {=ex:CategoryRule .sh:PropertyShape}
 [category] {+ex:category ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value and be in allowed list.
 
 **Allowed Categories List** {=ex:cat-l1 ?sh:in .rdf:List}: [Electronics] {rdf:first}, then [rest] {=ex:cat-l2 ?rdf:rest} by [Clothing] {rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
 
-**Product description is optional but must be 10+ characters** {=ex:DescriptionRule .sh:PropertyShape ?sh:property}
+**Product description is optional but must be 10+ characters** {=ex:DescriptionRule .sh:PropertyShape}
 [description] {+ex:description ?sh:path} must have at least [10] {sh:minLength ^^xsd:integer} characters.
 
-**Product SKU must match pattern** {=ex:SKURule .sh:PropertyShape ?sh:property}
+**Product SKU must match pattern** {=ex:SKURule .sh:PropertyShape}
 [sku] {+ex:sku ?sh:path} must match [PROD-\d{5}] {sh:pattern}.
 ~~~~~~
 

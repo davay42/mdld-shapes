@@ -26,36 +26,38 @@ The **Team Member Validation Shape** {=ex:TeamMemberValidationShape .sh:NodeShap
 
 ### 📋 Test Data {=ex:data .Container}
 
-#### Senior Developer {=ex:SeniorDeveloper}
+#### EngineeringTeam {=ex:EngineeringTeam}
 
-A team member with excessive workload and inactive status.
+A team with excessive workload and inactive status (targeted as object of memberOf).
 
 Workload: [45] {ex:workload ^^xsd:integer}
 Status: [inactive] {ex:status}
-Member Of: [EngineeringTeam] {ex:memberOf}
 
-#### Junior Developer {=ex:JuniorDeveloper}
+#### QATeam {=ex:QATeam}
 
-A team member with appropriate workload and active status.
+A team with appropriate workload and active status.
 
 Workload: [35] {ex:workload ^^xsd:integer}
 Status: [active] {ex:status}
-Member Of: [EngineeringTeam] {ex:memberOf}
 
-#### Manager {=ex:Manager}
+#### Senior Developer {=ex:SeniorDeveloper}
 
-A manager who manages the team (not targeted as team member).
+A team member (not targeted as subject).
 
-Workload: [50] {ex:workload ^^xsd:integer}
-Status: [active] {ex:status}
+Member Of: [Engineering team] {+ex:EngineeringTeam ?ex:memberOf}
+
+#### Junior Developer {=ex:JuniorDeveloper}
+
+A team member (not targeted as subject).
+
+Member Of: [QATeam] {+ex:QATeam ?ex:memberOf}
 
 #### Expensive Product {=ex:ExpensiveProduct}
 
-A product that's too expensive and unavailable.
+A product that's too expensive and unavailable (targeted as object of references).
 
 Price: [1500.00] {ex:price ^^xsd:decimal}
 Available: [false] {ex:available}
-Referenced By: [Order123] {ex:references}
 
 #### Affordable Product {=ex:AffordableProduct}
 
@@ -63,7 +65,18 @@ A product that meets all requirements.
 
 Price: [299.99] {ex:price ^^xsd:decimal}
 Available: [true] {ex:available}
-Referenced By: [Order456] {ex:references}
+
+#### Order123 {=ex:Order123}
+
+An order referencing expensive product (not targeted as subject).
+
+References: [Expensive product] {+ex:ExpensiveProduct ?ex:references}
+
+#### Order456 {=ex:Order456}
+
+An order referencing affordable product (not targeted as subject).
+
+References: [Affordable product] {+ex:AffordableProduct ?ex:references}
 
 #### Unreferenced Product {=ex:UnreferencedProduct}
 
@@ -79,14 +92,17 @@ Available: [true] {ex:available}
 ### Expected Validation Results 
 
 #### Team Membership Validation (objects of memberOf):
-1. **Senior Developer** - fails twice (workload 45 > 40 AND status: inactive ≠ active)
-2. **Junior Developer** - passes (workload 35 ≤ 40 AND status: active)
-3. **Manager** - not validated (not a team member, manages the team)
+1. **EngineeringTeam** - fails twice (workload 45 > 40 AND status: inactive ≠ active)
+2. **QATeam** - passes (workload 35 ≤ 40 AND status: active)
+3. **Senior Developer** - not validated (is a subject, not an object of memberOf)
+4. **Junior Developer** - not validated (is a subject, not an object of memberOf)
 
 #### Product Reference Validation (objects of references):
-4. **Expensive Product** - fails twice (price 1500.00 > 1000.00 AND available: false ≠ true)
-5. **Affordable Product** - passes (price 299.99 ≤ 1000.00 AND available: true)
-6. **Unreferenced Product** - not validated (not referenced by any order)
+5. **Expensive Product** - fails twice (price 1500.00 > 1000.00 AND available: false ≠ true)
+6. **Affordable Product** - passes (price 299.99 ≤ 1000.00 AND available: true)
+7. **Order123** - not validated (is a subject, not an object of references)
+8. **Order456** - not validated (is a subject, not an object of references)
+9. **Unreferenced Product** - not validated (not referenced by any order)
 
 Note: Object-based targeting validates entities that are referenced by others, making it ideal for team membership, product references, and destination validation scenarios.
 

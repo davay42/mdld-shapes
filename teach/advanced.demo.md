@@ -6,45 +6,36 @@
 
 This demo demonstrates advanced SHACL techniques: shape composition, NOT constraint, qualified count, AND constraint, and multiple constraints on same property.
 
-## Employee Validation Shape {=ex:EmployeeValidationShape .sh:NodeShape  label}
+## Employee Validation Shape {=ex:EmployeeValidationShape .sh:NodeShape label}
 
-Validates all [Employee] {+ex:Employee ?sh:targetClass} instances with comprehensive business rules: [department] {+ex:DepartmentRule ?sh:property}, [status] {+ex:StatusRule ?sh:property}, [2 projects] {+ex:ProjectsRule ?sh:property}, [salary] {+ex:SalaryRule ?sh:property}.
+Validates all [Employee] {+ex:Employee ?sh:targetClass} instances with comprehensive business rules: [department] {+ex:DepartmentRule ?sh:property sh:name}, [status] {+ex:StatusRule ?sh:property sh:name}, [projects] {+ex:ProjectsRule ?sh:property sh:name}, [salary] {+ex:SalaryRule ?sh:property sh:name}.
 
 ### Property Rules
 
-**Employee must have valid department** {=ex:DepartmentRule .sh:PropertyShape}
-[department] {+ex:department ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value and must be in allowed list.
+**Employee must have valid department** {=ex:DepartmentRule .sh:PropertyShape} requires [department] {+ex:department ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value and must be in **Allowed Departments List** {=ex:dept-l1 ?sh:in .rdf:List}: [Engineering] {rdf:first}, then [rest] {=ex:dept-l2 ?rdf:rest} by [Sales] {rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
 
-**Allowed Departments List** {=ex:dept-l1 ?sh:in .rdf:List}: [Engineering] {rdf:first}, then [rest] {=ex:dept-l2 ?rdf:rest} by [Sales] {rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
+**Employee status cannot be terminated** {=ex:StatusRule .sh:PropertyShape sh:message}: Employee status must not conform to [Terminated Status Shape] {+ex:TerminatedStatusShape ?sh:not}.
 
-**Employee status cannot be terminated** {=ex:StatusRule .sh:PropertyShape}
-Employee status must not conform to [Terminated Status Shape] {+ex:TerminatedStatusShape ?sh:not}.
+**Employee must have at least 2 completed projects** {=ex:ProjectsRule .sh:PropertyShape sh:message}: [projects] {+ex:projects ?sh:path} must have at least [2] {sh:qualifiedMinCount ^^xsd:integer} values that conform to [Completed Project Shape] {=ex:CompletedProjectShape .sh:NodeShape ?sh:qualifiedValueShape}.
 
-**Employee must have at least 2 completed projects** {=ex:ProjectsRule .sh:PropertyShape}
-[projects] {+ex:projects ?sh:path} must have at least [2] {sh:qualifiedMinCount ^^xsd:integer} values that conform to [Completed Project Shape] {=ex:CompletedProjectShape .sh:NodeShape ?sh:qualifiedValueShape}.
-
-**Salary must be positive** {=ex:SalaryRule .sh:PropertyShape}
-[salary] {+ex:salary ?sh:path} must be at least [0.01] {sh:minInclusive ^^xsd:decimal}.
+**Salary must be positive** {=ex:SalaryRule .sh:PropertyShape sh:message}: [salary] {+ex:salary ?sh:path} must be at least [0.01] {sh:minInclusive ^^xsd:decimal}.
 
 ---
 
 ## Terminated Status Shape {=ex:TerminatedStatusShape .sh:NodeShape  label}
-Defines the forbidden terminated status pattern.
+Defines the forbidden terminated [status] {+ex:TerminatedStatusRule ?sh:property sh:name} pattern.
 
-**Status must be terminated** {=ex:TerminatedStatusRule .sh:PropertyShape ?sh:property}
-[status] {+ex:status ?sh:path} must be exactly [terminated] {sh:hasValue}.
+**Status must be terminated** {=ex:TerminatedStatusRule .sh:PropertyShape sh:message}: [status] {+ex:status ?sh:path} must be exactly [terminated] {sh:hasValue}.
 
 ---
 
 ## Completed Project Shape {=ex:CompletedProjectShape .sh:NodeShape  label}
 
-Validates completed projects - [completed] {+ex:ProjectStatusRule ?sh:property} and [positive budget] {+ex:ProjectBudgetRule ?sh:property}.
+Validates completed projects to have completed [status] {+ex:ProjectStatusRule ?sh:property sh:name} and positive [budget] {+ex:ProjectBudgetRule ?sh:property sh:name}.
 
-**Project must be completed** {=ex:ProjectStatusRule .sh:PropertyShape }
-[status] {+ex:status ?sh:path} must be exactly [completed] {sh:hasValue}.
+**Project must be completed** {=ex:ProjectStatusRule .sh:PropertyShape sh:message}: [status] {+ex:status ?sh:path} must be exactly [completed] {sh:hasValue}.
 
-**Project must have positive budget** {=ex:ProjectBudgetRule .sh:PropertyShape}
-[budget] {+ex:budget ?sh:path} must be at least [0.01] {sh:minInclusive ^^xsd:decimal}.
+**Project must have positive budget** {=ex:ProjectBudgetRule .sh:PropertyShape sh:message}: [budget] {+ex:budget ?sh:path} must be at least [0.01] {sh:minInclusive ^^xsd:decimal}.
 
 ---
 
