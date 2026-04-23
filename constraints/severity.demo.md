@@ -1,17 +1,15 @@
-[mdld] <https://mdld.js.org/vocab/>
-[cat] <https://mdld.js.org/shacl/catalog/>
-[ex] <http://example.org/>
+[mdld] <https://mdld.js.org/>
+[cat] <mdld:shacl/>
+[ex] <tag:my@example.org,2026:range/>
 
 
-# Severity Levels {=sh:severity .class:SeverityConstraint label} Demo
-
-## Demo {=ex:demo ?cat:hasDemo}
+# Severity Levels Demo {=ex:demo .Container} 
 
 This demo demonstrates severity levels and custom messages using user account validation.
 
 ### User Account Validation Demo
 
-The **User Validation Shape** {=ex:UserValidationShape .sh:NodeShape ?cat:hasShape label} targets all [users] {+ex:User ?sh:targetClass} to validate account requirements with different severity levels: **Critical Email Rule** {+ex:CriticalRule ?sh:property label}, **Warning Age Rule** {+ex:WarningRule ?sh:property label} and **Info Name Rule** {+ex:InfoNameRule ?sh:property label}.
+The **User Validation Shape** {=ex:UserValidationShape .sh:NodeShape label} targets all [users] {+ex:User ?sh:targetClass} to validate account requirements with different severity levels: critical **email** {+ex:CriticalRule ?sh:property sh:name}, warning **age** {+ex:WarningRule ?sh:property sh:name} and info **name** {+ex:InfoNameRule ?sh:property sh:name}.
 
 **Email address is required and must be valid** {=ex:CriticalRule .sh:PropertyShape sh:message} that requires [email] {+ex:email ?sh:path} to be [string] {+xsd:string ?sh:datatype} and at least [1] {sh:minCount ^^xsd:integer} corporate email [example.com] {sh:pattern} with [Violation severity] {+sh:Violation ?sh:severity}.
 
@@ -41,7 +39,7 @@ Name: [] {ex:name}  # Info violation (empty string)
 
 [This demo] {=ex:demo} must produce exactly **3** {cat:expectsViolations ^^xsd:integer} violations.
 
-### Expected Validation Results {=ex:results ?cat:hasResults}
+### Expected Validation Results
 
 1. **Valid User** - passes (has valid email, reasonable age, and name ✓)
 2. **Invalid User** - fails three times:

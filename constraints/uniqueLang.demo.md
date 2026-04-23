@@ -2,15 +2,13 @@
 [cat] <mdld:shacl/>
 [ex] <tag:my@example.org,2026:uniqueLang/>
 
-# Unique Languages {=sh:uniqueLang .class:UniqueLanguageConstraint label} Demo
+# Unique Languages Demo {=ex:demo .Container} 
 
-## Demo {=ex:demo ?cat:hasDemo}
+### Unique Language Example Shape {=ex:UniqueLangExampleShape .sh:NodeShape label}
 
-### Unique Language Example Shape {=ex:UniqueLangExampleShape .sh:NodeShape ?cat:hasShape label}
+Validates all [member] {+member ?sh:targetObjectsOf} entities with unique **language** {+ex:TitleProperty ?sh:property sh:name}.
 
-Validates all [member] {+member ?sh:targetObjectsOf} entities with **Each language tag must appear only once** {+ex:TitleProperty ?sh:property}.
-
-**Each language tag must appear only once** {=ex:TitleProperty .sh:PropertyShape} requires [title] {+ex:title ?sh:path} values to have [true] {sh:uniqueLang ^^xsd:boolean}.
+**Each language tag must appear only once** {=ex:TitleProperty .sh:PropertyShape sh:message} requires [title] {+ex:title ?sh:path} values to have [true] {sh:uniqueLang ^^xsd:boolean}.
 
 ---
 
@@ -28,7 +26,7 @@ Title: [Hola Mundo] {ex:title @en}
 
 [Demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
 
-### Expected Validation Results {=ex:results ?cat:hasResults}
+### Expected Validation Results
 
 1. **Valid Document** - passes (unique language tags)
 2. **Invalid Document** - fails (duplicate en language tag)

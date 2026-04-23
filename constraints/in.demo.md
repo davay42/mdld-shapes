@@ -2,33 +2,32 @@
 [cat] <mdld:shacl/>
 [ex] <tag:my@example.org,2026:in/>
 
-# Value Enumeration {=sh:in .class:PresenceConstraint label} Demo
+# Value Enumeration Demo {=ex:demo .Container} 
 
-## Demo {=ex:demo ?cat:hasDemo}
 
-### Status Validation Shape {=ex:StatusValidationShape .sh:NodeShape ?cat:hasShape label}
+## Status Validation Shape {=ex:StatusValidationShape .sh:NodeShape ?cat:hasShape label}
 
-Validates all [member] {+member ?sh:targetObjectsOf} entities with **Status must be Active or Inactive** {+ex:#allowedStatus ?sh:property}.
+Validates all [member] {+member ?sh:targetObjectsOf} entities with correct **status** {+ex:#allowedStatus ?sh:property sh:name}.
 
-**Status must be Active or Inactive** {=ex:#allowedStatus .sh:PropertyShape} requires [status] {+ex:status ?sh:path} to be in allowed list.
+**Status must be Active or Inactive** {=ex:#allowedStatus .sh:PropertyShape sh:message} requires [status] {+ex:status ?sh:path} to be in allowed list.
 
-**Allowed Values List** {=ex:in-l1 ?sh:in .rdf:List}: [Active] {+ex:Active ?rdf:first}, then [rest] {=ex:in-l2 ?rdf:rest} by [Inactive] {+ex:Inactive ?rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
+**Allowed Values List** {=ex:in-l1 ?sh:in .rdf:List}: **Active** {+ex:Active ?rdf:first} [or] {=ex:in-l2 ?rdf:rest} **Inactive** {+ex:Inactive ?rdf:first} - [only] {+rdf:nil ?rdf:rest} these 2 values are allowed.
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Valid Employee {=ex:ValidEmployee ?member}
+### Valid Employee {=ex:ValidEmployee ?member}
 Status: [Active] {+ex:Active ?ex:status}
 
-#### Invalid Employee {=ex:InvalidStatusEmployee ?member}
+### Invalid Employee {=ex:InvalidStatusEmployee ?member}
 Status: [Pending] {+ex:Pending ?ex:status}
 
 ---
 
 [Demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
 
-### Expected Validation Results {=ex:results ?cat:hasResults}
+## Expected Validation Results 
 
 1. **Valid Employee** - passes (status is Active)
 2. **Invalid Employee** - fails (status is Pending, not allowed)

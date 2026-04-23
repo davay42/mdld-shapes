@@ -2,15 +2,13 @@
 [cat] <mdld:shacl/>
 [ex] <tag:my@example.org,2026:comparison/>
 
-# Comparison {=sh:lessThan .class:ComparisonConstraint label}
-
-## Demo {=ex:demo ?cat:hasDemo}
+# Comparison Demo {=ex:demo .Container}
 
 ### Order Test Shape {=ex:OrderTestShape .sh:NodeShape ?cat:hasShape label}
 
-Validates all [member] {+member ?sh:targetObjectsOf} entities with **Order date must be before shipping date** {+ex:#orderDateRule ?sh:property}.
+Validates all [member] {+member ?sh:targetObjectsOf} entities with **order date before shipping date** {+ex:#orderDateRule ?sh:property sh:name}.
 
-**Order date must be before shipping date** {=ex:#orderDateRule .sh:PropertyShape} requires [order date] {+ex:orderDate ?sh:path} to be before [shipping date] {+ex:shippingDate ?sh:lessThan}.
+**Order date must be before shipping date** {=ex:#orderDateRule .sh:PropertyShape sh:message} requires [order date] {+ex:orderDate ?sh:path} to be before [shipping date] {+ex:shippingDate ?sh:lessThan}.
 
 ---
 

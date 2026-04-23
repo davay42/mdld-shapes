@@ -8,9 +8,7 @@
 
 ### User Status Shape {=ex:UserStatusShape .sh:NodeShape ?cat:hasShape label}
 
-Validates all [member] {+member ?sh:targetObjectsOf} entities with **User cannot have deleted status** {+ex:ForbiddenStatusShape ?sh:not}.
-
-User status must not conform to [Forbidden Status Shape] {+ex:ForbiddenStatusShape ?sh:not}.
+Validates all [member] {+member ?sh:targetObjectsOf} entities to not conform to the forbidden **shape** {+ex:ForbiddenStatusShape ?sh:not}.
 
 **Forbidden Status Shape** {=ex:ForbiddenStatusShape .sh:NodeShape} requires [status] {+ex:status ?sh:path} to be exactly [deleted] {sh:hasValue}.
 
@@ -28,7 +26,7 @@ Status: [deleted] {ex:status}
 
 [Demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
 
-### Expected Validation Results {=ex:results ?cat:hasResults}
+### Expected Validation Results
 
 1. **Valid User** - passes (status is not deleted)
 2. **Invalid User** - fails (status is deleted)

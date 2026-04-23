@@ -2,31 +2,29 @@
 [cat] <mdld:shacl/>
 [ex] <tag:my@example.org,2026:pattern/>
 
-# Pattern {=sh:pattern .class:PatternConstraint label} Demo
+# Pattern Demo {=ex:demo .Container} 
 
-## Demo {=ex:demo ?cat:hasDemo}
+## Email Validation Shape {=ex:PatternExampleShape .sh:NodeShape label}
 
-### Email Validation Shape {=ex:PatternExampleShape .sh:NodeShape ?cat:hasShape label}
+Validates all [member] {+member ?sh:targetObjectsOf} entities with corporate **email** {+ex:EmailPatternConstraint ?sh:property sh:name}.
 
-Validates all [member] {+member ?sh:targetObjectsOf} entities with **Email must end with example.com** {+ex:EmailPatternConstraint ?sh:property}.
-
-**Email must end with example.com** {=ex:EmailPatternConstraint .sh:PropertyShape} requires [email] {+ex:email ?sh:path} to match [example\.com$] {sh:pattern} with [i] {sh:flags}.
+**Email must end with example.com** {=ex:EmailPatternConstraint .sh:PropertyShape sh:message} requires [email] {+ex:email ?sh:path} to match [example\.com$] {sh:pattern} with [i] {sh:flags}.
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Valid Email {=ex:ValidEmail ?member}
+### Valid Email {=ex:ValidEmail ?member}
 Email: [user@example.com] {ex:email}
 
-#### Invalid Email {=ex:InvalidEmail ?member}
+### Invalid Email {=ex:InvalidEmail ?member}
 Email: [user@example.org] {ex:email}
 
 ---
 
 [Demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
 
-### Expected Validation Results {=ex:results ?cat:hasResults}
+## Expected Validation Results
 
 1. **Valid Email** - passes (matches pattern)
 2. **Invalid Email** - fails (doesn't match pattern)

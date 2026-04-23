@@ -2,11 +2,9 @@
 [cat] <mdld:shacl/>
 [ex] <tag:my@example.org,2026:and/>
 
-# AND {=sh:and .class:LogicalConstraint label} Demo
+# AND Demo {=ex:demo .prov:Entity label}
 
-## Demo {=ex:demo ?cat:hasDemo}
-
-### Product Validation Shape {=ex:ProductValidationShape .sh:NodeShape ?cat:hasShape label}
+## Product Validation Shape {=ex:ProductValidationShape .sh:NodeShape label}
 
 Validates all [member] {+member ?sh:targetObjectsOf} entities with **Product must have price and category** {sh:message}.
 
@@ -18,20 +16,20 @@ Validates all [member] {+member ?sh:targetObjectsOf} entities with **Product mus
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Valid Product {=ex:ValidProduct ?member}
+### Valid Product {=ex:ValidProduct ?member}
 Price: [999] {ex:price ^^xsd:integer}
 Category: [Electronics] {ex:category}
 
-#### Invalid Product {=ex:MissingPriceProduct ?member}
+### Invalid Product {=ex:MissingPriceProduct ?member}
 Category: [Electronics] {ex:category}
 
 ---
 
 [Demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
 
-### Expected Validation Results {=ex:results ?cat:hasResults}
+### Expected Validation Results
 
 1. **Valid Product** - passes (has price and category)
 2. **Invalid Product** - fails (missing price)

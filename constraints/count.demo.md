@@ -3,24 +3,22 @@
 [class] <cat:class/>
 [ex] <tag:my@example.org,2026:count/>
 
-# Count {=sh:minCount .class:Constraint label}
+# Count Demo {=ex:demo .Container}
 
-## Demo {=ex:demo ?cat:hasDemo}
+## Person Test Shape {=ex:PersonTestShape .sh:NodeShape ?cat:hasShape sh:name}
 
-### Person Test Shape {=ex:PersonTestShape .sh:NodeShape ?cat:hasShape label}
+Validates all [member] {+member ?sh:targetObjectsOf} entities with **email** {+ex:#emailExact ?sh:property sh:name}.
 
-Validates all [member] {+member ?sh:targetObjectsOf} entities with **Email must be exactly one** {+ex:#emailExact ?sh:property}.
-
-**Email must be exactly one** {=ex:#emailExact .sh:PropertyShape} requires [email] {+ex:email ?sh:path} to have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
+**Email must be exactly one** {=ex:#emailExact .sh:PropertyShape sh:message} requires [email] {+ex:email ?sh:path} to have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Valid Person {=ex:ValidPerson ?member}
+### Valid Person {=ex:ValidPerson ?member}
 Email: [work@example.com] {ex:email}
 
-#### Invalid Person {=ex:InvalidPerson ?member}
+### Invalid Person {=ex:InvalidPerson ?member}
 Email: [work@example.com] {ex:email}
 Email: [personal@example.com] {ex:email}
 
@@ -28,7 +26,7 @@ Email: [personal@example.com] {ex:email}
 
 [Demo] {=ex:demo} must produce exactly **1** {cat:expectsViolations ^^xsd:integer} violation.
 
-### Expected Validation Results {=ex:results ?cat:hasResults}
+## Expected Validation Results
 
 1. **Valid Person** - passes (exactly one email)
 2. **Invalid Person** - fails (two emails instead of one)
