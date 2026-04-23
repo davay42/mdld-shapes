@@ -28,7 +28,7 @@ The MDLD Shapes catalog is a **breakthrough proof-of-concept** that demonstrates
 # Class Constraint {=sh:class .class:Constraint label}
 > Expects each value to be an instance of a specific class {comment}
 
-**Employee manager must be a Person instance** {=ex:#managerClass .sh:PropertyShape message} 
+**Employee manager must be a Person instance** {=#managerClass .sh:PropertyShape message} 
 requires the [manager] {+ex:manager ?sh:path} property to be an instance of [Person] {+ex:Person ?sh:class}.
 ```
 

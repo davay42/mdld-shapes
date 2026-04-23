@@ -6,9 +6,9 @@
 
 ### Label Test Shape {=ex:DisjointExampleShape .sh:NodeShape label}
 
-Validates all [member] {+member ?sh:targetObjectsOf} entities with **disjoint labels** {+ex:#disjointRule ?sh:property sh:name}.
+Validates all [member] {+member ?sh:targetObjectsOf} entities with **disjoint labels** {+#disjointRule ?sh:property sh:name}.
 
-**Preferred labels must be different from alternative labels** {=ex:#disjointRule .sh:PropertyShape sh:message} requires [preferred labels] {+ex:prefLabel ?sh:path} to be disjoint with [alternative labels] {+ex:altLabel ?sh:disjoint}.
+**Preferred labels must be different from alternative labels** {=#disjointRule .sh:PropertyShape sh:message} requires [preferred labels] {+ex:prefLabel ?sh:path} to be disjoint with [alternative labels] {+ex:altLabel ?sh:disjoint}.
 
 ---
 

@@ -16,7 +16,7 @@ The message constraint provides human-readable error messages for constraint vio
 ~~~~~~md
 [ex] <tag:my@example.org,2026:message/>
 
-## Business Rule Validation Shape {=ex:BusinessRuleValidationShape .sh:NodeShape ?cat:hasShape label}
+## Business Rule Validation Shape {=ex:BusinessRuleValidationShape .sh:NodeShape  label}
 
 Validates all [member] {+member ?sh:targetObjectsOf} entities with positive **contract** {+ex:ContractValueRule ?sh:property sh:name}.
 

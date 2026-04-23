@@ -18,11 +18,11 @@ Comparison constraints validate property values against reference nodes using co
 ~~~~~~md
 [ex] <tag:my@example.org,2026:comparison/>
 
-## Order Test Shape {=ex:OrderTestShape .sh:NodeShape ?cat:hasShape label}
+## Order Test Shape {=ex:OrderTestShape .sh:NodeShape  label}
 
-Validates all [member] {+member ?sh:targetObjectsOf} entities with **order date before shipping date** {+ex:#orderDateRule ?sh:property sh:name}.
+Validates all [member] {+member ?sh:targetObjectsOf} entities with **order date before shipping date** {+#orderDateRule ?sh:property sh:name}.
 
-**Order date must be before shipping date** {=ex:#orderDateRule .sh:PropertyShape sh:message} requires [order date] {+ex:orderDate ?sh:path} to be before [shipping date] {+ex:shippingDate ?sh:lessThan}.
+**Order date must be before shipping date** {=#orderDateRule .sh:PropertyShape sh:message} requires [order date] {+ex:orderDate ?sh:path} to be before [shipping date] {+ex:shippingDate ?sh:lessThan}.
 
 ---
 

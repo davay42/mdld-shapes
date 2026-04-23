@@ -56,7 +56,7 @@ Email: [<jane@example.com>] {ex:email}
 The closed constraint enables closed world validation where only explicitly declared properties are allowed.
 
 ~~~~~~md
-**[Shape] with closed world validation** {=ex:ClosedShape .sh:NodeShape ?cat:hasShape label}
+**[Shape] with closed world validation** {=ex:ClosedShape .sh:NodeShape  label}
 
 [Shape Name] {=ex:ShapeName .sh:NodeShape} has **no additional properties** {sh:closed}.
 ~~~~~~

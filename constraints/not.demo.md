@@ -6,7 +6,7 @@
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
-### User Status Shape {=ex:UserStatusShape .sh:NodeShape ?cat:hasShape label}
+### User Status Shape {=ex:UserStatusShape .sh:NodeShape  label}
 
 Validates all [member] {+member ?sh:targetObjectsOf} entities to not conform to the forbidden **shape** {+ex:ForbiddenStatusShape ?sh:not}.
 

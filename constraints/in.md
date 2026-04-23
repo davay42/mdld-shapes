@@ -16,11 +16,11 @@ The in constraint constrains property values to be within a specified list of al
 ~~~~~~md
 [ex] <tag:my@example.org,2026:in/>
 
-## Status Validation Shape {=ex:StatusValidationShape .sh:NodeShape ?cat:hasShape label}
+## Status Validation Shape {=ex:StatusValidationShape .sh:NodeShape  label}
 
-Validates all [member] {+member ?sh:targetObjectsOf} entities with correct **status** {+ex:#allowedStatus ?sh:property sh:name}.
+Validates all [member] {+member ?sh:targetObjectsOf} entities with correct **status** {+#allowedStatus ?sh:property sh:name}.
 
-**Status must be Active or Inactive** {=ex:#allowedStatus .sh:PropertyShape sh:message} requires [status] {+ex:status ?sh:path} to be in allowed list.
+**Status must be Active or Inactive** {=#allowedStatus .sh:PropertyShape sh:message} requires [status] {+ex:status ?sh:path} to be in allowed list.
 
 **Allowed Values List** {=ex:in-l1 ?sh:in .rdf:List}: **Active** {+ex:Active ?rdf:first} [or] {=ex:in-l2 ?rdf:rest} **Inactive** {+ex:Inactive ?rdf:first} - [only] {+rdf:nil ?rdf:rest} these 2 values are allowed.
 

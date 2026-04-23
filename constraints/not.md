@@ -16,7 +16,7 @@ The NOT constraint requires value nodes to NOT conform to a given shape. This ex
 ~~~~~~md
 [ex] <tag:my@example.org,2026:not/>
 
-## User Status Shape {=ex:UserStatusShape .sh:NodeShape ?cat:hasShape label}
+## User Status Shape {=ex:UserStatusShape .sh:NodeShape  label}
 
 Validates all [member] {+member ?sh:targetObjectsOf} entities to not conform to the forbidden **shape** {+ex:ForbiddenStatusShape ?sh:not}.
 

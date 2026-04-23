@@ -17,13 +17,13 @@ The nodeKind constraint expects a node to be of a specific kind (blank node, IRI
 ~~~~~~md
 [ex] <tag:my@example.org,2026:nodekind/>
 
-## Document Test Shape {=ex:DocumentTestShape .sh:NodeShape ?cat:hasShape label}
+## Document Test Shape {=ex:DocumentTestShape .sh:NodeShape  label}
 
-Validates [Valid Document] {+ex:ValidDocument ?sh:targetNode} and [Invalid Document] {+ex:InvalidDocument ?sh:targetNode} with literal **content** {+ex:#contentLiteral ?sh:property sh:name} and IRI for **reference** {+ex:#referenceIRI ?sh:property sh:name}.
+Validates [Valid Document] {+ex:ValidDocument ?sh:targetNode} and [Invalid Document] {+ex:InvalidDocument ?sh:targetNode} with literal **content** {+#contentLiteral ?sh:property sh:name} and IRI for **reference** {+#referenceIRI ?sh:property sh:name}.
 
-**Content must be literal** {=ex:#contentLiteral .sh:PropertyShape sh:message} requires [content] {+ex:content ?sh:path} to be a [Literal] {+sh:Literal ?sh:nodeKind}.
+**Content must be literal** {=#contentLiteral .sh:PropertyShape sh:message} requires [content] {+ex:content ?sh:path} to be a [Literal] {+sh:Literal ?sh:nodeKind}.
 
-**Reference must be IRI** {=ex:#referenceIRI .sh:PropertyShape sh:message} requires [reference] {+ex:reference ?sh:path} to be an [IRI] {+sh:IRI ?sh:nodeKind}.
+**Reference must be IRI** {=#referenceIRI .sh:PropertyShape sh:message} requires [reference] {+ex:reference ?sh:path} to be an [IRI] {+sh:IRI ?sh:nodeKind}.
 
 ---
 

@@ -19,7 +19,7 @@ We need to validate product data with these requirements:
 ~~~~~~md
 [ex] <tag:my@example.org,2026:product/>
 
-**Product Validation Shape** {=ex:ProductShape .sh:NodeShape ?cat:hasShape label}
+**Product Validation Shape** {=ex:ProductShape .sh:NodeShape  label}
 Validates all [Product] {+ex:Product ?sh:targetClass} instances.
 ~~~~~~
 
@@ -71,7 +71,7 @@ Validates all [Product] {+ex:Product ?sh:targetClass} instances.
 ~~~~~~md
 [ex] <tag:my@example.org,2026:product/>
 
-**Product Validation Shape** {=ex:ProductShape .sh:NodeShape ?cat:hasShape label}
+**Product Validation Shape** {=ex:ProductShape .sh:NodeShape  label}
 Validates all [Product] {+ex:Product ?sh:targetClass} instances.
 
 **Product name is required** {=ex:NameRule .sh:PropertyShape ?sh:property}

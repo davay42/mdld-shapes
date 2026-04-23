@@ -56,7 +56,7 @@ Let's create a simple shape for validating user accounts:
 ~~~~~~md
 [ex] <tag:my@example.org,2026:users/>
 
-**User Validation Shape** {=ex:UserShape .sh:NodeShape ?cat:hasShape label}
+**User Validation Shape** {=ex:UserShape .sh:NodeShape  label}
 Validates all [User] {+ex:User ?sh:targetClass} instances.
 
 **Username is required** {=ex:UsernameRule .sh:PropertyShape ?sh:property}
@@ -153,9 +153,9 @@ These are targeting predicates that determine which nodes get validated (not con
 
 **Product Validation Shape** {=ex:ProductValidationShape .sh:NodeShape label} targets all [Product] {+ex:Product ?sh:targetClass} instances to validate core product requirements.
 
-**Product Name Rule** {=ex:#productName .sh:PropertyShape ?sh:property} requires the [name] {+ex:name ?sh:path} property to have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value: **Product must have exactly one name** {sh:message}
+**Product Name Rule** {=#productName .sh:PropertyShape ?sh:property} requires the [name] {+ex:name ?sh:path} property to have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value: **Product must have exactly one name** {sh:message}
 
-**Product Price Rule** {=ex:#productPrice .sh:PropertyShape ?sh:property} requires the [price] {+ex:price ?sh:path} property to be at least [0.01] {sh:minInclusive ^^xsd:decimal}: **Product price must be positive** {sh:message}
+**Product Price Rule** {=#productPrice .sh:PropertyShape ?sh:property} requires the [price] {+ex:price ?sh:path} property to be at least [0.01] {sh:minInclusive ^^xsd:decimal}: **Product price must be positive** {sh:message}
 
 ---
 
@@ -270,9 +270,9 @@ Target class targets all nodes that are instances of a specific RDF class for sh
 
 **Database Validation Shape** {=ex:DatabaseValidationShape .sh:NodeShape label} targets the [Main Database] {+ex:MainDatabase ?sh:targetNode} for critical infrastructure validation.
 
-**Database Status Rule** {=ex:#databaseStatus .sh:PropertyShape ?sh:property} requires the [status] {+ex:status ?sh:path} property to be exactly [online] {sh:hasValue}: **Main database must be online** {sh:message}
+**Database Status Rule** {=#databaseStatus .sh:PropertyShape ?sh:property} requires the [status] {+ex:status ?sh:path} property to be exactly [online] {sh:hasValue}: **Main database must be online** {sh:message}
 
-**Database Uptime Rule** {=ex:#databaseUptime .sh:PropertyShape ?sh:property} requires the [uptime] {+ex:uptime ?sh:path} property to be at least [99.9] {sh:minInclusive ^^xsd:decimal}: **Database uptime must be at least 99.9%** {sh:message}
+**Database Uptime Rule** {=#databaseUptime .sh:PropertyShape ?sh:property} requires the [uptime] {+ex:uptime ?sh:path} property to be at least [99.9] {sh:minInclusive ^^xsd:decimal}: **Database uptime must be at least 99.9%** {sh:message}
 
 ---
 
@@ -384,9 +384,9 @@ Target node targets specific individual nodes identified by their IRI for precis
 
 **Manager Validation Shape** {=ex:ManagerValidationShape .sh:NodeShape label} targets all [managers] {+ex:manages ?sh:targetSubjectsOf} of the manages relationship to validate management requirements.
 
-**Management Level Rule** {=ex:#managementLevel .sh:PropertyShape ?sh:property} requires the [level] {+ex:level ?sh:path} property to be at least [3] {sh:minInclusive ^^xsd:integer}: **Managers must have level 3 or higher** {sh:message}
+**Management Level Rule** {=#managementLevel .sh:PropertyShape ?sh:property} requires the [level] {+ex:level ?sh:path} property to be at least [3] {sh:minInclusive ^^xsd:integer}: **Managers must have level 3 or higher** {sh:message}
 
-**Team Size Rule** {=ex:#teamSize .sh:PropertyShape ?sh:property} requires the [teamSize] {+ex:teamSize ?sh:path} property to be at most [10] {sh:maxInclusive ^^xsd:integer}: **Managers can oversee at most 10 team members** {sh:message}
+**Team Size Rule** {=#teamSize .sh:PropertyShape ?sh:property} requires the [teamSize] {+ex:teamSize ?sh:path} property to be at most [10] {sh:maxInclusive ^^xsd:integer}: **Managers can oversee at most 10 team members** {sh:message}
 
 ---
 
@@ -504,9 +504,9 @@ Target subjects of targets all subjects that have a specific property pointing t
 
 **Team Member Validation Shape** {=ex:TeamMemberValidationShape .sh:NodeShape label} targets all [team members] {+ex:memberOf ?sh:targetObjectsOf} to validate team membership requirements.
 
-**Workload Rule** {=ex:#workloadRule .sh:PropertyShape ?sh:property} requires the [workload] {+ex:workload ?sh:path} property to be at most [40] {sh:maxInclusive ^^xsd:integer}: **Team members must not exceed 40 hours workload** {sh:message}
+**Workload Rule** {=#workloadRule .sh:PropertyShape ?sh:property} requires the [workload] {+ex:workload ?sh:path} property to be at most [40] {sh:maxInclusive ^^xsd:integer}: **Team members must not exceed 40 hours workload** {sh:message}
 
-**Active Status Rule** {=ex:#activeStatus .sh:PropertyShape ?sh:property} requires the [status] {+ex:status ?sh:path} property to be exactly [active] {sh:hasValue}: **Team members must be active** {sh:message}
+**Active Status Rule** {=#activeStatus .sh:PropertyShape ?sh:property} requires the [status] {+ex:status ?sh:path} property to be exactly [active] {sh:hasValue}: **Team members must be active** {sh:message}
 
 ---
 
@@ -786,7 +786,7 @@ Need to check if these are working:
 ~~~~~~md
 [ex] <tag:my@example.org,2026:class/>
 
-**Manager must be a Person instance** {=ex:#managerClass .sh:PropertyShape}
+**Manager must be a Person instance** {=#managerClass .sh:PropertyShape}
 [manager] {+ex:manager ?sh:path} must be an instance of [Person] {+ex:Person ?sh:class}
 
 ---
@@ -859,7 +859,7 @@ Manager: [robot] {+ex:robot ?ex:manager ex:Role}
 ~~~~~~md
 [ex] <tag:my@example.org,2026:datatype/>
 
-**Price must be decimal** {=ex:#priceDecimal .sh:PropertyShape}
+**Price must be decimal** {=#priceDecimal .sh:PropertyShape}
 [price] {+ex:price ?sh:path} must be a [decimal] {+xsd:decimal ?sh:datatype} value.
 
 ---
@@ -931,10 +931,10 @@ Price: [29.99] {ex:price ^^xsd:string}
 ~~~~~~md
 [ex] <tag:my@example.org,2026:nodekind/>
 
-**Content must be literal** {=ex:#contentLiteral .sh:PropertyShape}
+**Content must be literal** {=#contentLiteral .sh:PropertyShape}
 [content] {+ex:content ?sh:path} must be a [Literal] {+sh:Literal ?sh:nodeKind}.
 
-**Reference must be IRI** {=ex:#referenceIRI .sh:PropertyShape}
+**Reference must be IRI** {=#referenceIRI .sh:PropertyShape}
 [reference] {+ex:reference ?sh:path} must be an [IRI] {+sh:IRI ?sh:nodeKind}.
 
 ---
@@ -1014,7 +1014,7 @@ Reference: [text] {ex:reference}
 ~~~~~~md
 [ex] <tag:my@example.org,2026:count/>
 
-**Email must be exactly one** {=ex:#emailExact .sh:PropertyShape}
+**Email must be exactly one** {=#emailExact .sh:PropertyShape}
 [email] {+ex:email ?sh:path} must have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
 
 ---
@@ -1105,7 +1105,7 @@ Email: [personal@example.com] {ex:email}
 ~~~~~~md
 [ex] <tag:my@example.org,2026:range/>
 
-**Price must be between 10 and 100 inclusive** {=ex:#priceRange .sh:PropertyShape}
+**Price must be between 10 and 100 inclusive** {=#priceRange .sh:PropertyShape}
 [price] {+ex:price ?sh:path} must be at least [10] {sh:minInclusive ^^xsd:decimal} and at most [100] {sh:maxInclusive ^^xsd:decimal}.
 
 ---
@@ -1180,7 +1180,7 @@ Price: [5] {ex:price ^^xsd:decimal}
 ~~~~~~md
 [ex] <tag:my@example.org,2026:comparison/>
 
-**Order date must be before shipping date** {=ex:#orderDateRule .sh:PropertyShape}
+**Order date must be before shipping date** {=#orderDateRule .sh:PropertyShape}
 [order date] {+ex:orderDate ?sh:path} must be before [shipping date] {+ex:shippingDate ?sh:lessThan}.
 
 ---
@@ -1482,7 +1482,7 @@ Category: [Electronics] {ex:category}
 ~~~~~~md
 [ex] <tag:my@example.org,2026:length/>
 
-**Username must be 3-20 characters** {=ex:#usernameLength .sh:PropertyShape}
+**Username must be 3-20 characters** {=#usernameLength .sh:PropertyShape}
 [username] {+ex:username ?sh:path} must have at least [3] {sh:minLength ^^xsd:integer} and at most [20] {sh:maxLength ^^xsd:integer} characters.
 
 ---
@@ -1625,7 +1625,7 @@ Email: [user@example.org] {ex:email}
 ~~~~~~md
 [ex] <tag:my@example.org,2026:language/>
 
-**Title language must be en or fr** {=ex:#titleLanguage .sh:PropertyShape}
+**Title language must be en or fr** {=#titleLanguage .sh:PropertyShape}
 [title] {+ex:title ?sh:path} language tags must be in allowed list.
 
 **Allowed Languages List** {=ex:lang-l1 ?sh:languageIn .rdf:List}: [en] {rdf:first}, then [rest] {=ex:lang-l2 ?rdf:rest} by [fr] {rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
@@ -1772,7 +1772,7 @@ Title: [Hola Mundo] {ex:title @en}
 ~~~~~~md
 [ex] <tag:my@example.org,2026:hasvalue/>
 
-**Status must be active** {=ex:#statusRequired .sh:PropertyShape}
+**Status must be active** {=#statusRequired .sh:PropertyShape}
 [status] {+ex:status ?sh:path} must be exactly [active] {sh:hasValue}.
 
 ---
@@ -1844,7 +1844,7 @@ Status: [standby] {ex:status}
 ~~~~~~md
 [ex] <tag:my@example.org,2026:node/>
 
-**Employee must have valid address** {=ex:#addressRule .sh:PropertyShape}
+**Employee must have valid address** {=#addressRule .sh:PropertyShape}
 [address] {+ex:address ?sh:path} must conform to [Address Shape] {+ex:AddressShape ?sh:node}.
 
 **Address Shape** {=ex:AddressShape .sh:NodeShape} requires [street] {+ex:street ?sh:path} to have at least [5] {sh:minLength ^^xsd:integer} characters.
@@ -1919,7 +1919,7 @@ Street: [St] {ex:street}
 ~~~~~~md
 [ex] <tag:my@example.org,2026:in/>
 
-**Status must be Active or Inactive** {=ex:#allowedStatus .sh:PropertyShape}
+**Status must be Active or Inactive** {=#allowedStatus .sh:PropertyShape}
 [status] {+ex:status ?sh:path} must be in allowed list.
 
 **Allowed Values List** {=ex:in-l1 ?sh:in .rdf:List}: [Active] {+ex:Active ?rdf:first}, then [rest] {=ex:in-l2 ?rdf:rest} by [Inactive] {+ex:Inactive ?rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
@@ -1996,7 +1996,7 @@ Status: [Pending] {ex:status}
 ~~~~~~md
 [ex] <tag:my@example.org,2026:qualified/>
 
-**Employee must have exactly one work email** {=ex:#workEmailRule .sh:PropertyShape}
+**Employee must have exactly one work email** {=#workEmailRule .sh:PropertyShape}
 [email] {+ex:email ?sh:path} must have exactly [1] {sh:qualifiedMinCount sh:qualifiedMaxCount ^^xsd:integer} work email matching **Work Email Shape** {=ex:WorkEmailShape .sh:NodeShape ?sh:qualifiedValueShape}.
 
 **Work Email Shape** {=ex:WorkEmailShape .sh:NodeShape} must be a [literal] {+sh:Literal ?sh:nodeKind} with pattern [company.org] {sh:pattern}.
@@ -2073,7 +2073,7 @@ Email: [bob@gmail.com] {ex:email}
 
 ### Shape Definition
 
-**Only declared properties allowed** {=ex:ClosedExampleShape .sh:NodeShape ?cat:hasShape label} with **no additional properties** {sh:closed}.
+**Only declared properties allowed** {=ex:ClosedExampleShape .sh:NodeShape  label} with **no additional properties** {sh:closed}.
 
 **Person must have a name** {=ex:NameProperty .sh:PropertyShape sh:message}
 [name] {+schema:name ?sh:path} is [string] {+xsd:string ?sh:datatype} and [1] {sh:minCount}.
@@ -2106,7 +2106,7 @@ Email: [<jane@example.com>] {ex:email}
 The closed constraint enables closed world validation where only explicitly declared properties are allowed.
 
 ~~~~~~md
-**[Shape] with closed world validation** {=ex:ClosedShape .sh:NodeShape ?cat:hasShape label}
+**[Shape] with closed world validation** {=ex:ClosedShape .sh:NodeShape  label}
 
 [Shape Name] {=ex:ShapeName .sh:NodeShape} has **no additional properties** {sh:closed}.
 ~~~~~~
@@ -2378,7 +2378,7 @@ The severity constraint defines the severity level of validation violations.
 ~~~~~~md
 [ex] <tag:my@example.org,2026:message/>
 
-**Contract value must be positive** {=ex:#valueRule .sh:PropertyShape sh:message}
+**Contract value must be positive** {=#valueRule .sh:PropertyShape sh:message}
 [contract value] {+ex:contractValue ?sh:path} must be greater than [0] {sh:minInclusive ^^xsd:decimal}.
 
 ---
@@ -2639,7 +2639,7 @@ We need to validate product data with these requirements:
 ~~~~~~md
 [ex] <tag:my@example.org,2026:product/>
 
-**Product Validation Shape** {=ex:ProductShape .sh:NodeShape ?cat:hasShape label}
+**Product Validation Shape** {=ex:ProductShape .sh:NodeShape  label}
 Validates all [Product] {+ex:Product ?sh:targetClass} instances.
 ~~~~~~
 
@@ -2691,7 +2691,7 @@ Validates all [Product] {+ex:Product ?sh:targetClass} instances.
 ~~~~~~md
 [ex] <tag:my@example.org,2026:product/>
 
-**Product Validation Shape** {=ex:ProductShape .sh:NodeShape ?cat:hasShape label}
+**Product Validation Shape** {=ex:ProductShape .sh:NodeShape  label}
 Validates all [Product] {+ex:Product ?sh:targetClass} instances.
 
 **Product name is required** {=ex:NameRule .sh:PropertyShape ?sh:property}
@@ -2882,7 +2882,7 @@ Status: [active] {ex:status}
 The following example demonstrates multiple advanced techniques in a single validation scenario:
 
 ```md
-## Employee Validation Shape {=ex:EmployeeValidationShape .sh:NodeShape ?cat:hasShape label}
+## Employee Validation Shape {=ex:EmployeeValidationShape .sh:NodeShape  label}
 
 Validates all [Employee] {+ex:Employee ?sh:targetClass} instances with comprehensive business rules: [department] {+ex:DepartmentRule ?sh:property}, [status] {+ex:StatusRule ?sh:property}, [2 projects] {+ex:ProjectsRule ?sh:property}, [salary] {+ex:SalaryRule ?sh:property}.
 

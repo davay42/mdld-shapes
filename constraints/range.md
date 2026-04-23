@@ -36,9 +36,9 @@ Range constraints specify minimum and maximum values for numeric or date propert
 
 ## Product Test Shape {=ex:ProductTestShape .sh:NodeShape label}
 
-Validates all [member] {+member ?sh:targetObjectsOf} entities with conforming **price** {+ex:#priceRange ?sh:property}.
+Validates all [member] {+member ?sh:targetObjectsOf} entities with conforming **price** {+#priceRange ?sh:property}.
 
-**Price must be between 10 and 100 inclusive** {=ex:#priceRange .sh:PropertyShape sh:message} requires [price] {+ex:price ?sh:path} to be at least [10] {sh:minInclusive ^^xsd:decimal} and at most [100] {sh:maxInclusive ^^xsd:decimal}.
+**Price must be between 10 and 100 inclusive** {=#priceRange .sh:PropertyShape sh:message} requires [price] {+ex:price ?sh:path} to be at least [10] {sh:minInclusive ^^xsd:decimal} and at most [100] {sh:maxInclusive ^^xsd:decimal}.
 
 ---
 

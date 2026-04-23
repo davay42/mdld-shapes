@@ -4,11 +4,11 @@
 
 # Node Demo {=ex:demo .Container}
 
-## Employee Validation Shape {=ex:EmployeeValidationShape .sh:NodeShape ?cat:hasShape label}
+## Employee Validation Shape {=ex:EmployeeValidationShape .sh:NodeShape  label}
 
-Validates all [member] {+member ?sh:targetObjectsOf} entities to have correct **address** {+ex:#addressRule ?sh:property sh:name}.
+Validates all [member] {+member ?sh:targetObjectsOf} entities to have correct **address** {+#addressRule ?sh:property sh:name}.
 
-**Employee must have valid address** {=ex:#addressRule .sh:PropertyShape sh:message} requires [address] {+ex:address ?sh:path} to conform to [Address Shape] {+ex:AddressShape ?sh:node}.
+**Employee must have valid address** {=#addressRule .sh:PropertyShape sh:message} requires [address] {+ex:address ?sh:path} to conform to [Address Shape] {+ex:AddressShape ?sh:node}.
 
 **Address Shape** {=ex:AddressShape .sh:NodeShape} requires [street] {+ex:street ?sh:path} to have at least [5] {sh:minLength ^^xsd:integer} characters.
 

@@ -7,7 +7,7 @@
 
 This demo demonstrates class-based targeting using a product management scenario where all Product instances are validated for business requirements:
 
-The **Product Validation Shape** {=ex:ProductValidationShape .sh:NodeShape ?cat:hasShape label} targets all [Product] {+ex:Product ?sh:targetClass} instances to validate core product requirements: [name] {=#productName ?sh:property sh:name} and [price] {+#productPrice ?sh:property sh:name}.
+The **Product Validation Shape** {=ex:ProductValidationShape .sh:NodeShape  label} targets all [Product] {+ex:Product ?sh:targetClass} instances to validate core product requirements: [name] {+#productName ?sh:property sh:name} and [price] {+#productPrice ?sh:property sh:name}.
 
 **Product must have exactly one name** {=#productName .sh:PropertyShape sh:message} requires the [name] {+ex:name ?sh:path} property to have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
 

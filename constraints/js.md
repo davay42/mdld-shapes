@@ -16,7 +16,7 @@ The JavaScript constraint allows custom JavaScript validation functions for comp
 ~~~~~~md
 [ex] <tag:my@example.org,2026:js/>
 
-## Date Validation Shape {=ex:DateValidationShape .sh:NodeShape ?cat:hasShape label}
+## Date Validation Shape {=ex:DateValidationShape .sh:NodeShape  label}
 
 Validates all [member] {+member ?sh:targetObjectsOf} entities with valid **date** {+ex:DatePropertyShape ?sh:property sh:name}.
 

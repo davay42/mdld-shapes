@@ -5,11 +5,11 @@
 
 # Count Demo {=ex:demo .Container}
 
-## Person Test Shape {=ex:PersonTestShape .sh:NodeShape ?cat:hasShape sh:name}
+## Person Test Shape {=ex:PersonTestShape .sh:NodeShape  sh:name}
 
-Validates all [member] {+member ?sh:targetObjectsOf} entities with **email** {+ex:#emailExact ?sh:property sh:name}.
+Validates all [member] {+member ?sh:targetObjectsOf} entities with **email** {+#emailExact ?sh:property sh:name}.
 
-**Email must be exactly one** {=ex:#emailExact .sh:PropertyShape sh:message} requires [email] {+ex:email ?sh:path} to have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
+**Email must be exactly one** {=#emailExact .sh:PropertyShape sh:message} requires [email] {+ex:email ?sh:path} to have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
 
 ---
 

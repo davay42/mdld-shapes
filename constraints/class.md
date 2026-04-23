@@ -16,11 +16,11 @@ The class constraint ensures property values are instances of a specific RDF cla
 ~~~~~~md
 [ex] <tag:my@example.org,2026:class/>
 
-## Employee Test Shape {=ex:EmployeeTestShape .sh:NodeShape ?cat:hasShape label}
+## Employee Test Shape {=ex:EmployeeTestShape .sh:NodeShape  label}
 
-All [employees] {+member ?sh:targetObjectsOf} must have **manager** {+ex:#managerClass ?sh:property sh:name} class assigned.
+All [employees] {+member ?sh:targetObjectsOf} must have **manager** {+#managerClass ?sh:property sh:name} class assigned.
 
-**Manager must be a Person instance** {=ex:#managerClass .sh:PropertyShape sh:message} requires the [manager] {+ex:manager ?sh:path} property to be an instance of a [Person] {+ex:Person ?sh:class}.
+**Manager must be a Person instance** {=#managerClass .sh:PropertyShape sh:message} requires the [manager] {+ex:manager ?sh:path} property to be an instance of a [Person] {+ex:Person ?sh:class}.
 
 ---
 

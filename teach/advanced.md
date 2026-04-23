@@ -109,7 +109,7 @@ Status: [active] {ex:status}
 The following example demonstrates multiple advanced techniques in a single validation scenario:
 
 ```md
-## Employee Validation Shape {=ex:EmployeeValidationShape .sh:NodeShape ?cat:hasShape label}
+## Employee Validation Shape {=ex:EmployeeValidationShape .sh:NodeShape  label}
 
 Validates all [Employee] {+ex:Employee ?sh:targetClass} instances with comprehensive business rules: [department] {+ex:DepartmentRule ?sh:property}, [status] {+ex:StatusRule ?sh:property}, [2 projects] {+ex:ProjectsRule ?sh:property}, [salary] {+ex:SalaryRule ?sh:property}.
 

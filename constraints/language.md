@@ -16,11 +16,11 @@ The languageIn constraint constrains string literals to have language tags from 
 ~~~~~~md
 [ex] <tag:my@example.org,2026:language/>
 
-## Multilingual Document Shape {=ex:MultilingualDocumentShape .sh:NodeShape ?cat:hasShape label}
+## Multilingual Document Shape {=ex:MultilingualDocumentShape .sh:NodeShape  label}
 
-Validates all [member] {+member ?sh:targetObjectsOf} entities with english or french **title** {+ex:#titleLanguage ?sh:property sh:name}.
+Validates all [member] {+member ?sh:targetObjectsOf} entities with english or french **title** {+#titleLanguage ?sh:property sh:name}.
 
-**Title language must be en or fr** {=ex:#titleLanguage .sh:PropertyShape sh:message} requires [title] {+ex:title ?sh:path} language tags to be in the **Allowed Languages List** {=ex:lang-l1 ?sh:languageIn .rdf:List}: **en** {rdf:first},  [or] {=ex:lang-l2 ?rdf:rest} **fr** {rdf:first} - [only these 2 languages are allowed] {+rdf:nil ?rdf:rest}. {=}
+**Title language must be en or fr** {=#titleLanguage .sh:PropertyShape sh:message} requires [title] {+ex:title ?sh:path} language tags to be in the **Allowed Languages List** {=ex:lang-l1 ?sh:languageIn .rdf:List}: **en** {rdf:first},  [or] {=ex:lang-l2 ?rdf:rest} **fr** {rdf:first} - [only these 2 languages are allowed] {+rdf:nil ?rdf:rest}. {=}
 
 ---
 

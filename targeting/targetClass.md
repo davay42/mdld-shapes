@@ -13,36 +13,36 @@
 
 ## 📋 Quick Start Pattern
 
+The targetClass constraint targets all nodes that are instances of a specific RDF class. This example validates all Product instances for business requirements.
+
 ~~~~~~md
-[ex] <tag:my@example.org,2026:targeting/>
+[ex] <mdld:shacl/example/targeting/>
 
-### Shape Definition
+## Product Validation Shape {=ex:ProductValidationShape .sh:NodeShape  label}
 
-**Product Validation Shape** {=ex:ProductValidationShape .sh:NodeShape label} targets all [Product] {+ex:Product ?sh:targetClass} instances to validate core product requirements.
+Targets all [Product] {+ex:Product ?sh:targetClass} instances to validate core product requirements: [name] {+#productName ?sh:property sh:name} and [price] {+#productPrice ?sh:property sh:name}.
 
-**Product Name Rule** {=ex:#productName .sh:PropertyShape ?sh:property} requires the [name] {+ex:name ?sh:path} property to have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value: **Product must have exactly one name** {sh:message}
+**Product must have exactly one name** {=#productName .sh:PropertyShape sh:message} requires the [name] {+ex:name ?sh:path} property to have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
 
-**Product Price Rule** {=ex:#productPrice .sh:PropertyShape ?sh:property} requires the [price] {+ex:price ?sh:path} property to be at least [0.01] {sh:minInclusive ^^xsd:decimal}: **Product price must be positive** {sh:message}
+**Product price must be positive** {=#productPrice .sh:PropertyShape sh:message} requires the [price] {+ex:price ?sh:path} property to be at least [0.01] {sh:minInclusive ^^xsd:decimal}.
 
 ---
 
-### Test Data {=ex:data .Container}
+## Test Data {=ex:data .Container}
 
-#### Valid Product {=ex:Laptop .ex:Product ?member}
+### Laptop {=ex:Laptop .ex:Product}
 Name: [MacBook Pro] {ex:name}
 Price: [1299.99] {ex:price ^^xsd:decimal}
 
-#### Invalid Product {=ex:InvalidProduct .ex:Product ?member}
+### Invalid Product {=ex:InvalidProduct .ex:Product}
 Price: [-50.00] {ex:price ^^xsd:decimal}
 
-#### Service {=ex:Service .ex:Service ?member}
+### Service {=ex:Service .ex:Service}
 Name: [Consulting] {ex:name}
 Price: [200.00] {ex:price ^^xsd:decimal}
-
----
-
-[Demo] {=ex:demo} must produce exactly **2** violations.
 ~~~~~~
+
+**Expected Result:** 2 violations (InvalidProduct fails twice: missing name AND negative price; Service not validated since it's not a Product)
 
 ---
 

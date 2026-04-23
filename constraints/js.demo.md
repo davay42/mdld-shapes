@@ -4,7 +4,7 @@
 
 # JavaScript Function Demo {=ex:demo .Container} 
 
-## Date Validation Shape {=ex:DateValidationShape .sh:NodeShape ?cat:hasShape label}
+## Date Validation Shape {=ex:DateValidationShape .sh:NodeShape  label}
 
 Validates all [member] {+member ?sh:targetObjectsOf} entities with valid **date** {+ex:DatePropertyShape ?sh:property sh:name}.
 

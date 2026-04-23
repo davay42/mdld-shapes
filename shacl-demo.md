@@ -63,11 +63,11 @@ Demo files for SHACL targeting predicates that determine which nodes get validat
 
 This demo demonstrates class-based targeting using a product management scenario where all Product instances are validated for business requirements.
 
-The **Product Validation Shape** {=ex:ProductValidationShape .sh:NodeShape ?cat:hasShape label} targets all [Product] {+ex:Product ?sh:targetClass} instances to validate core product requirements.
+The **Product Validation Shape** {=ex:ProductValidationShape .sh:NodeShape  label} targets all [Product] {+ex:Product ?sh:targetClass} instances to validate core product requirements.
 
-**Product Name Rule** {=ex:#productName .sh:PropertyShape ?sh:property} requires the [name] {+ex:name ?sh:path} property to have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value: **Product must have exactly one name** {sh:message}
+**Product Name Rule** {=#productName .sh:PropertyShape ?sh:property} requires the [name] {+ex:name ?sh:path} property to have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value: **Product must have exactly one name** {sh:message}
 
-[The shape] {=ex:ProductValidationShape} also has **Product Price Rule** {=ex:#productPrice .sh:PropertyShape ?sh:property} that requires the [price] {+ex:price ?sh:path} property to be at least [0.01] {sh:minInclusive ^^xsd:decimal}: **Product price must be positive** {sh:message}
+[The shape] {=ex:ProductValidationShape} also has **Product Price Rule** {=#productPrice .sh:PropertyShape ?sh:property} that requires the [price] {+ex:price ?sh:path} property to be at least [0.01] {sh:minInclusive ^^xsd:decimal}: **Product price must be positive** {sh:message}
 
 ---
 
@@ -138,17 +138,17 @@ This demo demonstrates node-based targeting using critical infrastructure and ex
 
 ### Critical Infrastructure Demo
 
-The **Database Validation Shape** {=ex:DatabaseValidationShape .sh:NodeShape ?cat:hasShape label} targets the [Main Database] {+ex:MainDatabase ?sh:targetNode} for critical infrastructure validation.
+The **Database Validation Shape** {=ex:DatabaseValidationShape .sh:NodeShape  label} targets the [Main Database] {+ex:MainDatabase ?sh:targetNode} for critical infrastructure validation.
 
-**Database Status Rule** {=ex:#databaseStatus .sh:PropertyShape ?sh:property} requires the [status] {+ex:status ?sh:path} property to be exactly [online] {sh:hasValue}: **Main database must be online** {sh:message}
+**Database Status Rule** {=#databaseStatus .sh:PropertyShape ?sh:property} requires the [status] {+ex:status ?sh:path} property to be exactly [online] {sh:hasValue}: **Main database must be online** {sh:message}
 
-[The shape] {=ex:DatabaseValidationShape} also has **Database Uptime Rule** {=ex:#databaseUptime .sh:PropertyShape ?sh:property} that requires the [uptime] {+ex:uptime ?sh:path} property to be at least [99.9] {sh:minInclusive ^^xsd:decimal}: **Database uptime must be at least 99.9%** {sh:message}
+[The shape] {=ex:DatabaseValidationShape} also has **Database Uptime Rule** {=#databaseUptime .sh:PropertyShape ?sh:property} that requires the [uptime] {+ex:uptime ?sh:path} property to be at least [99.9] {sh:minInclusive ^^xsd:decimal}: **Database uptime must be at least 99.9%** {sh:message}
 
 ### Executive Validation Demo
 
-**CEO Validation Shape** {=ex:CEOValidationShape .sh:NodeShape ?cat:hasShape label} targets the [CEO] {+ex:CEO ?sh:targetNode} for executive-level validation.
+**CEO Validation Shape** {=ex:CEOValidationShape .sh:NodeShape  label} targets the [CEO] {+ex:CEO ?sh:targetNode} for executive-level validation.
 
-**Executive Clearance Rule** {=ex:#executiveClearance .sh:PropertyShape ?sh:property} requires the [securityClearance] {+ex:securityClearance ?sh:path} property to be exactly [top-secret] {sh:hasValue}: **CEO must have top-secret security clearance** {sh:message}
+**Executive Clearance Rule** {=#executiveClearance .sh:PropertyShape ?sh:property} requires the [securityClearance] {+ex:securityClearance ?sh:path} property to be exactly [top-secret] {sh:hasValue}: **CEO must have top-secret security clearance** {sh:message}
 
 ---
 
@@ -226,17 +226,17 @@ This demo demonstrates subject-based targeting using management and approval sce
 
 ### Management Validation Demo
 
-The **Manager Validation Shape** {=ex:ManagerValidationShape .sh:NodeShape ?cat:hasShape label} targets all [managers] {+ex:manages ?sh:targetSubjectsOf} of the manages relationship to validate management requirements.
+The **Manager Validation Shape** {=ex:ManagerValidationShape .sh:NodeShape  label} targets all [managers] {+ex:manages ?sh:targetSubjectsOf} of the manages relationship to validate management requirements.
 
-**Management Level Rule** {=ex:#managementLevel .sh:PropertyShape ?sh:property} requires the [level] {+ex:level ?sh:path} property to be at least [3] {sh:minInclusive ^^xsd:integer}: **Managers must have level 3 or higher** {sh:message}
+**Management Level Rule** {=#managementLevel .sh:PropertyShape ?sh:property} requires the [level] {+ex:level ?sh:path} property to be at least [3] {sh:minInclusive ^^xsd:integer}: **Managers must have level 3 or higher** {sh:message}
 
-[The shape] {=ex:ManagerValidationShape} also has **Team Size Rule** {=ex:#teamSize .sh:PropertyShape ?sh:property} that requires the [teamSize] {+ex:teamSize ?sh:path} property to be at most [10] {sh:maxInclusive ^^xsd:integer}: **Managers can oversee at most 10 team members** {sh:message}
+[The shape] {=ex:ManagerValidationShape} also has **Team Size Rule** {=#teamSize .sh:PropertyShape ?sh:property} that requires the [teamSize] {+ex:teamSize ?sh:path} property to be at most [10] {sh:maxInclusive ^^xsd:integer}: **Managers can oversee at most 10 team members** {sh:message}
 
 ### Approval Validation Demo
 
-**Approver Validation Shape** {=ex:ApproverValidationShape .sh:NodeShape ?cat:hasShape label} targets all [approvers] {+ex:approves ?sh:targetSubjectsOf} of the approves relationship to validate approval authority.
+**Approver Validation Shape** {=ex:ApproverValidationShape .sh:NodeShape  label} targets all [approvers] {+ex:approves ?sh:targetSubjectsOf} of the approves relationship to validate approval authority.
 
-**Approval Authority Rule** {=ex:#approvalAuthority .sh:PropertyShape ?sh:property} requires the [authority] {+ex:authority ?sh:path} property to be at least [2] {sh:minInclusive ^^xsd:integer}: **Approvers must have authority level 2 or higher** {sh:message}
+**Approval Authority Rule** {=#approvalAuthority .sh:PropertyShape ?sh:property} requires the [authority] {+ex:authority ?sh:path} property to be at least [2] {sh:minInclusive ^^xsd:integer}: **Approvers must have authority level 2 or higher** {sh:message}
 
 ---
 
@@ -336,19 +336,19 @@ This demo demonstrates object-based targeting using team membership and product 
 
 ### Team Membership Demo
 
-The **Team Member Validation Shape** {=ex:TeamMemberValidationShape .sh:NodeShape ?cat:hasShape label} targets all [team members] {+ex:memberOf ?sh:targetObjectsOf} to validate team membership requirements.
+The **Team Member Validation Shape** {=ex:TeamMemberValidationShape .sh:NodeShape  label} targets all [team members] {+ex:memberOf ?sh:targetObjectsOf} to validate team membership requirements.
 
-**Workload Rule** {=ex:#workloadRule .sh:PropertyShape ?sh:property} requires the [workload] {+ex:workload ?sh:path} property to be at most [40] {sh:maxInclusive ^^xsd:integer}: **Team members must not exceed 40 hours workload** {sh:message}
+**Workload Rule** {=#workloadRule .sh:PropertyShape ?sh:property} requires the [workload] {+ex:workload ?sh:path} property to be at most [40] {sh:maxInclusive ^^xsd:integer}: **Team members must not exceed 40 hours workload** {sh:message}
 
-[The shape] {=ex:TeamMemberValidationShape} also has **Active Status Rule** {=ex:#activeStatus .sh:PropertyShape ?sh:property} that requires the [status] {+ex:status ?sh:path} property to be exactly [active] {sh:hasValue}: **Team members must be active** {sh:message}
+[The shape] {=ex:TeamMemberValidationShape} also has **Active Status Rule** {=#activeStatus .sh:PropertyShape ?sh:property} that requires the [status] {+ex:status ?sh:path} property to be exactly [active] {sh:hasValue}: **Team members must be active** {sh:message}
 
 ### Product Reference Demo
 
-**Referenced Product Validation Shape** {=ex:ReferencedProductValidationShape .sh:NodeShape ?cat:hasShape label} targets all [referenced products] {+ex:references ?sh:targetObjectsOf} to validate product reference requirements.
+**Referenced Product Validation Shape** {=ex:ReferencedProductValidationShape .sh:NodeShape  label} targets all [referenced products] {+ex:references ?sh:targetObjectsOf} to validate product reference requirements.
 
-**Product Availability Rule** {=ex:#productAvailability .sh:PropertyShape ?sh:property} requires the [available] {+ex:available ?sh:path} property to be exactly [true] {sh:hasValue}: **Referenced products must be available** {sh:message}
+**Product Availability Rule** {=#productAvailability .sh:PropertyShape ?sh:property} requires the [available] {+ex:available ?sh:path} property to be exactly [true] {sh:hasValue}: **Referenced products must be available** {sh:message}
 
-{=ex:ReferencedProductValidationShape} also has **Product Price Rule** {=ex:#productPrice .sh:PropertyShape ?sh:property} that requires the [price] {+ex:price ?sh:path} property to be at most [1000.00] {sh:maxInclusive ^^xsd:decimal}: **Referenced products must cost $1000 or less** {sh:message}
+{=ex:ReferencedProductValidationShape} also has **Product Price Rule** {=#productPrice .sh:PropertyShape ?sh:property} that requires the [price] {+ex:price ?sh:path} property to be at most [1000.00] {sh:maxInclusive ^^xsd:decimal}: **Referenced products must cost $1000 or less** {sh:message}
 
 ---
 
@@ -514,11 +514,11 @@ Demo files for SHACL constraints with test data and validation scenarios:
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
-### Employee Test Shape {=ex:EmployeeTestShape .sh:NodeShape ?cat:hasShape label}
+### Employee Test Shape {=ex:EmployeeTestShape .sh:NodeShape  label}
 
-All [employees] {+member ?sh:targetObjectsOf} must have **Manager** {+ex:#managerClass ?sh:property} assigned.
+All [employees] {+member ?sh:targetObjectsOf} must have **Manager** {+#managerClass ?sh:property} assigned.
 
-**Manager must be a Person instance** {=ex:#managerClass .sh:PropertyShape} requires the [manager] {+ex:manager ?sh:path} property to be an instance of [Person] {+ex:Person ?sh:class}.
+**Manager must be a Person instance** {=#managerClass .sh:PropertyShape} requires the [manager] {+ex:manager ?sh:path} property to be an instance of [Person] {+ex:Person ?sh:class}.
 
 ---
 
@@ -568,11 +568,11 @@ ig-cli validate ./constraints/class.demo.md
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
-### Product Test Shape {=ex:ProductTestShape .sh:NodeShape ?cat:hasShape label}
+### Product Test Shape {=ex:ProductTestShape .sh:NodeShape  label}
 
-Validates [Valid Product] {+ex:ValidProduct ?sh:targetNode} and [Invalid Product] {+ex:InvalidProduct ?sh:targetNode} with **Price must be decimal** {+ex:#priceDecimal ?sh:property}.
+Validates [Valid Product] {+ex:ValidProduct ?sh:targetNode} and [Invalid Product] {+ex:InvalidProduct ?sh:targetNode} with **Price must be decimal** {+#priceDecimal ?sh:property}.
 
-**Price must be decimal** {=ex:#priceDecimal .sh:PropertyShape} requires the [price] {+ex:price ?sh:path} property to be a [decimal] {+xsd:decimal ?sh:datatype} value.
+**Price must be decimal** {=#priceDecimal .sh:PropertyShape} requires the [price] {+ex:price ?sh:path} property to be a [decimal] {+xsd:decimal ?sh:datatype} value.
 
 ---
 
@@ -621,13 +621,13 @@ ig-cli validate ./constraints/datatype.demo.md
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
-### Document Test Shape {=ex:DocumentTestShape .sh:NodeShape ?cat:hasShape label}
+### Document Test Shape {=ex:DocumentTestShape .sh:NodeShape  label}
 
-Validates [Valid Document] {+ex:ValidDocument ?sh:targetNode} and [Invalid Document] {+ex:InvalidDocument ?sh:targetNode} with **Content must be literal** {+ex:#contentLiteral ?sh:property} and **Reference must be IRI** {+ex:#referenceIRI ?sh:property}.
+Validates [Valid Document] {+ex:ValidDocument ?sh:targetNode} and [Invalid Document] {+ex:InvalidDocument ?sh:targetNode} with **Content must be literal** {+#contentLiteral ?sh:property} and **Reference must be IRI** {+#referenceIRI ?sh:property}.
 
-**Content must be literal** {=ex:#contentLiteral .sh:PropertyShape} requires [content] {+ex:content ?sh:path} to be a [Literal] {+sh:Literal ?sh:nodeKind}.
+**Content must be literal** {=#contentLiteral .sh:PropertyShape} requires [content] {+ex:content ?sh:path} to be a [Literal] {+sh:Literal ?sh:nodeKind}.
 
-**Reference must be IRI** {=ex:#referenceIRI .sh:PropertyShape} requires [reference] {+ex:reference ?sh:path} to be an [IRI] {+sh:IRI ?sh:nodeKind}.
+**Reference must be IRI** {=#referenceIRI .sh:PropertyShape} requires [reference] {+ex:reference ?sh:path} to be an [IRI] {+sh:IRI ?sh:nodeKind}.
 
 ---
 
@@ -676,11 +676,11 @@ ig-cli validate ./constraints/nodekind.demo.md
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
-### Person Test Shape {=ex:PersonTestShape .sh:NodeShape ?cat:hasShape label}
+### Person Test Shape {=ex:PersonTestShape .sh:NodeShape  label}
 
-Validates all [member] {+member ?sh:targetObjectsOf} entities with **Email must be exactly one** {+ex:#emailExact ?sh:property}.
+Validates all [member] {+member ?sh:targetObjectsOf} entities with **Email must be exactly one** {+#emailExact ?sh:property}.
 
-**Email must be exactly one** {=ex:#emailExact .sh:PropertyShape} requires [email] {+ex:email ?sh:path} to have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
+**Email must be exactly one** {=#emailExact .sh:PropertyShape} requires [email] {+ex:email ?sh:path} to have exactly [1] {sh:minCount sh:maxCount ^^xsd:integer} value.
 
 ---
 
@@ -727,11 +727,11 @@ ig-cli validate ./constraints/count.demo.md
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
-### Product Test Shape {=ex:ProductTestShape .sh:NodeShape ?cat:hasShape label}
+### Product Test Shape {=ex:ProductTestShape .sh:NodeShape  label}
 
-Validates all [member] {+member ?sh:targetObjectsOf} entities with **Price must be between 10 and 100 inclusive** {+ex:#priceRange ?sh:property}.
+Validates all [member] {+member ?sh:targetObjectsOf} entities with **Price must be between 10 and 100 inclusive** {+#priceRange ?sh:property}.
 
-**Price must be between 10 and 100 inclusive** {=ex:#priceRange .sh:PropertyShape} requires [price] {+ex:price ?sh:path} to be at least [10] {sh:minInclusive ^^xsd:decimal} and at most [100] {sh:maxInclusive ^^xsd:decimal}.
+**Price must be between 10 and 100 inclusive** {=#priceRange .sh:PropertyShape} requires [price] {+ex:price ?sh:path} to be at least [10] {sh:minInclusive ^^xsd:decimal} and at most [100] {sh:maxInclusive ^^xsd:decimal}.
 
 ---
 
@@ -779,11 +779,11 @@ ig-cli validate ./constraints/range.demo.md
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
-### Order Test Shape {=ex:OrderTestShape .sh:NodeShape ?cat:hasShape label}
+### Order Test Shape {=ex:OrderTestShape .sh:NodeShape  label}
 
-Validates all [member] {+member ?sh:targetObjectsOf} entities with **Order date must be before shipping date** {+ex:#orderDateRule ?sh:property}.
+Validates all [member] {+member ?sh:targetObjectsOf} entities with **Order date must be before shipping date** {+#orderDateRule ?sh:property}.
 
-**Order date must be before shipping date** {=ex:#orderDateRule .sh:PropertyShape} requires [order date] {+ex:orderDate ?sh:path} to be before [shipping date] {+ex:shippingDate ?sh:lessThan}.
+**Order date must be before shipping date** {=#orderDateRule .sh:PropertyShape} requires [order date] {+ex:orderDate ?sh:path} to be before [shipping date] {+ex:shippingDate ?sh:lessThan}.
 
 ---
 
@@ -833,11 +833,11 @@ ig-cli validate ./constraints/comparison.demo.md
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
-### Label Test Shape {=ex:DisjointExampleShape .sh:NodeShape ?cat:hasShape label}
+### Label Test Shape {=ex:DisjointExampleShape .sh:NodeShape  label}
 
-Validates all [member] {+member ?sh:targetObjectsOf} entities with **Preferred labels must be different from alternative labels** {+ex:#disjointRule ?sh:property}.
+Validates all [member] {+member ?sh:targetObjectsOf} entities with **Preferred labels must be different from alternative labels** {+#disjointRule ?sh:property}.
 
-**Preferred labels must be different from alternative labels** {=ex:#disjointRule .sh:PropertyShape} requires [preferred labels] {+ex:prefLabel ?sh:path} to be [disjoint] {+ex:altLabel ?sh:disjoint} with [alternative labels].
+**Preferred labels must be different from alternative labels** {=#disjointRule .sh:PropertyShape} requires [preferred labels] {+ex:prefLabel ?sh:path} to be [disjoint] {+ex:altLabel ?sh:disjoint} with [alternative labels].
 
 ---
 
@@ -887,7 +887,7 @@ ig-cli validate ./constraints/disjoint.demo.md
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
-### User Status Shape {=ex:UserStatusShape .sh:NodeShape ?cat:hasShape label}
+### User Status Shape {=ex:UserStatusShape .sh:NodeShape  label}
 
 Validates all [member] {+member ?sh:targetObjectsOf} entities with **User cannot have deleted status** {+ex:ForbiddenStatusShape ?sh:not}.
 
@@ -941,7 +941,7 @@ ig-cli validate ./constraints/not.demo.md
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
-### Product Validation Shape {=ex:ProductValidationShape .sh:NodeShape ?cat:hasShape label}
+### Product Validation Shape {=ex:ProductValidationShape .sh:NodeShape  label}
 
 Validates all [member] {+member ?sh:targetObjectsOf} entities with **Product must have price and category** {sh:message}.
 
@@ -998,11 +998,11 @@ ig-cli validate ./constraints/and.demo.md
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
-### User Account Test Shape {=ex:UserAccountTestShape .sh:NodeShape ?cat:hasShape label}
+### User Account Test Shape {=ex:UserAccountTestShape .sh:NodeShape  label}
 
-Validates all [member] {+member ?sh:targetObjectsOf} entities with **Username must be 3-20 characters** {+ex:#usernameLength ?sh:property}.
+Validates all [member] {+member ?sh:targetObjectsOf} entities with **Username must be 3-20 characters** {+#usernameLength ?sh:property}.
 
-**Username must be 3-20 characters** {=ex:#usernameLength .sh:PropertyShape} requires [username] {+ex:username ?sh:path} to have at least [3] {sh:minLength ^^xsd:integer} and at most [20] {sh:maxLength ^^xsd:integer} characters.
+**Username must be 3-20 characters** {=#usernameLength .sh:PropertyShape} requires [username] {+ex:username ?sh:path} to have at least [3] {sh:minLength ^^xsd:integer} and at most [20] {sh:maxLength ^^xsd:integer} characters.
 
 ---
 
@@ -1048,7 +1048,7 @@ ig-cli validate ./constraints/length.demo.md
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
-### Email Validation Shape {=ex:PatternExampleShape .sh:NodeShape ?cat:hasShape label}
+### Email Validation Shape {=ex:PatternExampleShape .sh:NodeShape  label}
 
 Validates all [member] {+member ?sh:targetObjectsOf} entities with **Email must end with example.com** {+ex:EmailPatternConstraint ?sh:property}.
 
@@ -1100,11 +1100,11 @@ ig-cli validate ./constraints/pattern.demo.md
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
-### Multilingual Document Shape {=ex:MultilingualDocumentShape .sh:NodeShape ?cat:hasShape label}
+### Multilingual Document Shape {=ex:MultilingualDocumentShape .sh:NodeShape  label}
 
-Validates all [member] {+member ?sh:targetObjectsOf} entities with **Title language must be en or fr** {+ex:#titleLanguage ?sh:property}.
+Validates all [member] {+member ?sh:targetObjectsOf} entities with **Title language must be en or fr** {+#titleLanguage ?sh:property}.
 
-**Title language must be en or fr** {=ex:#titleLanguage .sh:PropertyShape} requires [title] {+ex:title ?sh:path} language tags to be in allowed list.
+**Title language must be en or fr** {=#titleLanguage .sh:PropertyShape} requires [title] {+ex:title ?sh:path} language tags to be in allowed list.
 
 **Allowed Languages List** {=ex:lang-l1 ?sh:languageIn .rdf:List}: [en] {rdf:first}, then [rest] {=ex:lang-l2 ?rdf:rest} by [fr] {rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
 
@@ -1152,7 +1152,7 @@ ig-cli validate ./constraints/language.demo.md
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
-### Unique Language Example Shape {=ex:UniqueLangExampleShape .sh:NodeShape ?cat:hasShape label}
+### Unique Language Example Shape {=ex:UniqueLangExampleShape .sh:NodeShape  label}
 
 Validates all [member] {+member ?sh:targetObjectsOf} entities with **Each language tag must appear only once** {+ex:TitleProperty ?sh:property}.
 
@@ -1206,11 +1206,11 @@ ig-cli validate ./constraints/uniqueLang.demo.md
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
-### System Status Test Shape {=ex:SystemStatusTestShape .sh:NodeShape ?cat:hasShape label}
+### System Status Test Shape {=ex:SystemStatusTestShape .sh:NodeShape  label}
 
-Validates all [member] {+member ?sh:targetObjectsOf} entities with **Status must be active** {+ex:#statusRequired ?sh:property}.
+Validates all [member] {+member ?sh:targetObjectsOf} entities with **Status must be active** {+#statusRequired ?sh:property}.
 
-**Status must be active** {=ex:#statusRequired .sh:PropertyShape} requires [status] {+ex:status ?sh:path} to be exactly [active] {sh:hasValue}.
+**Status must be active** {=#statusRequired .sh:PropertyShape} requires [status] {+ex:status ?sh:path} to be exactly [active] {sh:hasValue}.
 
 ---
 
@@ -1258,11 +1258,11 @@ ig-cli validate ./constraints/hasvalue.demo.md
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
-### Employee Validation Shape {=ex:EmployeeValidationShape .sh:NodeShape ?cat:hasShape label}
+### Employee Validation Shape {=ex:EmployeeValidationShape .sh:NodeShape  label}
 
-Validates all [member] {+member ?sh:targetObjectsOf} entities with **Employee must have valid address** {+ex:#addressRule ?sh:property}.
+Validates all [member] {+member ?sh:targetObjectsOf} entities with **Employee must have valid address** {+#addressRule ?sh:property}.
 
-**Employee must have valid address** {=ex:#addressRule .sh:PropertyShape} requires [address] {+ex:address ?sh:path} to conform to [Address Shape] {+ex:AddressShape ?sh:node}.
+**Employee must have valid address** {=#addressRule .sh:PropertyShape} requires [address] {+ex:address ?sh:path} to conform to [Address Shape] {+ex:AddressShape ?sh:node}.
 
 **Address Shape** {=ex:AddressShape .sh:NodeShape} requires [street] {+ex:street ?sh:path} to have at least [5] {sh:minLength ^^xsd:integer} characters.
 
@@ -1314,11 +1314,11 @@ ig-cli validate ./constraints/node.demo.md
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
-### Status Validation Shape {=ex:StatusValidationShape .sh:NodeShape ?cat:hasShape label}
+### Status Validation Shape {=ex:StatusValidationShape .sh:NodeShape  label}
 
-Validates all [member] {+member ?sh:targetObjectsOf} entities with **Status must be Active or Inactive** {+ex:#allowedStatus ?sh:property}.
+Validates all [member] {+member ?sh:targetObjectsOf} entities with **Status must be Active or Inactive** {+#allowedStatus ?sh:property}.
 
-**Status must be Active or Inactive** {=ex:#allowedStatus .sh:PropertyShape} requires [status] {+ex:status ?sh:path} to be in allowed list.
+**Status must be Active or Inactive** {=#allowedStatus .sh:PropertyShape} requires [status] {+ex:status ?sh:path} to be in allowed list.
 
 **Allowed Values List** {=ex:in-l1 ?sh:in .rdf:List}: [Active] {+ex:Active ?rdf:first}, then [rest] {=ex:in-l2 ?rdf:rest} by [Inactive] {+ex:Inactive ?rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
 
@@ -1368,11 +1368,11 @@ ig-cli validate ./constraints/in.demo.md
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
-### Employee Validation Shape {=ex:EmployeeValidationShape .sh:NodeShape ?cat:hasShape label}
+### Employee Validation Shape {=ex:EmployeeValidationShape .sh:NodeShape  label}
 
-Validates all [member] {+member ?sh:targetObjectsOf} entities with **Employee must have exactly one work email** {+ex:#workEmailRule ?sh:property}.
+Validates all [member] {+member ?sh:targetObjectsOf} entities with **Employee must have exactly one work email** {+#workEmailRule ?sh:property}.
 
-**Employee must have exactly one work email** {=ex:#workEmailRule .sh:PropertyShape} requires [email] {+ex:email ?sh:path} to have exactly [1] {sh:qualifiedMinCount sh:qualifiedMaxCount ^^xsd:integer} work email matching **Work Email Shape** {=ex:WorkEmailShape .sh:NodeShape ?sh:qualifiedValueShape}.
+**Employee must have exactly one work email** {=#workEmailRule .sh:PropertyShape} requires [email] {+ex:email ?sh:path} to have exactly [1] {sh:qualifiedMinCount sh:qualifiedMaxCount ^^xsd:integer} work email matching **Work Email Shape** {=ex:WorkEmailShape .sh:NodeShape ?sh:qualifiedValueShape}.
 
 **Work Email Shape** {=ex:WorkEmailShape .sh:NodeShape} must be a [literal] {+sh:Literal ?sh:nodeKind} with pattern [company.org] {sh:pattern}.
 
@@ -1427,7 +1427,7 @@ This demo demonstrates closed world validation using person data.
 
 ### Person Data Demo
 
-**Only declared properties allowed** {=ex:ClosedExampleShape .sh:NodeShape ?cat:hasShape label} targets [ValidPerson] {+ex:ValidPerson ?sh:targetNode} and [InvalidPerson] {+ex:InvalidPerson ?sh:targetNode} with **no additional properties** {sh:closed} constraint except [Name] {+ex:NameProperty ?sh:property} and [Age] {+ex:AgeProperty ?sh:property}.
+**Only declared properties allowed** {=ex:ClosedExampleShape .sh:NodeShape  label} targets [ValidPerson] {+ex:ValidPerson ?sh:targetNode} and [InvalidPerson] {+ex:InvalidPerson ?sh:targetNode} with **no additional properties** {sh:closed} constraint except [Name] {+ex:NameProperty ?sh:property} and [Age] {+ex:AgeProperty ?sh:property}.
 
 **Person must have a name** {=ex:NameProperty .sh:PropertyShape  sh:message} ensures [name] {+schema:name ?sh:path} is [string] {+xsd:string ?sh:datatype} and [1] {sh:minCount}.
 
@@ -1487,7 +1487,7 @@ ig-cli validate ./constraints/closed.demo.md
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
-### Deactivated Example Shape {=ex:DeactivatedExampleShape .sh:NodeShape ?cat:hasShape label}
+### Deactivated Example Shape {=ex:DeactivatedExampleShape .sh:NodeShape  label}
 
 Validates all [member] {+member ?sh:targetObjectsOf} entities with **User status must be active** {+ex:ActiveProperty ?sh:property}.
 
@@ -1546,7 +1546,7 @@ This demo demonstrates severity levels and custom messages using user account va
 
 ### User Account Validation Demo
 
-The **User Validation Shape** {=ex:UserValidationShape .sh:NodeShape ?cat:hasShape label} targets all [users] {+ex:User ?sh:targetClass} to validate account requirements with different severity levels: **Critical Email Rule** {+ex:CriticalRule ?sh:property label}, **Warning Age Rule** {+ex:WarningRule ?sh:property label} and **Info Name Rule** {+ex:InfoNameRule ?sh:property label}.
+The **User Validation Shape** {=ex:UserValidationShape .sh:NodeShape  label} targets all [users] {+ex:User ?sh:targetClass} to validate account requirements with different severity levels: **Critical Email Rule** {+ex:CriticalRule ?sh:property label}, **Warning Age Rule** {+ex:WarningRule ?sh:property label} and **Info Name Rule** {+ex:InfoNameRule ?sh:property label}.
 
 **Email address is required and must be valid** {=ex:CriticalRule .sh:PropertyShape sh:message} that requires [email] {+ex:email ?sh:path} to be [string] {+xsd:string ?sh:datatype} and at least [1] {sh:minCount ^^xsd:integer} corporate email [example.com] {sh:pattern} with [Violation severity] {+sh:Violation ?sh:severity}.
 
@@ -1612,7 +1612,7 @@ ig-cli validate ./constraints/severity.demo.md
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
-### Business Rule Validation Shape {=ex:BusinessRuleValidationShape .sh:NodeShape ?cat:hasShape label}
+### Business Rule Validation Shape {=ex:BusinessRuleValidationShape .sh:NodeShape  label}
 
 Validates all [member] {+member ?sh:targetObjectsOf} entities with **Contract value must be positive** {+ex:ContractValueRule ?sh:property}.
 
@@ -1664,7 +1664,7 @@ ig-cli validate ./constraints/message.demo.md
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
-### Date Validation Shape {=ex:DateValidationShape .sh:NodeShape ?cat:hasShape label}
+### Date Validation Shape {=ex:DateValidationShape .sh:NodeShape  label}
 
 Validates all [member] {+member ?sh:targetObjectsOf} entities with **Event date must be valid** {+ex:DatePropertyShape ?sh:property}.
 

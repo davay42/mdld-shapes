@@ -6,7 +6,7 @@
 
 This demo demonstrates advanced SHACL techniques: shape composition, NOT constraint, qualified count, AND constraint, and multiple constraints on same property.
 
-## Employee Validation Shape {=ex:EmployeeValidationShape .sh:NodeShape ?cat:hasShape label}
+## Employee Validation Shape {=ex:EmployeeValidationShape .sh:NodeShape  label}
 
 Validates all [Employee] {+ex:Employee ?sh:targetClass} instances with comprehensive business rules: [department] {+ex:DepartmentRule ?sh:property}, [status] {+ex:StatusRule ?sh:property}, [2 projects] {+ex:ProjectsRule ?sh:property}, [salary] {+ex:SalaryRule ?sh:property}.
 
@@ -28,7 +28,7 @@ Employee status must not conform to [Terminated Status Shape] {+ex:TerminatedSta
 
 ---
 
-## Terminated Status Shape {=ex:TerminatedStatusShape .sh:NodeShape ?cat:hasShape label}
+## Terminated Status Shape {=ex:TerminatedStatusShape .sh:NodeShape  label}
 Defines the forbidden terminated status pattern.
 
 **Status must be terminated** {=ex:TerminatedStatusRule .sh:PropertyShape ?sh:property}
@@ -36,7 +36,7 @@ Defines the forbidden terminated status pattern.
 
 ---
 
-## Completed Project Shape {=ex:CompletedProjectShape .sh:NodeShape ?cat:hasShape label}
+## Completed Project Shape {=ex:CompletedProjectShape .sh:NodeShape  label}
 
 Validates completed projects - [completed] {+ex:ProjectStatusRule ?sh:property} and [positive budget] {+ex:ProjectBudgetRule ?sh:property}.
 

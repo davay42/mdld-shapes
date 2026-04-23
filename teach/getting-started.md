@@ -24,7 +24,7 @@ Let's create a simple shape for validating user accounts:
 ~~~~~~md
 [ex] <tag:my@example.org,2026:users/>
 
-**User Validation Shape** {=ex:UserShape .sh:NodeShape ?cat:hasShape label}
+**User Validation Shape** {=ex:UserShape .sh:NodeShape  label}
 Validates all [User] {+ex:User ?sh:targetClass} instances.
 
 **Username is required** {=ex:UsernameRule .sh:PropertyShape ?sh:property}

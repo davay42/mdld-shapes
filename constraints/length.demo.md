@@ -6,11 +6,11 @@
 
 ## Demo {=ex:demo ?cat:hasDemo}
 
-### User Account Test Shape {=ex:UserAccountTestShape .sh:NodeShape ?cat:hasShape label}
+### User Account Test Shape {=ex:UserAccountTestShape .sh:NodeShape  label}
 
-Validates all [member] {+member ?sh:targetObjectsOf} entities with correct length of the **username** {+ex:#usernameLength ?sh:property sh:name}.
+Validates all [member] {+member ?sh:targetObjectsOf} entities with correct length of the **username** {+#usernameLength ?sh:property sh:name}.
 
-**Username must be 3-20 characters** {=ex:#usernameLength .sh:PropertyShape sh:message} requires [username] {+ex:username ?sh:path} to have at least [3] {sh:minLength ^^xsd:integer} and at most [20] {sh:maxLength ^^xsd:integer} characters.
+**Username must be 3-20 characters** {=#usernameLength .sh:PropertyShape sh:message} requires [username] {+ex:username ?sh:path} to have at least [3] {sh:minLength ^^xsd:integer} and at most [20] {sh:maxLength ^^xsd:integer} characters.
 
 ---
 

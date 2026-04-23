@@ -6,9 +6,9 @@
 
 ## System Status Test Shape {=ex:SystemStatusTestShape .sh:NodeShape label}
 
-Validates all [member] {+member ?sh:targetObjectsOf} entities with active **status** {+ex:#statusRequired ?sh:property sh:name}.
+Validates all [member] {+member ?sh:targetObjectsOf} entities with active **status** {+#statusRequired ?sh:property sh:name}.
 
-**Status must be active** {=ex:#statusRequired .sh:PropertyShape sh:message} requires [status] {+ex:status ?sh:path} to be exactly [active] {sh:hasValue ^^xsd:string}.
+**Status must be active** {=#statusRequired .sh:PropertyShape sh:message} requires [status] {+ex:status ?sh:path} to be exactly [active] {sh:hasValue ^^xsd:string}.
 
 ---
 
