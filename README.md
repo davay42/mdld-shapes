@@ -139,7 +139,7 @@ ig-cli validate ./targeting/targetClass.demo.md
 ig-cli validate ./shacl-demo.md
 
 # Validate clean ontology (should have 0 violations)
-ig-cli validate ./shacl-ontology.md
+ig-cli validate ./shacl.md
 
 # Get detailed entity information
 ig-cli get entity https://mdld.js.org/shacl/example/class/InvalidEmployee
