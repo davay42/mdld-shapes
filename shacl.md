@@ -745,6 +745,8 @@ This catalog includes these constraints:
 
 - [NOT](#constraints-not) {+sh:not ?cat:includes .class:LogicalConstraint}
 - [AND](#constraints-and) {+sh:and ?cat:includes .class:LogicalConstraint}
+- [OR](#constraints-or) {+sh:or ?cat:includes .class:LogicalConstraint}
+- [XONE](#constraints-xone) {+sh:xone ?cat:includes .class:LogicalConstraint}
 
 ## String Constraints
 
@@ -785,12 +787,7 @@ Some parts are still completely uncovered and don't work even on ttl or pure qua
 - SPARQL CONSTRUCT Query {+sh:construct ?cat:includes .class:SPARQLConstraint .cat:notCovered}
 - SPARQL UPDATE Query {+sh:update ?cat:includes .class:SPARQLConstraint .cat:notCovered}
 
-## Logical Constraints (Broken)
 
-These seem to be broken in the validator:
-
-- OR {+sh:or ?cat:includes .class:LogicalConstraint .cat:notCovered}
-- XONE {+sh:xone ?cat:includes .class:LogicalConstraint .cat:notCovered}
 
 ## Property Path Constraints
 
@@ -1555,6 +1552,180 @@ Category: [Electronics] {ex:category}
 **Common pitfalls:**
 - ❌ Forgetting subject reset {=} after list
 - ❌ Reusing list identifiers causing collisions
+
+
+
+
+
+
+{=}
+
+
+
+<a id="constraints-or"></a>
+
+[mdld] <https://mdld.js.org/>
+[cat] <mdld:shacl/>
+
+# OR Constraint {=sh:or .class:LogicalConstraint label}
+
+> Requires at least one constraint in the list to be satisfied {comment}
+
+<http://www.w3.org/ns/shacl#or> {?cat:fullIRI}
+
+---
+
+## 📋 Quick Start Pattern
+
+The OR constraint requires at least one of the specified constraints to be satisfied. This example validates that a contact must be either an email (contains @) or a phone number (contains -).
+
+~~~~~~md
+[ex] <tag:my@example.org,2026:or/>
+
+## Contact Validation Shape {=ex:ContactValidationShape .sh:NodeShape label}
+
+Validates all [member] {+member ?sh:targetObjectsOf} entities with **Contact must be email or phone** {sh:message}.
+
+**Options List** {=ex:or-l1 ?sh:or .rdf:List}: [Email Contact] {+ex:emailContact ?rdf:first}, then [followed] {=ex:or-l2 ?rdf:rest} by [Phone Contact] {+ex:phoneContact ?rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
+
+**Email Contact** {=ex:emailContact .sh:PropertyShape} ensures [contact] {+ex:contact ?sh:path} contains [@] {sh:pattern}.
+
+**Phone Contact** {=ex:phoneContact .sh:PropertyShape} ensures [contact] {+ex:contact ?sh:path} contains [-] {sh:pattern}.
+
+---
+
+## Test Data {=ex:data .Container}
+
+### Valid Email Contact {=ex:ValidEmail ?member}
+Contact: [user@example.com] {ex:contact}
+
+### Valid Phone Contact {=ex:ValidPhone ?member}
+Contact: [555-123-4567] {ex:contact}
+
+### Invalid Contact {=ex:InvalidContact ?member}
+Contact: [invalid] {ex:contact}
+~~~~~~
+
+**Expected Result:** 1 violation (InvalidContact fails because it matches neither email nor phone pattern)
+
+---
+
+## 📝 MDLD Syntax Patterns
+
+~~~~~~md
+[Options List] {=ex:or-l1 ?sh:or .rdf:List}: [First] {+ex:first ?rdf:first}, then [rest] {=ex:or-l2 ?rdf:rest} by [Second] {+ex:second ?rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
+~~~~~~
+
+**Use for:** Alternative value formats, optional properties, multiple valid patterns
+
+**Important:**
+- Uses RDF list syntax (rdf:first, rdf:rest, rdf:nil)
+- At least one constraint in list must be satisfied
+- Use unique list identifiers (or-l1, or-l2)
+- Always reset subject with {=} after list definition
+
+---
+
+## 🔧 Implementation Guidelines
+
+**When to use:** Multiple valid alternatives exist
+
+**Best practices:**
+- Keep list short (2-3 alternatives)
+- Test each alternative individually first
+- Ensure alternatives are mutually exclusive when appropriate
+
+**Common pitfalls:**
+- ❌ Forgetting subject reset {=} after list
+- ❌ Reusing list identifiers causing collisions
+- ❌ Overlapping alternatives causing ambiguity
+
+
+
+
+
+
+{=}
+
+
+
+<a id="constraints-xone"></a>
+
+[mdld] <https://mdld.js.org/>
+[cat] <mdld:shacl/>
+
+# XONE Constraint {=sh:xone .class:LogicalConstraint label}
+
+> Requires exactly one constraint in the list to be satisfied (exclusive OR) {comment}
+
+<http://www.w3.org/ns/shacl#xone> {?cat:fullIRI}
+
+---
+
+## 📋 Quick Start Pattern
+
+The XONE constraint requires exactly one of the specified constraints to be satisfied. This example validates that a role must be exactly one type (admin or user), not both and not neither.
+
+~~~~~~md
+[ex] <tag:my@example.org,2026:xone/>
+
+## Role Validation Shape {=ex:RoleValidationShape .sh:NodeShape label}
+
+Validates all [member] {+member ?sh:targetObjectsOf} entities with **Role must be exactly one type** {sh:message}.
+
+**Options List** {=ex:xone-l1 ?sh:xone .rdf:List}: [Admin Role] {+ex:adminRole ?rdf:first}, then [followed] {=ex:xone-l2 ?rdf:rest} by [User Role] {+ex:userRole ?rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
+
+**Admin Role** {=ex:adminRole .sh:PropertyShape} ensures [role] {+ex:role ?sh:path} is exactly [admin] {sh:hasValue}.
+
+**User Role** {=ex:userRole .sh:PropertyShape} ensures [role] {+ex:role ?sh:path} is exactly [user] {sh:hasValue}.
+
+---
+
+## Test Data {=ex:data .Container}
+
+### Valid Admin {=ex:ValidAdmin ?member}
+Role: [admin] {ex:role}
+
+### Valid User {=ex:ValidUser ?member}
+Role: [user] {ex:role}
+
+### Invalid - No Role {=ex:NoRole ?member}
+Role: [guest] {ex:role}
+~~~~~~
+
+**Expected Result:** 1 violation (NoRole fails because it matches neither admin nor user)
+
+---
+
+## 📝 MDLD Syntax Patterns
+
+~~~~~~md
+[Options List] {=ex:xone-l1 ?sh:xone .rdf:List}: [First] {+ex:first ?rdf:first}, then [rest] {=ex:xone-l2 ?rdf:rest} by [Second] {+ex:second ?rdf:first} and [nil] {+rdf:nil ?rdf:rest}. {=}
+~~~~~~
+
+**Use for:** Mutually exclusive options, single-choice validation, exclusive categories
+
+**Important:**
+- Uses RDF list syntax (rdf:first, rdf:rest, rdf:nil)
+- Exactly one constraint in list must be satisfied
+- Use unique list identifiers (xone-l1, xone-l2)
+- Always reset subject with {=} after list definition
+
+---
+
+## 🔧 Implementation Guidelines
+
+**When to use:** Mutually exclusive alternatives where exactly one must match
+
+**Best practices:**
+- Ensure alternatives are truly mutually exclusive
+- Test each alternative individually first
+- Consider edge cases (no match, multiple matches)
+
+**Common pitfalls:**
+- ❌ Forgetting subject reset {=} after list
+- ❌ Reusing list identifiers causing collisions
+- ❌ Overlapping alternatives causing ambiguous results
 
 
 

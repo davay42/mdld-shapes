@@ -58,6 +58,8 @@ This catalog includes these constraints:
 
 - [NOT](./not.md) {+sh:not ?cat:includes .class:LogicalConstraint}
 - [AND](./and.md) {+sh:and ?cat:includes .class:LogicalConstraint}
+- [OR](./or.md) {+sh:or ?cat:includes .class:LogicalConstraint}
+- [XONE](./xone.md) {+sh:xone ?cat:includes .class:LogicalConstraint}
 
 ## String Constraints
 
@@ -98,12 +100,7 @@ Some parts are still completely uncovered and don't work even on ttl or pure qua
 - SPARQL CONSTRUCT Query {+sh:construct ?cat:includes .class:SPARQLConstraint .cat:notCovered}
 - SPARQL UPDATE Query {+sh:update ?cat:includes .class:SPARQLConstraint .cat:notCovered}
 
-## Logical Constraints (Broken)
 
-These seem to be broken in the validator:
-
-- OR {+sh:or ?cat:includes .class:LogicalConstraint .cat:notCovered}
-- XONE {+sh:xone ?cat:includes .class:LogicalConstraint .cat:notCovered}
 
 ## Property Path Constraints
 

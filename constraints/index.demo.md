@@ -31,6 +31,8 @@ Demo files for SHACL constraints with test data and validation scenarios:
 
 - [NOT Demo](./not.demo.md)
 - [AND Demo](./and.demo.md)
+- [OR Demo](./or.demo.md)
+- [XONE Demo](./xone.demo.md)
 
 ## String Constraints
 
